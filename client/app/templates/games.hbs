@@ -1,0 +1,25 @@
+<div>
+    <p>Gamer route</p>
+    <p>Hello {{this.model.currentPlayer}}</p>
+    <h4>Lobby:</h4>
+        {{#each this.lobby as |player|}}
+            <p>{{player}}</p>
+        {{/each}}
+    <h2>Games</h2>
+    <div>
+        {{#each this.games as |game|}}
+            {{#unless game.isStarted}}
+                <button type="button" {{on "click" (fn this.joinGame game.id)}}>{{game.name}}</button>
+            {{/unless}}
+        {{/each}}
+    </div>
+    <div>
+        <label for="gameName">Create a game</label>
+        <Input
+            id="gameName"
+            @type="text"
+            @value={{this.gameName}}
+        />
+        <button type="button" {{on "click" this.createGame}}>Create game</button>
+    </div>
+</div>

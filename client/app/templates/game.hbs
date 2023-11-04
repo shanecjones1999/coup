@@ -1,0 +1,60 @@
+<div>
+    <div>
+        <h2>This is the game route for a specific game lobby</h2>
+    </div>
+    <div>
+        {{#if this.isStarted}}
+            <p>Game has started!</p>
+        {{/if}}
+            <button type="button" {{on 'click' this.startGame}}>Start Game</button>
+    </div>
+    <Timer @timeLeft={{this.model.gameState.timeLeft}} />
+    <div>
+        <h2>Game Data</h2>
+        <p>Name: {{this.model.gameState.gameName}}</p>
+        <div class="players">
+            {{#each this.otherPlayers as |player|}}
+                <Player @playerData={{player}} @loadId={{this.loadId}} @sourceId={{this.player.id}} @highlight={{(eq this.model.playerId this.currentTurnPlayerId)}}/>            
+            {{/each}}
+        </div>
+    </div>
+    <div>
+        <h2>Block State</h2>
+        {{#if this.promptBlock}}
+            {{#each this.blockState.pendingPlayerIds as |pendingPlayerId|}}
+                <p>Pending player: {{pendingPlayerId}}</p>
+            {{/each}}
+            <p>Action: {{this.blockState.actionId}}</p>
+            <p>Source: {{this.blockState.sourceId}}</p>
+            <p>Target: {{this.blockState.targetId}}</p>
+            <button type="button" {{on 'click' this.block}}>Block</button>
+            <button type="button" {{on 'click' this.pass}}>Allow</button>
+        {{/if}}
+        <h2>Challenge State</h2>
+        {{#if this.promptChallenge}}
+            {{#each this.challengeState.pendingPlayerIds as |pendingPlayerId|}}
+                <p>Pending player: {{pendingPlayerId}}</p>
+            {{/each}}
+            <p>Action: {{this.challengeState.actionId}}</p>
+            <p>Source: {{this.challengeState.sourceId}}</p>
+            <p>Target: {{this.challengeState.targetId}}</p>
+            <button type="button" {{on 'click' this.challenge}}>Challenge</button>
+            <button type="button" {{on 'click' this.passChallenge}}>Pass</button>
+        {{/if}}
+    </div>
+    <div>
+        <h2>Your Data:</h2>
+            <Player @playerData={{this.player}} @loadId={{this.loadId}} @sourceId={{this.player.id}} @highlight={{false}}/>
+    </div>
+    <div>
+
+        {{#if (eq this.model.playerId this.currentTurnPlayerId)}}
+            {{#each this.actions as |action|}}
+                <button type="button" {{on 'click' (fn this.initiateAction action.id)}}>{{action.name}}</button>
+            {{/each}}
+        {{/if}}
+        <div>
+            End of file
+        </div>
+    </div>
+</div>

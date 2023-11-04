@@ -1,0 +1,23 @@
+<h2>Your name: {{@model.cup.name}}</h2>
+<h2>Num coins: {{@model.cup.coins}}</h2>
+
+<h2>Players in the lobby:</h2>
+<div>
+    {{#each this.lobby as |player|}}
+        <p>{{player}}</p>
+    {{/each}}
+</div>
+
+<div>
+    <Input
+            id="here"
+            @type="text"
+            @value={{this.message}}
+        />
+        <button type="button" {{on "click" this.sendMessage}}>Send message</button>
+</div>
+
+<div>
+    <p>Get server session data:</p>
+    <button type="button" {{on "click" this.getData}}>Get data</button>
+</div>

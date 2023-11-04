@@ -1,0 +1,11 @@
+<button type="button" class="player {{if @playerData.isTurn "is-turn"}} {{if @highlight "highlight"}}" {{on 'click' this.getId}}>
+    <p class="name">{{@playerData.name}}</p>
+    {{#each @playerData.cards as |card|}}
+        <p class="cards">{{card.name}}, revealed: {{card.revealed}}</p>
+    {{/each}}
+    <p class="coins">{{@playerData.coins}} coins</p>
+    <p class="coins">{{@playerData.id}}</p>
+    <p>{{@playerData.isTurn}}</p>
+    <p>{{@sourceId}}</p>
+    <p>Is my turn: {{@highlight}}</p>
+</button>

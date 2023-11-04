@@ -1,0 +1,17 @@
+{{page-title "Home"}}
+<div>
+    <p>This is the home route.</p>
+    
+</div>
+<div>
+    <div>
+        <label for="username">Enter your name</label>
+        <Input
+            id="username"
+            @type="text"
+            @value={{this.username}}
+        />
+        <button type="button" {{on "click" this.enterLobby}}>Enter your name</button>
+    </div>
+</div>
+{{outlet}}

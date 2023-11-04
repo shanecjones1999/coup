@@ -1,0 +1,10 @@
+
+// @import './globals.scss';
+@import 'app/components/player/_style.scss';
+@import 'app/styles/game.scss';
+@import 'app/styles/application.scss';
+
+body {
+  font-family: Verdana, sans-serif;
+  margin: 0px;
+}

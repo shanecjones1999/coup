@@ -4,6 +4,7 @@ from Player import Player
 from Game import Game
 import json
 import jwt
+from Deck import Deck, cards
 
 from flask_cors import CORS
 
@@ -174,22 +175,23 @@ def initiate_action(data):
     source_id = data.get('sourceId')
     target_id = data.get('targetId')
     validate_turn(source_id, game)
-    if action_id == 0:
-        game.handle_income(source_id)
-    elif action_id == 1:
-        game.handle_foreign_aid(source_id)
-    elif action_id == 2:
-        game.handle_coup(source_id, target_id)
-    elif action_id == 3:
-        game.handle_tax(source_id)
-    elif action_id == 4:
-        game.handle_assassinate(source_id, target_id)
-    elif action_id == 5:
-        game.handle_exchange(source_id)
-    elif action_id == 6:
-        game.handle_steal(source_id, target_id)
-    else:
-        raise Exception("Invalid action taken:", action_id)
+    game.handle_action(action_id, source_id, target_id)
+    # if action_id == 0:
+    #     game.handle_income(source_id)
+    # elif action_id == 1:
+    #     game.handle_foreign_aid(source_id)
+    # elif action_id == 2:
+    #     game.handle_coup(source_id, target_id)
+    # elif action_id == 3:
+    #     game.handle_tax(source_id)
+    # elif action_id == 4:
+    #     game.handle_assassinate(source_id, target_id)
+    # elif action_id == 5:
+    #     game.handle_exchange(source_id)
+    # elif action_id == 6:
+    #     game.handle_steal(source_id, target_id)
+    # else:
+    #     raise Exception("Invalid action taken:", action_id)
     game_state = game.get_game_state()
     emit('game_state_update', game_state, room=game.id)
 
@@ -198,26 +200,21 @@ def initiate_action(data):
 def handle_block(data):
     game_id = data.get('gameId')
     blocker_id = data.get('playerId')
+    block_card_id = data.get('blockCardId')
     game = validate_game(game_id)
     blocked_action_id = game.block_state.action_id
-    # Steal case, we need to know what it is blocked as
-    if blocked_action_id == 6:
-        pass
-    # other possible ids:
-    # 1: foreign aid
-    # 4: assassinate
-    else:
-        game.challenge_state.activate_challenge_state(blocked_action_id, blocker_id)
+    target_id = game.block_state.target_id
+    game.handle_block(block_card_id, blocked_action_id, blocker_id, target_id)
     game_state = game.get_game_state()
     emit('game_state_update', game_state, room=game.id)
 
-
 # TODO ADD VALIDATION
-@socketio.on('pass')
-def handle_pass(data):
+@socketio.on('pass_block')
+def handle_pass_block(data):
     game_id = data.get('gameId')
     player_id = data.get('playerId')
     game = validate_game(game_id)
+    game.handle_pass_block(player_id)
     game.block_state.pending_player_ids.remove(player_id)
     if not game.block_state.pending_player_ids:
         # Do the action
@@ -230,10 +227,49 @@ def handle_pass_challenge(data):
     game_id = data.get('gameId')
     player_id = data.get('playerId')
     game = validate_game(game_id)
-    game.challenge_state.pending_player_ids.remove(player_id)
-    if not game.challenge_state.pending_player_ids:
-        # Do the action
-        game.resolve_challenge_state()
+    game.handle_pass_challenge(player_id)
+    game_state = game.get_game_state()
+    emit('game_state_update', game_state, room=game.id)
+
+@socketio.on('challenge')
+def handle_challenge(data):
+    game_id = data.get('gameId')
+    player_id = data.get('playerId')
+    game = validate_game(game_id)
+    game.handle_challenge(player_id)
+    game_state = game.get_game_state()
+    emit('game_state_update', game_state, room=game.id)
+
+@socketio.on('reveal_card')
+def handle_reveal_card(data):
+    game_id = data.get('gameId')
+    player_id = data.get('playerId')
+    game = validate_game(game_id)
+    card_id = data.get('cardId')
+    game.handle_revealed_card(player_id, card_id)
+    game_state = game.get_game_state()
+    emit('game_state_update', game_state, room=game.id)
+
+@socketio.on('lose_influence')
+def handle_lose_influence(data):
+    game_id = data.get('gameId')
+    player_id = data.get('playerId')
+    game = validate_game(game_id)
+    card_id = data.get('cardId')
+    player = game.players.get(player_id)
+    player.lose_influence(card_id)
+
+    game_state = game.get_game_state()
+    emit('game_state_update', game_state, room=game.id)
+
+@socketio.on('resolve_exchange_state')
+def handle_resolve_exchange_state(data):
+    game_id = data.get('gameId')
+    player_id = data.get('playerId')
+    game = validate_game(game_id)
+    selected_card_ids = data.get('selectedCardIds')
+    game.handle_resolve_exchange(player_id, selected_card_ids)
+
     game_state = game.get_game_state()
     emit('game_state_update', game_state, room=game.id)
 

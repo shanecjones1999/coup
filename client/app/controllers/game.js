@@ -45,14 +45,28 @@ export default class GameController extends Controller {
         return this.challengeState.active && this.challengeState.pendingPlayerIds.includes(this.model.playerId);
     }
 
+    @alias('model.gameState.revealCardState') revealCardState;
+
+    @computed('revealCardState', 'this.model.playerId')
+    get promptRevealCard() {
+        return this.revealCardState.active && this.revealCardState.revealerId == this.model.playerId;
+    }
+
+    @alias('model.gameState.loseInfluenceState') loseInfluenceState;
+
+    @computed('loseInfluenceState', 'this.model.playerId')
+    get promptLoseInfluenceState() {
+        return this.loseInfluenceState.active && this.loseInfluenceState.playerId == this.model.playerId;
+    }
+
     actions = [
-                {name: 'Income', id: 0, isChallengeable: false, isBlockable: false},
-                {name: 'Foreign Aid', id: 1, isChallengeable: false, isBlockable: true}, 
-                {name: 'Coup', id: 2, isChallengeable: false, isBlockable: false}, 
-                {name: 'Tax', id: 3, isChallengeable: true, isBlockable: false},
-                {name: 'Assassinate', id: 4, isChallengeable: true, isBlockable: true}, 
-                {name:'Exchange', id: 5, isChallengeable: true, isBlockable: false}, 
-                {name:'Steal', id: 6, isChallengeable: true, isBlockable: true}
+                {name: 'Income', id: 1, isChallengeable: false, isBlockable: false},
+                {name: 'Foreign Aid', id: 2, isChallengeable: false, isBlockable: true}, 
+                {name: 'Coup', id: 3, isChallengeable: false, isBlockable: false}, 
+                {name: 'Tax', id: 4, isChallengeable: true, isBlockable: false},
+                {name: 'Assassinate', id: 5, isChallengeable: true, isBlockable: true}, 
+                {name:'Exchange', id: 6, isChallengeable: true, isBlockable: false}, 
+                {name:'Steal', id: 7, isChallengeable: true, isBlockable: true}
             ];
 
     init() {
@@ -75,11 +89,12 @@ export default class GameController extends Controller {
     }
 
     @action
-    block() {
+    block(blockCardId) {
         const playerId = this.player.id;
         const data = {
             gameId: this.model.gameId,
             playerId: playerId,
+            blockCardId: blockCardId,
         }
         this.websocket.socket.emit('block', data);
     }
@@ -91,12 +106,17 @@ export default class GameController extends Controller {
             gameId: this.model.gameId,
             playerId: playerId,
         }
-        this.websocket.socket.emit('pass', data);
+        this.websocket.socket.emit('pass_block', data);
     }
 
     @action
     challenge() {
-        console.log('challenging!')
+        const playerId = this.player.id;
+        const data = {
+            gameId: this.model.gameId,
+            playerId: playerId,
+        }
+        this.websocket.socket.emit('challenge', data);
     }
 
     @action
@@ -109,7 +129,27 @@ export default class GameController extends Controller {
         this.websocket.socket.emit('pass_challenge', data);
     }
 
-    @tracked trtre;
+    @action
+    revealCard(cardId) {
+        const playerId = this.player.id;
+        const data = {
+            gameId: this.model.gameId,
+            playerId: playerId,
+            cardId: cardId,
+        }
+        this.websocket.socket.emit('reveal_card', data);
+    }
+
+    @action
+    loseInfluence(cardId) {
+        const playerId = this.player.id;
+        const data = {
+            gameId: this.model.gameId,
+            playerId: playerId,
+            cardId: cardId,
+        }
+        this.websocket.socket.emit('lose_influence', data);
+    }
 
     @action
     initiateAction(actionId) {

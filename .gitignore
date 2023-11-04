@@ -1,60 +1,7 @@
 # Node.js dependencies
 node_modules/
-client/node_modules
 
 flask_session/
-__pycache__
+__pycache__/
 
-# Build output
-/dist/
-client/dist
-/tmp/
-/vendor/
-/bower_components/
-/.sass-cache/
-/testem.log
-/coverage/
-/npm-debug.log
-/yarn-error.log
-
-# Editor and IDE files
-.vscode/
-.idea/
-*.suo
-*.ntvs_analysis
-*.njsproj
-*.sln
-*.suo
-*.user
-*.userosscache
-Desktop.ini
-Thumbs.db
 .DS_Store
-
-# OS-generated files
-Icon?
-
-# Compiled JavaScript
-*.map
-*.map.js
-
-# Log files
-logs/
-*.log
-
-# Configuration files
-*.config.js
-*.code-workspace
-
-# Environment-specific config files
-#config/environment.js
-config/targets.js
-
-# Automatically generated Ember.js files
-/dist/
-/tmp/
-/coverage/
-/dist-prev/
-/build/
-
-

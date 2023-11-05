@@ -14,7 +14,7 @@
         <p>Name: {{this.model.gameState.gameName}}</p>
         <div class="players">
             {{#each this.otherPlayers as |player|}}
-                <Player @playerData={{player}} @loadId={{this.loadId}} @sourceId={{this.player.id}} @highlight={{(eq this.model.playerId this.currentTurnPlayerId)}}/>            
+                <Player @playerData={{player}} @loadId={{this.loadId}} @sourceId={{this.player.id}} @highlight={{(eq this.selectedPlayerId player.id)}}/>            
             {{/each}}
         </div>
     </div>
@@ -30,7 +30,7 @@
             {{#each this.blockState.blockCards as |blockCard|}}
                 <button type="button" {{on 'click' (fn this.block blockCard.id)}}>Block as {{blockCard.name}}</button>
             {{/each}}
-            <button type="button" {{on 'click' this.pass}}>Allow</button>
+            <button type="button" {{on 'click' this.passBlock}}>Allow</button>
         {{/if}}
         <h2>Challenge State</h2>
         {{#if this.promptChallenge}}
@@ -65,7 +65,7 @@
 
         {{#if (eq this.model.playerId this.currentTurnPlayerId)}}
             {{#each this.actions as |action|}}
-                <button type="button" {{on 'click' (fn this.initiateAction action.id)}}>{{action.name}}</button>
+                <button type="button" {{on 'click' (fn this.initiateAction action)}}>{{action.name}}</button>
             {{/each}}
         {{/if}}
         <div>

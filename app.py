@@ -215,10 +215,7 @@ def handle_pass_block(data):
     player_id = data.get('playerId')
     game = validate_game(game_id)
     game.handle_pass_block(player_id)
-    game.block_state.pending_player_ids.remove(player_id)
-    if not game.block_state.pending_player_ids:
-        # Do the action
-        game.resolve_block_state()
+
     game_state = game.get_game_state()
     emit('game_state_update', game_state, room=game.id)
 

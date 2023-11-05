@@ -1,6 +1,7 @@
 .player {
     margin: auto;
     border: none;
+    cursor: pointer;
 
     &.is-turn {
         background-color: rgb(255, 196, 196);
@@ -8,7 +9,6 @@
 
     &.highlight {
         border: 2px solid purple;
-        cursor: pointer;
     }
     
     p {

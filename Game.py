@@ -62,7 +62,7 @@ class Game:
     def add_player(self, player):
         if player.id not in self.players:
             self.players[player.id] = player
-
+    
     def initialize_players(self):
         for player in self.players.values():
             player.coins = 2
@@ -116,10 +116,18 @@ class Game:
             action_id = self.challenge_state.action_id
             source_id = self.challenge_state.source_id
             target_id = self.challenge_state.target_id
-            self.resolve_action(action_id, source_id, target_id)
+            # Move to block state if the action is blockable
+            if actions_dict[self.challenge_state.action_id].block_card_ids:
+                self.block_state.activate_block_state(action_id, source_id, target_id)
+            # otherwise resolve the action
+            else:
+                action_id = self.challenge_state.action_id
+                source_id = self.challenge_state.source_id
+                target_id = self.challenge_state.target_id
+                self.resolve_action(action_id, source_id, target_id)
 
     def handle_pass_block(self, player_id):
-        self.challenge_state.pending_player_ids.remove(player_id)
+        self.block_state.pending_player_ids.remove(player_id)
         if not self.block_state.pending_player_ids:
             action_id = self.challenge_state.action_id
             source_id = self.challenge_state.source_id
@@ -149,7 +157,8 @@ class Game:
         self.move_turn()
 
     def handle_foreign_aid(self, source_id):
-        self.block_state.activate_block_state(1, source_id)
+        self.players[source_id].coins += 2
+        self.move_turn()
 
     def resolve_block_state(self):
         if self.block_state.action_id == 1:
@@ -202,14 +211,17 @@ class Game:
         self.players[source_id].coins += 3
         self.move_turn()
     
-    def handle_assassinate(self, source_id, target_id):
+    def handle_assassinate(self, source_id, target_id, from_challenge_state):
         self.block_state.activate_block_state(5, source_id, target_id)
     
     def handle_exchange(self, source_id):
         self.exchange_state.activate_exchange_state(source_id, self.deck)
     
     def handle_steal(self, source_id, target_id):
-        self.block_state.activate_block_state(6, source_id, target_id)
+        coins_stolen = min(2, self.players[target_id].coins)
+        self.players[source_id].coins += coins_stolen
+        self.players[target_id].coins -= coins_stolen
+        self.move_turn()
     
     def handle_resolve_exchange(self, player_id, selected_card_ids):
         player = self.players[player_id]

@@ -19,7 +19,7 @@ class BlockState:
             if card.block_action_id == action_id:
                 self.block_cards.append(card.to_dict())
         # All players can block foreign aid
-        if action_id == 1:
+        if action_id == 2: # Switched to using 1-indexing
             self.pending_player_ids = [player_id for player_id in self.player_ids if player_id != source_id]
         # Only the target player can block (will be assassinate or steal)
         else:

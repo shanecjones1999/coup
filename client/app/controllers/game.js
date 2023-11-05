@@ -59,14 +59,16 @@ export default class GameController extends Controller {
         return this.loseInfluenceState.active && this.loseInfluenceState.playerId == this.model.playerId;
     }
 
+    @tracked selectedPlayerId = '';
+
     actions = [
-                {name: 'Income', id: 1, isChallengeable: false, isBlockable: false},
-                {name: 'Foreign Aid', id: 2, isChallengeable: false, isBlockable: true}, 
-                {name: 'Coup', id: 3, isChallengeable: false, isBlockable: false}, 
-                {name: 'Tax', id: 4, isChallengeable: true, isBlockable: false},
-                {name: 'Assassinate', id: 5, isChallengeable: true, isBlockable: true}, 
-                {name:'Exchange', id: 6, isChallengeable: true, isBlockable: false}, 
-                {name:'Steal', id: 7, isChallengeable: true, isBlockable: true}
+                {name: 'Income', id: 1, requiresTarget: false},
+                {name: 'Foreign Aid', id: 2, requiresTarget: false}, 
+                {name: 'Coup', id: 3, requiresTarget: true}, 
+                {name: 'Tax', id: 4, requiresTarget: false},
+                {name: 'Assassinate', id: 5, requiresTarget: true}, 
+                {name:'Exchange', id: 6, requiresTarget: false}, 
+                {name:'Steal', id: 7, requiresTarget: true}
             ];
 
     init() {
@@ -100,7 +102,7 @@ export default class GameController extends Controller {
     }
 
     @action
-    pass() {
+    passBlock() {
         const playerId = this.player.id;
         const data = {
             gameId: this.model.gameId,
@@ -152,20 +154,30 @@ export default class GameController extends Controller {
     }
 
     @action
-    initiateAction(actionId) {
+    initiateAction(action) {
         const sourceId = this.player.id;
+
+        if (action.requiresTarget && !this.selectedPlayerId) {
+            return;
+        }
+
+        const targetId = action.requiresTarget ? this.selectedPlayerId : undefined
+
         const data = {
             gameId: this.model.gameId, 
-            actionId: actionId,
+            actionId: action.id,
             sourceId: sourceId,
-            targetId: undefined,
+            targetId: targetId,
         }
+
+        this.selectedPlayerId = '';
 
         this.websocket.socket.emit('initiate_action', data);
     }
 
     @action
     loadId(id) {
+        this.selectedPlayerId = id;
         console.log(id)
     }
 }

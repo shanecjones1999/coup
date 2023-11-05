@@ -176,22 +176,6 @@ def initiate_action(data):
     target_id = data.get('targetId')
     validate_turn(source_id, game)
     game.handle_action(action_id, source_id, target_id)
-    # if action_id == 0:
-    #     game.handle_income(source_id)
-    # elif action_id == 1:
-    #     game.handle_foreign_aid(source_id)
-    # elif action_id == 2:
-    #     game.handle_coup(source_id, target_id)
-    # elif action_id == 3:
-    #     game.handle_tax(source_id)
-    # elif action_id == 4:
-    #     game.handle_assassinate(source_id, target_id)
-    # elif action_id == 5:
-    #     game.handle_exchange(source_id)
-    # elif action_id == 6:
-    #     game.handle_steal(source_id, target_id)
-    # else:
-    #     raise Exception("Invalid action taken:", action_id)
     game_state = game.get_game_state()
     emit('game_state_update', game_state, room=game.id)
 
@@ -215,10 +199,7 @@ def handle_pass_block(data):
     player_id = data.get('playerId')
     game = validate_game(game_id)
     game.handle_pass_block(player_id)
-    game.block_state.pending_player_ids.remove(player_id)
-    if not game.block_state.pending_player_ids:
-        # Do the action
-        game.resolve_block_state()
+
     game_state = game.get_game_state()
     emit('game_state_update', game_state, room=game.id)
 
@@ -256,8 +237,8 @@ def handle_lose_influence(data):
     player_id = data.get('playerId')
     game = validate_game(game_id)
     card_id = data.get('cardId')
-    player = game.players.get(player_id)
-    player.lose_influence(card_id)
+
+    game.handle_lose_influence(player_id, card_id)
 
     game_state = game.get_game_state()
     emit('game_state_update', game_state, room=game.id)

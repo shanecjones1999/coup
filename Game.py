@@ -1,6 +1,6 @@
 import random
 import string
-from Deck import Deck, cards, cards_dict
+from Deck import Deck, cards_dict
 import asyncio
 import time
 from BlockState import BlockState
@@ -9,6 +9,7 @@ from LoseInfluenceState import LoseInfluenceState
 from RevealCardState import RevealCardState
 from Action import Action
 from ExchangeState import ExchangeState
+from UnresolvedAction import UnresolvedAction
 
 actions = [
     {'name': 'Income', id: 0, 'isChallengeable': False, 'isBlockable': False},
@@ -37,6 +38,7 @@ class Game:
         self.turn_order_ids = []
         self.id = id
         self.is_started = False
+        self.over = False
         self.deck = Deck()
         self.turn_length = 30
         self.time_left = 30
@@ -45,6 +47,7 @@ class Game:
         self.lose_influence_state = LoseInfluenceState()
         self.reveal_card_state = RevealCardState()
         self.exchange_state = ExchangeState()
+        self.unresolved_action = UnresolvedAction()
 
     def start_game(self):
         if self.is_started:
@@ -62,7 +65,7 @@ class Game:
     def add_player(self, player):
         if player.id not in self.players:
             self.players[player.id] = player
-    
+
     def initialize_players(self):
         for player in self.players.values():
             player.coins = 2
@@ -92,6 +95,7 @@ class Game:
             'loseInfluenceState': lose_influence_state,
             'revealCardState': reveal_card_state,
             'exchangeState': exchange_state,
+            'over': self.over,
         }
     
     def handle_action(self, action_id, source_id, target_id):
@@ -100,6 +104,9 @@ class Game:
         if action.cost > player.coins:
             # TODO update this?
             return
+        
+        self.unresolved_action.set(action_id, source_id, target_id)
+
         if action.challengable:
             # go into challenge state
             self.challenge_state.activate_challenge_state(action.card_id, action.id, source_id, False, target_id)
@@ -109,6 +116,71 @@ class Game:
         else:
             # exceute the action (will be either income or coup)
             self.resolve_action(action_id, source_id, target_id)
+    
+    def handle_lose_influence(self, player_id, card_id):
+        player = self.players[player_id]
+        player.lose_influence(card_id)
+
+        self.check_game_over()
+
+        action_id = self.unresolved_action.action_id
+        source_id = self.unresolved_action.source_id
+        target_id = self.unresolved_action.target_id
+        successfully_blocked = self.unresolved_action.successfully_blocked
+        # if a player was couped, move to the next turn
+        if action_id == 3:
+            self.move_turn()
+            return
+
+        block_state_already_set = self.block_state.source_id is not None
+        
+        if not block_state_already_set and actions_dict[action_id].block_card_ids:
+            self.block_state.activate_block_state(action_id, source_id, target_id)
+
+        else:
+            if successfully_blocked:
+                self.move_turn()
+            else:
+                self.resolve_action()
+
+            # If coming from a coup, move to next turn
+        # if action id is blockable and block_state hasn't been set, we need to show block_state (assuming challenge_state is set, which is should be)
+
+
+        # If coming from a challenge
+            # If we are coming from a challenge state after block state:
+            # ^ Check to see if block_state source Id is set
+                # Execute action
+                # Move turn
+
+        # If we are coming from challenge state before block state:
+        # Block_state source_id not set
+            # Transition to block state
+
+    # TODO: implement this!
+    def check_game_over(self):
+        return False
+
+    def resolve_action(self, action_id, source_id, target_id):
+        # should never get here with action_id 1 or 3
+        # dont worry about this
+        if action_id == 1:
+            self.handle_income(source_id)
+        elif action_id == 2:
+            self.handle_foreign_aid(source_id)
+        elif action_id == 3:
+            self.handle_coup(source_id, target_id)
+        elif action_id == 4:
+            self.handle_tax(source_id)
+        elif action_id == 5:
+            self.handle_assassinate_no_block(source_id, target_id)
+        elif action_id == 6:
+            self.handle_exchange(source_id)
+        # Don't worry about this
+        elif action_id == 7:
+            self.handle_steal(source_id, target_id)
+        else:
+            raise Exception("Invalid action taken:", action_id)
 
     def handle_pass_challenge(self, player_id):
         self.challenge_state.pending_player_ids.remove(player_id)
@@ -132,9 +204,10 @@ class Game:
             action_id = self.challenge_state.action_id
             source_id = self.challenge_state.source_id
             target_id = self.challenge_state.target_id
-            self.resolve_action(action_id, source_id, target_id)
+            self.resolve_action_from_block(action_id, source_id, target_id)
     
-    def resolve_action(self, action_id, source_id, target_id):
+    # ADD FROM CHALLENGE FLAG? Or FROM BLOCK
+    def resolve_action_from_challenge(self, action_id, source_id, target_id):
         if action_id == 1:
             self.handle_income(source_id)
         elif action_id == 2:
@@ -144,13 +217,40 @@ class Game:
         elif action_id == 4:
             self.handle_tax(source_id)
         elif action_id == 5:
-            self.handle_assassinate(source_id, target_id)
+            self.handle_assassinate(source_id, target_id, )
         elif action_id == 6:
             self.handle_exchange(source_id)
         elif action_id == 7:
             self.handle_steal(source_id, target_id)
         else:
             raise Exception("Invalid action taken:", action_id)
+    
+    # TODO FIX THIS
+    # CALLED WHEN NO PLAYERS ARE BLOCKING AN ACTION
+    def resolve_action_from_block(self, action_id, source_id, target_id):
+        # Only should need to consider blockable actions here
+        # id = 2, 5, 7
+        # if action_id == 1:
+        #     self.handle_income(source_id)
+        if action_id == 2:
+            self.handle_foreign_aid(source_id)
+        # elif action_id == 3:
+        #     self.handle_coup(source_id, target_id)
+        # elif action_id == 4:
+        #     self.handle_tax(source_id)
+        elif action_id == 5:
+            self.handle_assassinate_no_block(source_id, target_id)
+        # elif action_id == 6:
+        #     self.handle_exchange(source_id)
+        elif action_id == 7:
+            self.handle_steal(source_id, target_id)
+        else:
+            raise Exception("Invalid action taken:", action_id)
+        
+    def handle_assassinate_no_block(self, source_id, target_id):
+        target = self.players[target]
+        self.players[source_id].coins -= 3
+        self.lose_influence_state.activate_lose_influence_state(target)
     
     def handle_income(self, source_id):
         self.players[source_id].coins += 1
@@ -159,15 +259,6 @@ class Game:
     def handle_foreign_aid(self, source_id):
         self.players[source_id].coins += 2
         self.move_turn()
-
-    def resolve_block_state(self):
-        if self.block_state.action_id == 1:
-            self.execute_foreign_aid()
-
-    def resolve_challenge_state(self):
-        # See if we are in foreign aid block state
-        if self.block_state.active and self.block_state.action_id == 1:
-            self.move_turn()
 
     def handle_challenge(self, player_challenging_id):
         if self.challenge_state.active:
@@ -185,33 +276,33 @@ class Game:
         is_correct_card = card_id == self.challenge_state.card_claimed.id
         # Challenger loses card
         if is_correct_card:
+            # If we were in a block state, mark the unresolved action successful block as True
+            if self.block_state.action_id is not None:
+                self.unresolved_action.successfully_blocked = True
             challenger_id = self.reveal_card_state.challenger_id
             challenger = self.players.get(challenger_id)
             if self.reveal_card_state.active:
                 self.reveal_card_state.active = False
-            player_lost = self.lose_influence_state.activate_lose_influence_state(challenger)
-            if player_lost:
-                self.move_turn()
+            self.lose_influence_state.activate_lose_influence_state(challenger.id)
+            # BAD LOGIC, we don't always move turn, we may need to finish the action
+            # if player_lost:
+            #     self.move_turn()
         # Player challenged loses card
         else:
             player = self.players.get(player_id)
             player.lose_influence(card_id)
             self.move_turn()
-    
-    def execute_foreign_aid(self):
-        source_id = self.block_state.source_id
-        self.players[source_id].coins += 2
-        self.move_turn()
 
     def handle_coup(self, source_id, target_id):
         self.players[source_id].coins -= 7
-        self.lose_influence_state.activate_lose_influence_state(target_id)
+        target_player = self.players[target_id]
+        self.lose_influence_state.activate_lose_influence_state(target_player.id)
     
     def handle_tax(self, source_id):
         self.players[source_id].coins += 3
         self.move_turn()
     
-    def handle_assassinate(self, source_id, target_id, from_challenge_state):
+    def handle_assassinate(self, source_id, target_id):
         self.block_state.activate_block_state(5, source_id, target_id)
     
     def handle_exchange(self, source_id):
@@ -234,6 +325,7 @@ class Game:
         self.move_turn()
 
     def move_turn(self):
+        # TODO: MOVE TO next player that IS NOT LOST
         active_id = None
         for id, player in self.players.items():
             if player.is_turn:
@@ -264,6 +356,7 @@ class Game:
         self.lose_influence_state.reset()
         self.reveal_card_state.reset()
         self.exchange_state.reset()
+        self.unresolved_action.reset()
             
     def start_timer(self):
          for _ in range(self.turn_length, 0, -1):

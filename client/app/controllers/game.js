@@ -26,9 +26,14 @@ export default class GameController extends Controller {
         return this.model.gameState.playerData.filter(player => player.id != this.model.playerId)
     }
 
-    @computed('model.gameState.isStarted')
-    get isStarted() {
-        return this.model.gameState.isStarted;
+    @computed('model.gameState.started')
+    get started() {
+        return this.model.gameState.started;
+    }
+
+    @computed('model.gameState.over')
+    get over() {
+        return this.model.gameState.over;
     }
     
     @alias('model.gameState.blockState') blockState;

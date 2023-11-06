@@ -28,7 +28,7 @@ class Game:
         self.players = {}
         self.turn_order_ids = []
         self.id = id
-        self.is_started = False
+        self.started = False
         self.over = False
         self.deck = Deck()
         self.turn_length = 30
@@ -41,7 +41,7 @@ class Game:
         self.unresolved_action = UnresolvedAction()
 
     def start_game(self):
-        if self.is_started:
+        if self.started:
             raise Exception('Game already started')
         if not self.players:
             raise Exception('Trying to start game without any players')
@@ -51,7 +51,7 @@ class Game:
         self.players[first_player].is_turn = True
         self.block_state.player_ids = list(self.players.keys())
         self.challenge_state.player_ids = list(self.players.keys())
-        self.is_started = True
+        self.started = True
 
     def add_player(self, player):
         if player.id not in self.players:
@@ -79,7 +79,7 @@ class Game:
         return {
             'gameName': self.name,
             'playerData': player_data, 
-            'isStarted': self.is_started,
+            'started': self.started,
             'timeLeft': self.time_left,
             'blockState': block_state,
             'challengeState': challenge_state,
@@ -102,7 +102,7 @@ class Game:
         # additional logic
         if action.challengable:
             # go into challenge state
-            self.challenge_state.activate_challenge_state(action.card_id, action.id, source_id, False, target_id)
+            self.challenge_state.activate_challenge_state(action.card_id, action.id, source_id, False, self.players.values(), target_id)
         # @Shane: We shouldn't need to go to block here this as it will be handled by resolve_action
         # elif action.block_card_ids:
             # go into block state if action can be blocked
@@ -115,7 +115,7 @@ class Game:
         player = self.players[player_id]
         player.lose_influence(card_id)
 
-        self.check_game_over()
+        self.over = self.check_game_over()
 
         action_id = self.unresolved_action.action_id
         source_id = self.unresolved_action.source_id
@@ -160,27 +160,29 @@ class Game:
         if players_left >= 2:
             return False
         elif players_left == 1:
+            self.over = True
             return True
         else:
             raise Exception("No players left")
 
     # First resolution of action
     def resolve_action(self, action_id, source_id, target_id):
+        block_state_resolved = self.block_state.source_id is not None
         match action_id:
             case 1:
                 self.handle_income(source_id)
             case 2:
-                self.handle_foreign_aid(source_id, False)
+                self.handle_foreign_aid(source_id, block_state_resolved)
             case 3:
                 self.handle_coup(source_id, target_id)
             case 4:
                 self.handle_tax(source_id)
             case 5:
-                self.handle_assassinate(source_id, target_id, False)
+                self.handle_assassinate(source_id, target_id, block_state_resolved)
             case 6:
                 self.handle_exchange(source_id)
             case 7:
-                self.handle_steal(source_id, target_id, False)
+                self.handle_steal(source_id, target_id, block_state_resolved)
             case _:
                 raise Exception("Invalid action taken:", action_id)
 
@@ -192,7 +194,8 @@ class Game:
             target_id = self.challenge_state.target_id
             # Move to block state if the action is blockable
             # Do we want this?
-            if actions_dict[self.challenge_state.action_id].block_card_ids:
+            block_state_already = self.block_state.action_id is not None
+            if not block_state_already and actions_dict[self.challenge_state.action_id].block_card_ids:
                 self.block_state.activate_block_state(action_id, source_id, target_id)
             # otherwise resolve the action
             # What if you are challenging a block?
@@ -205,6 +208,7 @@ class Game:
     def handle_pass_block(self, player_id):
         self.block_state.pending_player_ids.remove(player_id)
         if not self.block_state.pending_player_ids:
+            self.unresolved_action.successfully_blocked = True
             action_id = self.block_state.action_id
             source_id = self.block_state.source_id
             target_id = self.block_state.target_id
@@ -234,7 +238,7 @@ class Game:
         if self.block_state.active:
             self.block_state.active = False
         # All blocks can be challenged
-        self.challenge_state.activate_challenge_state(block_card_id, blocked_action_id, blocker_id, True, target_id)
+        self.challenge_state.activate_challenge_state(block_card_id, blocked_action_id, blocker_id, True, self.players.values(), target_id)
 
     def handle_revealed_card(self, player_id, card_id):
         is_correct_card = card_id == self.challenge_state.card_claimed.id
@@ -256,7 +260,15 @@ class Game:
         else:
             player = self.players.get(player_id)
             player.lose_influence(card_id)
-            self.move_turn()
+            over = self.check_game_over()
+            # handle foreign aid!
+            if self.unresolved_action.action_id == 2:
+                self.handle_foreign_aid(self.unresolved_action.source_id, True)
+            elif self.unresolved_action.action_id == 5:
+                self.players[self.unresolved_action.source_id].coins -= 3
+                self.move_turn()
+            else:
+                self.move_turn()
 
     def handle_income(self, source_id):
         self.players[source_id].coins += 1
@@ -264,7 +276,8 @@ class Game:
 
     def handle_foreign_aid(self, source_id, block_state_resolved = False):
         if block_state_resolved:
-            self.players[source_id].coins += 2
+            if not self.unresolved_action.successfully_blocked:
+                self.players[source_id].coins += 2
             self.move_turn()
         else:
             self.block_state.activate_block_state(2, source_id, None)
@@ -280,9 +293,8 @@ class Game:
     
     def handle_assassinate(self, source_id, target_id, block_state_resolved = False):
         if block_state_resolved:
-            target = self.players[target_id]
             self.players[source_id].coins -= 3
-            self.lose_influence_state.activate_lose_influence_state(target)
+            self.lose_influence_state.activate_lose_influence_state(target_id)
         else:
             self.block_state.activate_block_state(5, source_id, target_id)
     
@@ -320,11 +332,22 @@ class Game:
         if not active_id:
             raise Exception("No active player")
         current_player_index = self.turn_order_ids.index(active_id)
-        next_player_index = (current_player_index + 1) % len(self.turn_order_ids)
-        next_player_id = self.turn_order_ids[next_player_index]
-        if next_player_id not in self.players:
+
+        # Make sure the next player set is not lost
+        looked_at = 0
+        next_player_set = False
+        look_index = (current_player_index + 1) % len(self.turn_order_ids)
+        while looked_at < len(self.players) and not next_player_set:
+            next_player_id = self.turn_order_ids[look_index]
+            if next_player_id not in self.players:
+                raise Exception("Next player Id not found")
+            if not self.players[next_player_id].lost:
+                next_player_set = True
+                self.players[next_player_id].is_turn = True
+            look_index = (look_index + 1) % len(self.turn_order_ids)
+            looked_at += 1
+        if not next_player_set:
             raise Exception("Next player Id not found")
-        self.players[next_player_id].is_turn = True
         # Reset states
         self.reset_states()
 

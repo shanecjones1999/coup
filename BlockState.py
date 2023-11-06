@@ -10,7 +10,7 @@ class BlockState:
         self.pending_player_ids = []
         self.player_ids = []
 
-    def activate_block_state(self, action_id, source_id, target_id = None):
+    def activate_block_state(self, action_id, source_id, players, target_id = None):
         self.active = True
         self.action_id = action_id
         self.source_id = source_id
@@ -18,11 +18,17 @@ class BlockState:
         for card in cards:
             if card.block_action_id == action_id:
                 self.block_cards.append(card.to_dict())
-        # All players can block foreign aid
-        if action_id == 2: # Switched to using 1-indexing
-            self.pending_player_ids = [player_id for player_id in self.player_ids if player_id != source_id]
+        # All players can block foreign aid (make sure they haven't lost)
+        if action_id == 2:
+            pending_player_ids = []
+            for player in players:
+                if player.id != source_id and not player.lost:
+                    pending_player_ids.append(player.id)
+            self.pending_player_ids = pending_player_ids
         # Only the target player can block (will be assassinate or steal)
         else:
+            if players[target_id].lost:
+                raise Exception('Blocked player has already lost')
             self.pending_player_ids = [target_id]
 
     def reset(self):

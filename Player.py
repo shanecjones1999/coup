@@ -12,10 +12,13 @@ class Player:
         self.lost = False
     
     def lose_influence(self, card_id):
+        card_lost = False
         for card in self.cards:
-            if card.id == card_id:
+            if card.id == card_id and not card.revealed and not card_lost:
                 card.revealed = True
-                break
+                card_lost = True
+        if not card_lost:
+            raise Exception("Card not lost")
         self.update_lost()
 
     def update_lost(self):

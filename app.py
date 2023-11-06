@@ -27,7 +27,7 @@ def get_games():
         data = {
             'name': game.name,
             'id': game.id,
-            'isStarted': game.is_started,
+            'isStarted': game.started,
         }
         res.append(data)
     return jsonify(res), 200
@@ -313,7 +313,7 @@ def validate_game(game_id):
     if game_id not in games:
         raise Exception('Invalid game id')
     game = games.get(game_id)
-    if not game.is_started:
+    if not game.started:
         raise Exception('Game not started')
     if not game.players:
         raise Exception('No players in game')

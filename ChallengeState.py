@@ -1,4 +1,4 @@
-from Deck import cards
+from Deck import cards_dict
 
 class ChallengeState:
     def __init__(self):
@@ -9,16 +9,19 @@ class ChallengeState:
         self.target_id = None
         self.from_block = False
         self.pending_player_ids = []
-        self.player_ids = []
 
-    def activate_challenge_state(self, card_claimed_id, action_id, source_id, from_block, target_id = None):
+    def activate_challenge_state(self, card_claimed_id, action_id, source_id, from_block, players, target_id = None):
         self.active = True
-        self.card_claimed = [card for card in cards if card.id == card_claimed_id][0]
+        self.card_claimed = cards_dict[card_claimed_id]
         self.action_id = action_id
         self.source_id = source_id
         self.from_block = from_block
         self.target_id = target_id
-        self.pending_player_ids = [player_id for player_id in self.player_ids if player_id != source_id]
+        pending_player_ids = []
+        for player in players:
+            if player.id != source_id and not player.lost:
+                pending_player_ids.append(player.id)
+        self.pending_player_ids = pending_player_ids
 
     def reset(self):
         self.active = False

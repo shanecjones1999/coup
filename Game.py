@@ -95,6 +95,8 @@ class Game:
         if action.cost > player.coins:
             # TODO add front-end handling
             raise Exception("Player cannot pay for action")
+        else:
+            player.coins -= action.cost
         
         self.unresolved_action.set(action_id, source_id, target_id)
 
@@ -283,7 +285,6 @@ class Game:
             self.block_state.activate_block_state(2, source_id, None)
 
     def handle_coup(self, source_id, target_id):
-        self.players[source_id].coins -= 7
         target_player = self.players[target_id]
         self.lose_influence_state.activate_lose_influence_state(target_player.id)
     
@@ -293,7 +294,6 @@ class Game:
     
     def handle_assassinate(self, source_id, target_id, block_state_resolved = False):
         if block_state_resolved:
-            self.players[source_id].coins -= 3
             self.lose_influence_state.activate_lose_influence_state(target_id)
         else:
             self.block_state.activate_block_state(5, source_id, target_id)

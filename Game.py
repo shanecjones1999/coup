@@ -105,12 +105,7 @@ class Game:
         if action.challengable:
             # go into challenge state
             self.challenge_state.activate_challenge_state(action.card_id, action.id, source_id, False, self.players.values(), target_id)
-        # @Shane: We shouldn't need to go to block here this as it will be handled by resolve_action
-        # elif action.block_card_ids:
-            # go into block state if action can be blocked
-            # self.block_state.activate_block_state(action.id, source_id, target_id)
         else:
-            # exceute the action (will be either income or coup)
             self.resolve_action(action_id, source_id, target_id)
     
     def handle_lose_influence(self, player_id, card_id):
@@ -123,36 +118,27 @@ class Game:
         source_id = self.unresolved_action.source_id
         target_id = self.unresolved_action.target_id
         successfully_blocked = self.unresolved_action.successfully_blocked
-        # if a player was couped, move to the next turn
-        if action_id == 3:
+        # if not coming from a reveal state, then move to next turn
+        if not self.lose_influence_state.from_reveal_state:
             self.move_turn()
             return
 
-        block_state_already_set = self.block_state.source_id is not None
-        
-        # TODO: clean up a bit
-        if not block_state_already_set and actions_dict[action_id].block_card_ids:
-            self.block_state.activate_block_state(action_id, source_id, target_id)
-
         else:
-            if successfully_blocked:
+            # We came from a reveal state, which came from a challenge state. Furthermore, we know that the revealed
+            # card was correct, as if it were incorrect we would not call this function. The logic for handling
+            # cases with incorrect revealed cards is contained within the handle_revealed_card() method.
+            # Hence, we need to know whether this is an unsuccessful challenge on an initial action, where we call
+            # resolve_action, or an unsucessful challenge on a block, where we end turn (block goes thru)
+            block_state_already_set = self.block_state.source_id is not None
+            if block_state_already_set:
                 self.move_turn()
             else:
-                self.resolve_action_from_block(action_id, source_id, target_id) # TODO: needs testing
+                # Reset challenge state as block may be challenged later in turn
+                self.challenge_state.reset()
+                # Resolve the action (before block if applicable)
+                self.resolve_action(action_id, source_id, target_id)
 
-        # If coming from a coup, move to next turn
-        # if action id is blockable and block_state hasn't been set, we need to show block_state (assuming challenge_state is set, which is should be)
 
-
-        # If coming from a challenge
-            # If we are coming from a challenge state after block state:
-            # ^ Check to see if block_state source Id is set
-                # Execute action
-                # Move turn
-
-        # If we are coming from challenge state before block state:
-        # Block_state source_id not set
-            # Transition to block state
 
     def check_game_over(self):
         players_left = 0
@@ -243,34 +229,40 @@ class Game:
         self.challenge_state.activate_challenge_state(block_card_id, blocked_action_id, blocker_id, True, self.players.values(), target_id)
 
     def handle_revealed_card(self, player_id, card_id):
+        # We should only ever get here from a challenge state
         is_correct_card = card_id == self.challenge_state.card_claimed.id
         # Challenger loses card
         if is_correct_card:
+            # TODO: add card draw
             # If we were in a block state, mark the unresolved action successful block as True
             if self.block_state.action_id is not None:
                 self.unresolved_action.successfully_blocked = True
             challenger_id = self.reveal_card_state.challenger_id
             challenger = self.players.get(challenger_id)
+            # Reset reveal_card_state
             if self.reveal_card_state.active:
                 self.reveal_card_state.active = False
-            self.lose_influence_state.activate_lose_influence_state(challenger.id)
-            # BAD LOGIC, we don't always move turn, we may need to finish the action
-            # if player_lost:
-            #     self.move_turn()
-            # TODO: Add logic to draw new card from deck
+            # The rest of the logic will be handled in handle_lose_influence_state from here
+            self.lose_influence_state.activate_lose_influence_state(challenger.id, True)
         # Player challenged loses card
         else:
             player = self.players.get(player_id)
             player.lose_influence(card_id)
             over = self.check_game_over()
-            # handle foreign aid!
-            if self.unresolved_action.action_id == 2:
-                self.handle_foreign_aid(self.unresolved_action.source_id, True)
-            elif self.unresolved_action.action_id == 5:
-                self.players[self.unresolved_action.source_id].coins -= 3
-                self.move_turn()
+
+            # Now we need to know if this a successful challenge on a block, or a successful challenge on
+            # an initial action
+
+            challenge_on_block = (self.block_state.source_id != None)
+            if challenge_on_block:
+                # Block becomes void, original action goes through
+                self.resolve_action_from_block(self.block_state.action_id,
+                                               self.unresolved_action.source_id,
+                                               self.unresolved_action.target_id)
             else:
+                # Original action becomes void, turn ends
                 self.move_turn()
+            
 
     def handle_income(self, source_id):
         self.players[source_id].coins += 1
@@ -278,15 +270,14 @@ class Game:
 
     def handle_foreign_aid(self, source_id, block_state_resolved = False):
         if block_state_resolved:
-            if not self.unresolved_action.successfully_blocked:
-                self.players[source_id].coins += 2
+            self.players[source_id].coins += 2
             self.move_turn()
         else:
-            self.block_state.activate_block_state(2, source_id, None)
+            self.block_state.activate_block_state(2, source_id, self.players.values(), None)
 
     def handle_coup(self, source_id, target_id):
         target_player = self.players[target_id]
-        self.lose_influence_state.activate_lose_influence_state(target_player.id)
+        self.lose_influence_state.activate_lose_influence_state(target_player.id, False)
     
     def handle_tax(self, source_id):
         self.players[source_id].coins += 3
@@ -294,7 +285,7 @@ class Game:
     
     def handle_assassinate(self, source_id, target_id, block_state_resolved = False):
         if block_state_resolved:
-            self.lose_influence_state.activate_lose_influence_state(target_id)
+            self.lose_influence_state.activate_lose_influence_state(target_id, False)
         else:
             self.block_state.activate_block_state(5, source_id, target_id)
     

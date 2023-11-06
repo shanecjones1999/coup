@@ -41,10 +41,11 @@ class Game:
         self.unresolved_action = UnresolvedAction()
 
     def start_game(self):
-        if self.started:
-            raise Exception('Game already started')
+        # if self.started:
+        #     raise Exception('Game already started')
         if not self.players:
             raise Exception('Trying to start game without any players')
+        self.reset_states()
         self.initialize_players()
         self.turn_order_ids = list(self.players.keys())
         first_player = self.turn_order_ids[0]
@@ -61,6 +62,8 @@ class Game:
         for player in self.players.values():
             player.coins = 2
             player.cards = self.deck.draw(2)
+            player.is_turn = False
+            player.lost = False
     
     def get_player_data(self):
         player_data = []
@@ -184,7 +187,7 @@ class Game:
             # Do we want this?
             block_state_already = self.block_state.action_id is not None
             if not block_state_already and actions_dict[self.challenge_state.action_id].block_card_ids:
-                self.block_state.activate_block_state(action_id, source_id, target_id)
+                self.block_state.activate_block_state(action_id, source_id, self.players.values(), target_id)
             # otherwise resolve the action
             # What if you are challenging a block?
             else:
@@ -287,7 +290,7 @@ class Game:
         if block_state_resolved:
             self.lose_influence_state.activate_lose_influence_state(target_id, False)
         else:
-            self.block_state.activate_block_state(5, source_id, target_id)
+            self.block_state.activate_block_state(5, source_id, self.players.values(), target_id)
     
     def handle_exchange(self, source_id):
         self.exchange_state.activate_exchange_state(source_id, self.deck)
@@ -299,7 +302,7 @@ class Game:
             self.players[target_id].coins -= coins_stolen
             self.move_turn()
         else:
-            self.block_state.activate_block_state(7, source_id, target_id)
+            self.block_state.activate_block_state(7, source_id, self.players.values(), target_id)
     
     def handle_resolve_exchange(self, player_id, selected_card_ids):
         player = self.players[player_id]

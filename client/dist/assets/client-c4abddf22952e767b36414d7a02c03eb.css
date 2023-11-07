@@ -1,0 +1,1 @@
+.player{margin:auto;border:none;cursor:pointer}.player.is-turn{background-color:#ffc4c4}.player.highlight{border:2px solid purple}.player p{margin:0}.players{display:flex}.application{align-items:center;width:600px;margin:auto;text-align:center}body{font-family:Verdana,sans-serif;margin:0}

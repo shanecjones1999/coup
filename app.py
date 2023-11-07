@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_socketio import SocketIO, emit, join_room, leave_room
 from Player import Player
 from Game import Game
@@ -8,7 +8,7 @@ from Deck import Deck, cards
 
 from flask_cors import CORS
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='client/dist')
 app.config["SECRET_KEY"] = "topSecret"
 socketio = SocketIO(app, cors_allowed_origins="*")
 
@@ -18,6 +18,16 @@ cors = CORS(app, supports_credentials=True) #resources={r"/socket.io/*": {"origi
 lobby = {} # token -> player
 global_players = {} # token -> player
 games = { 'apple': Game('Apple Game', 'apple'), 'banana': Game('Banana Game', 'banana')}
+
+# Define route for landing page
+@app.route('/')
+def serve_index():
+    return send_from_directory(app.static_folder, 'index.html')
+
+# Define route for any path that could be part of the Ember app.
+@app.route('/<path:path>')
+def serve_file(path):
+    return send_from_directory(app.static_folder, path)
 
 @app.route('/api/getGames', methods=['GET'])
 def get_games():

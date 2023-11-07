@@ -1,5 +1,6 @@
 import ProtectedRoute from './protected-route';
 import { inject as service } from '@ember/service';
+import ENV from 'client/config/environment';
 
 export default class GameRoute extends ProtectedRoute {
     @service session;
@@ -14,7 +15,7 @@ export default class GameRoute extends ProtectedRoute {
             'Content-Type': 'application/json',
           };
 
-        const response = await fetch('http://127.0.0.1:5000/api/joinGame', {
+        const response = await fetch(`${ENV.API_HOST}/api/joinGame`, {
             method: 'POST',
             body: JSON.stringify({ id }),
             headers: headers,

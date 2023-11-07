@@ -1,6 +1,7 @@
 import Service from '@ember/service';
 import { tracked } from '@glimmer/tracking';
 import { inject as service } from '@ember/service';
+import ENV from 'client/config/environment';
 
 export default class WebsocketService extends Service {
     socket = null;
@@ -9,7 +10,7 @@ export default class WebsocketService extends Service {
     init() {
         super.init(...arguments);
         const token = this.session.data.authenticated.token;
-        const socket = window.io.connect('http://127.0.0.1:5000', {
+        const socket = window.io.connect(`${ENV.API_HOST}`, {
             query: {
               token: token
             }

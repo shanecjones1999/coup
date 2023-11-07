@@ -1,6 +1,7 @@
 import ProtectedRoute from './protected-route';
 import fetch from 'fetch';
 import { inject as service } from '@ember/service';
+import ENV from 'client/config/environment';
 
 export default class GamesRoute extends ProtectedRoute {
     @service session;
@@ -13,7 +14,7 @@ export default class GamesRoute extends ProtectedRoute {
             'Content-Type': 'application/json', // Adjust the content type as needed
           };
 
-        const gamesResponse = await fetch('http://127.0.0.1:5000/api/getGames', {
+        const gamesResponse = await fetch(`${ENV.API_HOST}/api/getGames`, {
             headers: headers,
             method: 'GET',
             credentials: 'include', // Include cookies and authentication
@@ -21,7 +22,7 @@ export default class GamesRoute extends ProtectedRoute {
         const games = await gamesResponse.json();
 
         // Fetch current player data with credentials
-        const currentPlayerResponse = await fetch('http://127.0.0.1:5000/api/getCurrentUser', {
+        const currentPlayerResponse = await fetch(`${ENV.API_HOST}/api/getCurrentUser`, {
             headers: headers,
             method: 'GET',
             credentials: 'include', // Include cookies and authentication
@@ -29,7 +30,7 @@ export default class GamesRoute extends ProtectedRoute {
         const currentPlayer = await currentPlayerResponse.json();
 
         // api/getCurrentLobby
-        const currentLobbyResponse = await fetch('http://127.0.0.1:5000/api/getCurrentLobby', {
+        const currentLobbyResponse = await fetch(`${ENV.API_HOST}/api/getCurrentLobby`, {
             method: 'GET',
             credentials: 'include', // Include cookies and authentication
         });

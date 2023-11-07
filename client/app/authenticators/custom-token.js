@@ -1,4 +1,5 @@
 import BaseAuthenticator from 'ember-simple-auth/authenticators/base';
+import ENV from 'client/config/environment';
 
 export default class CustomTokenAuthenticator extends BaseAuthenticator {
     async restore(data) {
@@ -12,7 +13,7 @@ export default class CustomTokenAuthenticator extends BaseAuthenticator {
         // Implement your authentication logic here
     
         try {
-          const response = await fetch('http://127.0.0.1:5000/api/tokenAuth', {
+          const response = await fetch(`${ENV.API_HOST}/api/tokenAuth`, {
             method: 'POST',
             body: JSON.stringify({ username }),
             headers: {

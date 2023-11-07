@@ -43,7 +43,7 @@
             <p>Action: {{this.challengeState.actionId}}</p>
             <p>Source: {{this.challengeState.sourceId}}</p>
             <p>Target: {{this.challengeState.targetId}}</p>
-            <p>Card Claimed Id: {{this.challengeState.cardClaimedId}}</p>
+            <p>Card Claimed: {{this.challengeState.cardClaimed.name}}</p>
             <button type="button" {{on 'click' this.challenge}}>Challenge</button>
             <button type="button" {{on 'click' this.passChallenge}}>Pass</button>
         {{/if}}
@@ -57,8 +57,10 @@
         {{/if}}
         <h2>Lose Influence State</h2>
         {{#if this.promptLoseInfluenceState}}
-            {{#each this.player.cards as |card|}}
-                <button type="button" {{on 'click' (fn this.loseInfluence card.id)}}>Card: {{card.name}}</button>
+            {{#each this.cards as |card|}}
+                {{#unless card.revealed}}
+                    <button type="button" {{on 'click' (fn this.loseInfluence card.id)}}>Card: {{card.name}}</button>
+                {{/unless}}
             {{/each}}
         {{/if}}
     </div>

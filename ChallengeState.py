@@ -18,7 +18,7 @@ class ChallengeState:
         self.from_block = from_block
         self.target_id = target_id
         pending_player_ids = []
-        for player in players:
+        for player in players.values():
             if player.id != source_id and not player.lost:
                 pending_player_ids.append(player.id)
         self.pending_player_ids = pending_player_ids

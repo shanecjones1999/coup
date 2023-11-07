@@ -27,6 +27,21 @@ class Player:
             if not card.revealed:
                 lost = False
         self.lost = lost
+    
+    def remove_card(self, card_id):
+        card_removed = False
+        removed_index = -1
+        new_cards = []
+        for i, card in enumerate(self.cards):
+            if card_id != card_id or card_removed:
+                new_cards.append(card)
+            else:
+                removed_index = i
+                card_removed = True
+        if not card_removed:
+            raise Exception('Card was not removed!')
+        self.cards = new_cards
+        return removed_index
 
     def to_dict(self):
         return { 'name': self.name, 

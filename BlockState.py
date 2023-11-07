@@ -21,7 +21,7 @@ class BlockState:
         # All players can block foreign aid (make sure they haven't lost)
         if action_id == 2:
             pending_player_ids = []
-            for player in players:
+            for player in players.values():
                 if player.id != source_id and not player.lost:
                     pending_player_ids.append(player.id)
             self.pending_player_ids = pending_player_ids

@@ -108,7 +108,7 @@ class Game:
         # additional logic
         if action.challengable:
             # go into challenge state
-            self.challenge_state.activate_challenge_state(action.card_id, action.id, source_id, False, self.players.values(), target_id)
+            self.challenge_state.activate_challenge_state(action.card_id, action.id, source_id, False, self.players, target_id)
         else:
             self.resolve_action(action_id, source_id, target_id)
     
@@ -188,7 +188,7 @@ class Game:
             # Do we want this?
             block_state_already = self.block_state.action_id is not None
             if not block_state_already and actions_dict[self.challenge_state.action_id].block_card_ids:
-                self.block_state.activate_block_state(action_id, source_id, self.players.values(), target_id)
+                self.block_state.activate_block_state(action_id, source_id, self.players, target_id)
             # otherwise resolve the action
             # What if you are challenging a block?
             else:
@@ -230,14 +230,19 @@ class Game:
         if self.block_state.active:
             self.block_state.active = False
         # All blocks can be challenged
-        self.challenge_state.activate_challenge_state(block_card_id, blocked_action_id, blocker_id, True, self.players.values(), target_id)
+        self.challenge_state.activate_challenge_state(block_card_id, blocked_action_id, blocker_id, True, self.players, target_id)
 
+    # return the player with updated cards if we find, otherwise we return None
     def handle_revealed_card(self, player_id, card_id):
         # We should only ever get here from a challenge state
         is_correct_card = card_id == self.challenge_state.card_claimed.id
         # Challenger loses card
         if is_correct_card:
             # TODO: add card draw
+            player = self.players[self.challenge_state.source_id]
+            self.replace_card_for_player(player, card_id)
+            update_card_player = player
+
             # If we were in a block state, mark the unresolved action successful block as True
             if self.block_state.action_id is not None:
                 self.unresolved_action.successfully_blocked = True
@@ -248,6 +253,7 @@ class Game:
                 self.reveal_card_state.active = False
             # The rest of the logic will be handled in handle_lose_influence_state from here
             self.lose_influence_state.activate_lose_influence_state(challenger.id, True)
+            return update_card_player
         # Player challenged loses card
         else:
             player = self.players.get(player_id)
@@ -266,7 +272,19 @@ class Game:
             else:
                 # Original action becomes void, turn ends
                 self.move_turn()
-            
+
+    def replace_card_for_player(self, player, card_id):
+        index = player.remove_card(card_id)
+        self.deck.append(cards_dict[card_id])
+        # LIST
+        new_card_list = self.deck.draw(1)
+        # Preserve order of the cards so the card that remains doesn't switch
+        if index == 0:
+            player.cards = new_card_list + player.cards
+        elif index == 1:
+            player.cards = player.cards + new_card_list
+        else:
+            raise Exception('Invalid card index')
 
     def handle_income(self, source_id):
         self.players[source_id].coins += 1
@@ -277,7 +295,7 @@ class Game:
             self.players[source_id].coins += 2
             self.move_turn()
         else:
-            self.block_state.activate_block_state(2, source_id, self.players.values(), None)
+            self.block_state.activate_block_state(2, source_id, self.players, None)
 
     def handle_coup(self, source_id, target_id):
         target_player = self.players[target_id]
@@ -291,7 +309,7 @@ class Game:
         if block_state_resolved:
             self.lose_influence_state.activate_lose_influence_state(target_id, False)
         else:
-            self.block_state.activate_block_state(5, source_id, self.players.values(), target_id)
+            self.block_state.activate_block_state(5, source_id, self.players, target_id)
     
     def handle_exchange(self, source_id):
         self.exchange_state.activate_exchange_state(source_id, self.deck)
@@ -303,7 +321,7 @@ class Game:
             self.players[target_id].coins -= coins_stolen
             self.move_turn()
         else:
-            self.block_state.activate_block_state(7, source_id, self.players.values(), target_id)
+            self.block_state.activate_block_state(7, source_id, self.players, target_id)
     
     def handle_resolve_exchange(self, player_id, selected_card_ids):
         player = self.players[player_id]

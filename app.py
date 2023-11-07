@@ -231,7 +231,10 @@ def handle_reveal_card(data):
     player_id = data.get('playerId')
     game = validate_game(game_id)
     card_id = data.get('cardId')
-    game.handle_revealed_card(player_id, card_id)
+    update_cards_player = game.handle_revealed_card(player_id, card_id)
+    if update_cards_player:
+        cards = [card.to_dict(False) for card in update_cards_player.cards]
+        emit('set_cards', cards, room=update_cards_player.token)
     game_state = game.get_game_state()
     emit('game_state_update', game_state, room=game.id)
 
@@ -243,6 +246,9 @@ def handle_lose_influence(data):
     card_id = data.get('cardId')
 
     game.handle_lose_influence(player_id, card_id)
+    player = game.players[player_id]
+    cards = [card.to_dict(False) for card in player.cards]
+    emit('set_cards', cards, room=player.token)
 
     game_state = game.get_game_state()
     emit('game_state_update', game_state, room=game.id)

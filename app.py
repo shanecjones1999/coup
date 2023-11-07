@@ -86,7 +86,8 @@ def join_game():
             game.add_player(player)
             # WIP
             game_state = game.get_game_state()
-            data = {'gameState': game_state, 'playerId': player.id}
+            cards = [card.to_dict(False) for card in player.cards]
+            data = {'gameState': game_state, 'playerId': player.id, 'cards': cards}
             return jsonify(data), 200
     return jsonify(f'Invalid token or game Id: {token}, {game_id}')
 
@@ -165,6 +166,9 @@ def handle_start_game(id):
     game.start_game()
     gameState = game.get_game_state()
     emit('game_state_update', gameState, room=game.id)
+    for player in game.players.values():
+        cards = [card.to_dict(False) for card in player.cards]
+        emit('set_cards', cards, room=player.token)
     emit('game_start', id, room='lobby')
 
 @socketio.on('initiate_action')

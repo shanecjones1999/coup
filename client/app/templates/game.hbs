@@ -17,7 +17,7 @@
         <p>Name: {{this.model.gameState.gameName}}</p>
         <div class="players">
             {{#each this.otherPlayers as |player|}}
-                <Player @playerData={{player}} @loadId={{this.loadId}} @sourceId={{this.player.id}} @highlight={{(eq this.selectedPlayerId player.id)}}/>            
+                <Player @playerData={{player}} @cards={{player.cards}} @loadId={{this.loadId}} @sourceId={{this.player.id}} @highlight={{(eq this.selectedPlayerId player.id)}}/>            
             {{/each}}
         </div>
     </div>
@@ -43,13 +43,13 @@
             <p>Action: {{this.challengeState.actionId}}</p>
             <p>Source: {{this.challengeState.sourceId}}</p>
             <p>Target: {{this.challengeState.targetId}}</p>
-            <p>Card Claimed: {{this.challengeState.cardClaimed.name}}</p>
+            <p>Card Claimed Id: {{this.challengeState.cardClaimedId}}</p>
             <button type="button" {{on 'click' this.challenge}}>Challenge</button>
             <button type="button" {{on 'click' this.passChallenge}}>Pass</button>
         {{/if}}
         <h2>Reveal Card State (if you have been challenged)</h2>
         {{#if this.promptRevealCard}}
-            {{#each this.player.cards as |card|}}
+            {{#each this.cards as |card|}}
                 {{#unless card.revealed}}
                     <button type="button" {{on 'click' (fn this.revealCard card.id)}}>Reveal {{card.name}}</button>
                 {{/unless}}
@@ -64,7 +64,7 @@
     </div>
     <div>
         <h2>Your Data:</h2>
-            <Player @playerData={{this.player}} @loadId={{this.loadId}} @sourceId={{this.player.id}} @highlight={{false}}/>
+            <Player @playerData={{this.player}} @cards={{this.cards}} @self={{true}} @loadId={{this.loadId}} @sourceId={{this.player.id}} @highlight={{false}}/>
     </div>
     <div>
 

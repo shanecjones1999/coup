@@ -45,6 +45,7 @@ class Game:
         #     raise Exception('Game already started')
         if not self.players:
             raise Exception('Trying to start game without any players')
+        self.deck = Deck()
         self.reset_states()
         self.initialize_players()
         self.turn_order_ids = list(self.players.keys())

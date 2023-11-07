@@ -21,24 +21,16 @@ export default class GameRoute extends ProtectedRoute {
         });
 
         const jsonData = await response.json();
+        // controller.playerData = model.gameState.playerData;
+
+        const data = { 'token': token, 'id': id };
+        this.websocket.socket.emit('join_game', data);
 
         return { 
             gameState: jsonData.gameState, 
-            playerId: jsonData.playerId, 
+            playerId: jsonData.playerId,
+            cards: jsonData.cards,
             gameId: id,
         };
-    }
-
-    setupController(controller, model) {
-        super.setupController(controller, model);
-    
-        // After the model has been retrieved, you can set the controller properties
-
-        // TODO CAN WE REMOVE THIS
-        const token = this.session.data.authenticated.token;
-        controller.playerData = model.gameState.playerData;
-
-        const data = { 'token': token, 'id': model.gameId };
-        this.websocket.socket.emit('join_game', data);
     }
 }

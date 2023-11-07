@@ -30,7 +30,7 @@ class Player:
 
     def to_dict(self):
         return { 'name': self.name, 
-                'cards': [card.to_dict() for card in self.cards],
+                'cards': [card.to_dict(True) for card in self.cards],
                 'coins': self.coins,
                 'id': self.id,
                 'isTurn': self.is_turn,

@@ -16,6 +16,11 @@ export default class GameController extends Controller {
         return this.model.gameState.playerData.find(player => player.id == this.model.playerId);
     }
 
+    @computed('model.cards')
+    get cards() {
+        return this.model.cards;
+    }
+
     @computed('model.gameState.playerData')
     get currentTurnPlayerId() {
         return this.model.gameState.playerData.find(player => player.isTurn)?.id ?? undefined;
@@ -80,6 +85,7 @@ export default class GameController extends Controller {
         super.init(...arguments);
         this.websocket.socket.on('leave_game', this.handleLeaveGame.bind(this));
         this.websocket.socket.on('game_state_update', this.handleGameStateUpdate.bind(this));
+        this.websocket.socket.on('set_cards', this.handleSetCards.bind(this));
     }
 
     handleLeaveGame(id) {
@@ -88,6 +94,10 @@ export default class GameController extends Controller {
 
     handleGameStateUpdate(gameState) {
         set(this.model, 'gameState', gameState);
+    }
+
+    handleSetCards(cards) {
+        set(this.model, 'cards', cards);
     }
 
     @action

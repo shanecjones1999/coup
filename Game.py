@@ -325,13 +325,19 @@ class Game:
     
     def handle_resolve_exchange(self, player_id, selected_card_ids):
         player = self.players[player_id]
+        selection_count = len([card for card in player.cards if not card.revealed])
+        if selection_count != len(selected_card_ids):
+            raise Exception('Player selected wrong number of cards in Exchange')
         player_cards = [card.id for card in player.cards]
         total_ids = selected_card_ids + player_cards
         for id in selected_card_ids:
             total_ids.remove(id)
         for id in total_ids:
             self.deck.append(cards_dict[id])
-        self.move_turn()
+        new_cards = [cards_dict[id] for id in selected_card_ids]
+        player.cards = new_cards
+        # can't move turn here, need to move turn in app.py after emit
+        #self.move_turn()
 
     def move_turn(self):
         # TODO: MOVE TO next player that IS NOT LOST

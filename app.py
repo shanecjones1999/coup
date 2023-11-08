@@ -87,7 +87,15 @@ def join_game():
             # WIP
             game_state = game.get_game_state()
             cards = [card.to_dict(False) for card in player.cards]
-            data = {'gameState': game_state, 'playerId': player.id, 'cards': cards}
+            exchange_cards = []
+            if game.exchange_state and game.exchange_state.player_id == player.id and game.exchange_state.cards:
+                exchange_cards = [card.to_dict(False) for card in game.exchange_state.cards]
+            data = {
+                'gameState': game_state,
+                'playerId': player.id,
+                'cards': cards,
+                'exchangeCards': exchange_cards
+                }
             return jsonify(data), 200
     return jsonify(f'Invalid token or game Id: {token}, {game_id}')
 
@@ -256,12 +264,15 @@ def handle_lose_influence(data):
 @socketio.on('resolve_exchange_state')
 def handle_resolve_exchange_state(data):
     game_id = data.get('gameId')
-    player_id = data.get('playerId')
+    player_id = data.get('playerId') # Can we just use exchange_state.player_id?
     game = validate_game(game_id)
     selected_card_ids = data.get('selectedCardIds')
     game.handle_resolve_exchange(player_id, selected_card_ids)
-
+    player = game.players[player_id]
+    cards = [card.to_dict(False) for card in player.cards]
+    game.move_turn()
     game_state = game.get_game_state()
+    emit('set_cards', cards, room=player.token)
     emit('game_state_update', game_state, room=game.id)
 
 def get_player(token):

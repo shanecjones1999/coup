@@ -63,6 +63,21 @@
                 {{/unless}}
             {{/each}}
         {{/if}}
+        <h2>Exchange State</h2>
+        {{#if this.promptExchangeState}}
+            <div>Exchange state active!</div>
+            <button type="button" {{on 'click' this.handleConfirmExchange}}>Confirm Exchange</button>
+            <div>New cards:</div>
+            {{#each this.exchangeCards as |card|}}
+                <button type="button" {{on 'click' (fn this.selectCard card.id)}}>Ex card: {{card.name}}</button>
+            {{/each}}
+            <div>Your current cards:</div>
+            {{#each this.cards as |card|}}
+                {{#unless card.revealed}}
+                    <button type="button" {{on 'click' (fn this.selectCard card.id)}}>Cur card: {{card.name}}</button>
+                {{/unless}}
+            {{/each}}
+        {{/if}}
     </div>
     <div>
         <h2>Your Data:</h2>

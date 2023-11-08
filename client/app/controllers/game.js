@@ -11,6 +11,8 @@ export default class GameController extends Controller {
     @service websocket;
     @service router;
 
+    @tracked selectedCardIds = [];
+
     @computed('model.gameState.playerData')
     get player() {
         return this.model.gameState.playerData.find(player => player.id == this.model.playerId);
@@ -19,6 +21,11 @@ export default class GameController extends Controller {
     @computed('model.cards')
     get cards() {
         return this.model.cards;
+    }
+
+    @computed('model.exchangeCards')
+    get exchangeCards() {
+        return this.model.exchangeCards;
     }
 
     @computed('model.gameState.playerData')
@@ -69,6 +76,13 @@ export default class GameController extends Controller {
         return this.loseInfluenceState.active && this.loseInfluenceState.playerId == this.model.playerId;
     }
 
+    @alias('model.gameState.exchangeState') exchangeState;
+
+    @computed('exchangeState', 'this.model.playerId')
+    get promptExchangeState() {
+        return this.exchangeState.active && this.exchangeState.playerId == this.model.playerId;
+    }
+
     @tracked selectedPlayerId = '';
 
     actions = [
@@ -86,6 +100,7 @@ export default class GameController extends Controller {
         this.websocket.socket.on('leave_game', this.handleLeaveGame.bind(this));
         this.websocket.socket.on('game_state_update', this.handleGameStateUpdate.bind(this));
         this.websocket.socket.on('set_cards', this.handleSetCards.bind(this));
+        this.websocket.socket.on('update_exchange_cards', this.handleUpdateExchangeCards.bind(this));
     }
 
     handleLeaveGame(id) {
@@ -98,6 +113,10 @@ export default class GameController extends Controller {
 
     handleSetCards(cards) {
         set(this.model, 'cards', cards);
+    }
+
+    handleUpdateExchangeCards(cards) {
+        set(this.model, 'exchangeCards', cards);
     }
 
     @action
@@ -188,6 +207,22 @@ export default class GameController extends Controller {
         this.selectedPlayerId = '';
 
         this.websocket.socket.emit('initiate_action', data);
+    }
+
+    @action
+    selectCard(id) {
+        this.selectedCardIds = [...this.selectedCardIds, id]
+    }
+
+    @action
+    handleConfirmExchange() {
+        const data = {
+            gameId: this.model.gameId,
+            playerId: this.player.id,
+            selectedCardIds: this.selectedCardIds,
+        }
+        this.websocket.socket.emit('resolve_exchange_state', data);
+        this.selectedCardIds = [];
     }
 
     @action

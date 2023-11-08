@@ -32,6 +32,7 @@ export default class GameRoute extends ProtectedRoute {
             playerId: jsonData.playerId,
             cards: jsonData.cards,
             gameId: id,
+            exchangeCards: jsonData.exchangeCards,
         };
     }
 }

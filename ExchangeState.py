@@ -18,5 +18,4 @@ class ExchangeState:
         return {
             'active': self.active,
             'playerId': self.player_id,
-            'cards': [card.to_dict() for card in self.cards]
         }

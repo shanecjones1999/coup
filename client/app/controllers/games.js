@@ -3,6 +3,7 @@ import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { inject as service } from '@ember/service';
 import { set } from '@ember/object';
+import { computed } from '@ember/object';
 
 export default class GamesController extends Controller {
     @service session;
@@ -10,23 +11,30 @@ export default class GamesController extends Controller {
     @service router;
 
     @tracked gameName = '';
-    @tracked lobby = this.model?.currentLobby ?? [];
     @tracked games = [...this.model?.games];
+
+    @computed('model.currentLobby')
+    get currentLobby() {
+        return this.model.currentLobby;
+    }
 
     init() {
         super.init(...arguments);
-        this.websocket.socket.on('join_lobby', this.handleJoinLobby.bind(this));
-        this.websocket.socket.on('leave_lobby', this.handleLeaveLobby.bind(this));
+        this.websocket.socket.on('lobby_update', this.handleLobbyUpdate.bind(this));
         this.websocket.socket.on('game_start', this.handleGameStart.bind(this));
     }
 
-    handleJoinLobby(name) {
-        this.lobby = [...this.lobby, name]
+    handleLobbyUpdate(updatedLobby) {
+        set(this.model, 'currentLobby', updatedLobby);
     }
 
     handleLeaveLobby(name) {
         console.log(name, 'has leaved!');
         this.lobby = this.lobby.filter(username => username != name);
+    }
+
+    handleUpdateGames(updatedGames) {
+        set(this.model, 'games', updatedGames);
     }
 
     handleGameStart(id) {

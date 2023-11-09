@@ -17,7 +17,7 @@ cors = CORS(app, supports_credentials=True) #resources={r"/socket.io/*": {"origi
 
 lobby = {} # token -> player
 global_players = {} # token -> player
-games = { 'apple': Game('Apple Game', 'apple'), 'banana': Game('Banana Game', 'banana')}
+games = { 'apple': Game('Apple Game', 'apple', socketio), 'banana': Game('Banana Game', 'banana', socketio)}
 
 @app.route('/api/getGames', methods=['GET'])
 def get_games():
@@ -138,12 +138,20 @@ def handle_leave_lobby(token):
     name = remove_player_from_lobby(token)
     emit('leave_lobby', name, room='lobby')
 
+@socketio.on('lobby_update')
+def handle_lobby_update():
+    players = get_players_in_lobby()
+    ret = [player.to_dict() for player in players]
+    emit('lobby_update', ret, room='lobby')
+
 # Handle emitting to games and lobby here!?
 @socketio.on('invalidate_session')
 def handle_invalidate_session(token):
     name, game, id = remove_player_from_global(token)
     if (name):
-        emit('leave_lobby', name, room='lobby')
+        lobby_players = get_players_in_lobby()
+        ret = [player.to_dict() for player in lobby_players]
+        emit('lobby_update', ret, room='lobby')
         leave_room('lobby')
     if (game):
         emit('leave_game', id, room=game.id)
@@ -156,13 +164,14 @@ def handle_join_game(data):
     if id in games:
         global lobby
         if token in lobby:
-            player = lobby.get(token)
             game = games.get(id)
             game_state = game.get_game_state()
             emit('game_state_update', game_state, room=game.id)
             join_room(game.id)
             join_room(token)
-            emit('leave_lobby', player.name, room='lobby')
+            lobby_players = get_players_in_lobby()
+            ret = [player.to_dict() for player in lobby_players]
+            emit('lobby_update', ret, room='lobby')
             remove_player_from_lobby(token)
             leave_room('lobby')
 

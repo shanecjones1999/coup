@@ -10,6 +10,7 @@ from RevealCardState import RevealCardState
 from Action import Action
 from ExchangeState import ExchangeState
 from UnresolvedAction import UnresolvedAction
+# from app import socketio
 
 # Action attributes: (name, ID, card claimed, cards blocking, cost)
 actions_dict = {
@@ -23,7 +24,7 @@ actions_dict = {
 }
 
 class Game:
-    def __init__(self, name, id):
+    def __init__(self, name, id, socket):
         self.name = name
         self.players = {}
         self.turn_order_ids = []
@@ -39,6 +40,7 @@ class Game:
         self.reveal_card_state = RevealCardState()
         self.exchange_state = ExchangeState()
         self.unresolved_action = UnresolvedAction()
+        self.socket = socket
 
     def start_game(self):
         # if self.started:
@@ -140,6 +142,7 @@ class Game:
                 # Reset challenge state as block may be challenged later in turn
                 self.challenge_state.reset()
                 # Resolve the action (before block if applicable)
+                # TODO WEBSOCKET EXCHANGE
                 self.resolve_action(action_id, source_id, target_id)
 
 
@@ -195,6 +198,7 @@ class Game:
                 action_id = self.challenge_state.action_id
                 source_id = self.challenge_state.source_id
                 target_id = self.challenge_state.target_id
+                # TODO WEBSOCKET EXCHANGE
                 self.resolve_action(action_id, source_id, target_id)
 
     def handle_pass_block(self, player_id):
@@ -238,7 +242,6 @@ class Game:
         is_correct_card = card_id == self.challenge_state.card_claimed.id
         # Challenger loses card
         if is_correct_card:
-            # TODO: add card draw
             player = self.players[self.challenge_state.source_id]
             self.replace_card_for_player(player, card_id)
             update_card_player = player
@@ -247,17 +250,18 @@ class Game:
             if self.block_state.action_id is not None:
                 self.unresolved_action.successfully_blocked = True
             challenger_id = self.reveal_card_state.challenger_id
-            challenger = self.players.get(challenger_id)
             # Reset reveal_card_state
             if self.reveal_card_state.active:
                 self.reveal_card_state.active = False
             # The rest of the logic will be handled in handle_lose_influence_state from here
-            self.lose_influence_state.activate_lose_influence_state(challenger.id, True)
+            self.lose_influence_state.activate_lose_influence_state(challenger_id, True)
             return update_card_player
         # Player challenged loses card
         else:
             player = self.players.get(player_id)
             player.lose_influence(card_id)
+            # Here we need to update the player cards status on the frontend
+            # Repro: block as duke, challenge, dont reveal duke - card should say 'revealed'
             over = self.check_game_over()
 
             # Now we need to know if this a successful challenge on a block, or a successful challenge on
@@ -312,7 +316,10 @@ class Game:
             self.block_state.activate_block_state(5, source_id, self.players, target_id)
     
     def handle_exchange(self, source_id):
-        self.exchange_state.activate_exchange_state(source_id, self.deck)
+        player = self.players[source_id]
+        self.exchange_state.activate_exchange_state(player, self.deck)
+        cards = [card.to_dict(False) for card in self.exchange_state.cards]
+        self.socket.emit('update_exchange_cards', cards, room=player.token)
     
     def handle_steal(self, source_id, target_id, block_state_resolved = False):
         if block_state_resolved:

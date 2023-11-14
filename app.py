@@ -44,7 +44,7 @@ def get_current_user():
 @app.route('/api/getCurrentLobby', methods=['GET'])
 def get_current_lobby():
     players = get_players_in_lobby()
-    res = [player.name for player in players]
+    res = [player.to_dict() for player in players]
     return jsonify(res), 200
 
 @app.route('/api/tokenAuth', methods=['POST'])
@@ -169,6 +169,7 @@ def handle_join_game(data):
             emit('game_state_update', game_state, room=game.id)
             join_room(game.id)
             join_room(token)
+            remove_player_from_lobby(token)
             lobby_players = get_players_in_lobby()
             ret = [player.to_dict() for player in lobby_players]
             emit('lobby_update', ret, room='lobby')

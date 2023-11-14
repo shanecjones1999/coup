@@ -11,21 +11,29 @@ export default class GamesController extends Controller {
     @service router;
 
     @tracked gameName = '';
-    @tracked games = [...this.model?.games];
 
     @computed('model.currentLobby')
     get currentLobby() {
         return this.model.currentLobby;
     }
 
+    @computed('model.currentGames')
+    get currentGames() {
+        return this.model.games;
+    }
+
     init() {
         super.init(...arguments);
         this.websocket.socket.on('lobby_update', this.handleLobbyUpdate.bind(this));
         this.websocket.socket.on('game_start', this.handleGameStart.bind(this));
+        this.websocket.socket.on('handle_update_games', this.handleUpdateGames.bind(this));
     }
 
+    // TODO better logic here
     handleLobbyUpdate(updatedLobby) {
-        set(this.model, 'currentLobby', updatedLobby);
+        if (this.model) {
+            set(this.model, 'currentLobby', updatedLobby);
+        }
     }
 
     handleLeaveLobby(name) {

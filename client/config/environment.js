@@ -1,36 +1,41 @@
 'use strict';
 
 module.exports = function (environment) {
-let ENV = {
+  let ENV = {
     modulePrefix: 'client',
     environment,
     rootURL: '/',
     locationType: 'history',
     EmberENV: {
-    FEATURES: {
-            // Here you can enable experimental features on an ember canary build
-            // e.g. EMBER_NATIVE_DECORATOR_SUPPORT: true
+      FEATURES: {
+        // Here you can enable experimental features on an ember canary build
+        // e.g. EMBER_NATIVE_DECORATOR_SUPPORT: true
+      },
     },
+
+    contentSecurityPolicy: {
+      'style-src': "'self' 'unsafe-inline'",
+      // ... other configurations
     },
 
     APP: {
-    // Here you can pass flags/options to your application instance
-    // when it is created
+      // Here you can pass flags/options to your application instance
+      // when it is created
     },
 
     API_HOST: 'http://127.0.0.1:5000',
-};
+  };
 
-if (environment === 'development') {
+  if (environment === 'development') {
     ENV.API_HOST = 'http://127.0.0.1:5000';
     // ENV.APP.LOG_RESOLVER = true;
     // ENV.APP.LOG_ACTIVE_GENERATION = true;
     // ENV.APP.LOG_TRANSITIONS = true;
     // ENV.APP.LOG_TRANSITIONS_INTERNAL = true;
     // ENV.APP.LOG_VIEW_LOOKUPS = true;
-}
+  }
 
-if (environment === 'test') {
+  if (environment === 'test') {
     // Testem prefers this...
     ENV.locationType = 'none';
 
@@ -40,11 +45,11 @@ if (environment === 'test') {
 
     ENV.APP.rootElement = '#ember-testing';
     ENV.APP.autoboot = false;
-}
+  }
 
-if (environment === 'production') {
+  if (environment === 'production') {
     // here you can enable a production-specific feature
-}
+  }
 
-return ENV;
+  return ENV;
 };

@@ -3,36 +3,36 @@ import { inject as service } from '@ember/service';
 import ENV from 'client/config/environment';
 
 export default class GameRoute extends ProtectedRoute {
-    @service session;
-    @service websocket;
-    
-    async model(params) {
-        const id = params.game_id;
-        const token = this.session.data.authenticated.token;
+  @service session;
+  @service websocket;
 
-        const headers = {
-            'Authorization': `${token}`,
-            'Content-Type': 'application/json',
-          };
+  async model(params) {
+    const id = params.game_id;
+    const token = this.session.data.authenticated.token;
 
-        const response = await fetch(`${ENV.API_HOST}/api/joinGame`, {
-            method: 'POST',
-            body: JSON.stringify({ id }),
-            headers: headers,
-        });
+    const headers = {
+      Authorization: `${token}`,
+      'Content-Type': 'application/json',
+    };
 
-        const jsonData = await response.json();
-        // controller.playerData = model.gameState.playerData;
+    const response = await fetch(`${ENV.API_HOST}/api/joinGame`, {
+      method: 'POST',
+      body: JSON.stringify({ id }),
+      headers: headers,
+    });
 
-        const data = { 'token': token, 'id': id };
-        this.websocket.socket.emit('join_game', data);
+    const jsonData = await response.json();
+    // controller.playerData = model.gameState.playerData;
 
-        return { 
-            gameState: jsonData.gameState, 
-            playerId: jsonData.playerId,
-            cards: jsonData.cards,
-            gameId: id,
-            exchangeCards: jsonData.exchangeCards,
-        };
-    }
+    const data = { token: token, id: id };
+    this.websocket.socket.emit('join_game', data);
+
+    return {
+      gameState: jsonData.gameState,
+      playerId: jsonData.playerId,
+      cards: jsonData.cards,
+      gameId: id,
+      exchangeCards: jsonData.exchangeCards,
+    };
+  }
 }

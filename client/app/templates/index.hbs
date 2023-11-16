@@ -1,10 +1,21 @@
 {{page-title "Home"}}
-<div>
-    <p>This is the home route.</p>
-    
+<div class="content">
+    <div class="animate__animated animate__shakeX">I'm bouncing!</div>
+
 </div>
 <div>
     <div>
+        <BsForm
+            @formLayout="vertical"
+            @model={{this.user}}
+            @onSubmit={{this.enterLobby}}
+            as |form|
+            >
+            <form.element @property="username" as |el|>
+                <el.control placeholder="Enter your username"/>
+            </form.element>
+            <form.submitButton>Submit</form.submitButton>
+        </BsForm>
         <label for="username">Enter your name</label>
         <Input
             id="username"

@@ -99,6 +99,20 @@ def join_game():
             return jsonify(data), 200
     return jsonify(f'Invalid token or game Id: {token}, {game_id}')
 
+# Make sure we remove the player from correct rooms
+@app.route('/api/invalidateSession', methods=['POST'])
+def invalidate_session():
+    token = request.headers.get('Authorization')
+    name, game, id = remove_player_from_global(token)
+    if (name):
+        lobby_players = get_players_in_lobby()
+        ret = [player.to_dict() for player in lobby_players]
+        socketio.emit('lobby_update', ret, room='lobby')
+    if (game):
+        game_state = game.get_game_state()
+        socketio.emit('game_state_update', game_state, room=game.id)
+    return jsonify('Successfully invalidated session'), 200
+
 @socketio.on('connect')
 def handle_connect():
     token = request.args.get('token')

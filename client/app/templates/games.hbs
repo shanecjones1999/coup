@@ -1,26 +1,37 @@
 {{page-title "Games"}}
 <div>
-    <p>Gamer route</p>
     <p>Hello {{this.model.currentPlayer}}</p>
     <h4>Lobby:</h4>
         {{#each this.currentLobby as |player|}}
             <p>{{player.name}}</p>
         {{/each}}
-    <h2>Games</h2>
-    <div>
-        {{#each this.currentGames as |game|}}
-            {{#unless game.isStarted}}
-                <button type="button" {{on "click" (fn this.joinGame game.id)}}>{{game.name}}</button>
-            {{/unless}}
-        {{/each}}
+    <div class="button-group2">
+        <BsButtonGroup
+            @value={{this.selectedValue}}
+            @size="lg"
+            @type="radio"
+            @onChange={{fn (mut this.selectedValue)}}
+            as |bg|
+            >
+            <bg.button @type="primary" @value={{0}}>Join Game</bg.button>
+            <bg.button @type="primary" @value={{1}}>Create Game</bg.button>
+        </BsButtonGroup>
     </div>
-    <div>
-        <label for="gameName">Create a game</label>
-        <Input
-            id="gameName"
-            @type="text"
-            @value={{this.gameName}}
-        />
-        <button type="button" {{on "click" this.createGame}}>Create game</button>
-    </div>
+    {{#if this.showGames}}
+        <div class="">
+        <h2>Games</h2>
+        <div>
+            {{#each this.currentGames as |game|}}
+                {{#unless game.isStarted}}
+                    {{!-- <button type="button" {{on "click" (fn this.joinGame game.id)}}>{{game.name}}</button> --}}
+                    <Game @game={{game}} />
+                {{/unless}}
+            {{/each}}
+        </div>
+        </div>
+    {{else}}
+        <div class="">
+            <CreateGame/>
+        </div>
+    {{/if}}
 </div>

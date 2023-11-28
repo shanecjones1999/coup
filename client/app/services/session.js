@@ -5,23 +5,7 @@ import ENV from 'client/config/environment';
 export default class Session extends SessionService {
   @service websocket;
   @service router;
-
-//   async authenticate(user) {
-//     try {
-//         const response = await fetch(`${ENV.API_HOST}/api/tokenAuth`, {
-//             method: 'POST',
-//             body: JSON.stringify(user),
-//             headers: {
-//             'Content-Type': 'application/json',
-//             },
-//         });
-
-//         const data = await response.json();
-//         return { token: data.token };
-//     } catch (error) {
-//         return error;
-//     }
-// }
+  
   handleAuthentication() {
     this.router.transitionTo('games');
   }

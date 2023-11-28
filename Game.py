@@ -24,7 +24,7 @@ actions_dict = {
 }
 
 class Game:
-    def __init__(self, name, id, socket):
+    def __init__(self, name, id, num_players, turn_timer_enabled, turn_length, socket):
         self.name = name
         self.players = {}
         self.turn_order_ids = []
@@ -32,7 +32,9 @@ class Game:
         self.started = False
         self.over = False
         self.deck = Deck()
-        self.turn_length = 30
+        self.num_players = num_players
+        self.turn_timer_enabled = turn_timer_enabled
+        self.turn_length = turn_length
         self.time_left = 30
         self.block_state = BlockState()
         self.challenge_state = ChallengeState()
@@ -384,12 +386,12 @@ class Game:
                 return player.id
 
     def reset_states(self):
-        self.block_state.reset()
-        self.challenge_state.reset()
-        self.lose_influence_state.reset()
-        self.reveal_card_state.reset()
-        self.exchange_state.reset()
-        self.unresolved_action.reset()
+        self.block_state = BlockState()
+        self.challenge_state = ChallengeState()
+        self.lose_influence_state = LoseInfluenceState()
+        self.reveal_card_state = RevealCardState()
+        self.exchange_state = ExchangeState()
+        self.unresolved_action = UnresolvedAction()
             
     def start_timer(self):
          for _ in range(self.turn_length, 0, -1):

@@ -1,9 +1,6 @@
 {{page-title "Game"}}
 <div>
     <div>
-        <h2>This is the game route for a specific game lobby</h2>
-    </div>
-    <div>
         {{#if this.started}}
             <p>Game has started!</p>
         {{/if}}
@@ -12,19 +9,18 @@
         {{/if}}
             <button type="button" {{on 'click' this.startGame}}>Start Game</button>
     </div>
-    <Timer @timeLeft={{this.model.gameState.timeLeft}} />
     <div>
         <h2>Game Data</h2>
         <p>Name: {{this.model.gameState.gameName}}</p>
         <div class="players">
             {{#each this.otherPlayers as |player|}}
-                <Player @playerData={{player}} @cards={{player.cards}} @loadId={{this.loadId}} @sourceId={{this.player.id}} @highlight={{(eq this.selectedPlayerId player.id)}}/>            
+                <Player @playerData={{player}} @cards={{player.cards}} @loadId={{this.loadId}} @highlight={{(eq this.selectedPlayerId player.id)}}/>            
             {{/each}}
         </div>
     </div>
     <div>
-        <h2>Block State</h2>
         {{#if this.promptBlock}}
+            <h2>Block State</h2>
             {{#each this.blockState.pendingPlayerIds as |pendingPlayerId|}}
                 <p>Pending player: {{pendingPlayerId}}</p>
             {{/each}}
@@ -36,8 +32,8 @@
             {{/each}}
             <button type="button" {{on 'click' this.passBlock}}>Allow</button>
         {{/if}}
-        <h2>Challenge State</h2>
         {{#if this.promptChallenge}}
+            <h2>Challenge State</h2>
             {{#each this.challengeState.pendingPlayerIds as |pendingPlayerId|}}
                 <p>Pending player: {{pendingPlayerId}}</p>
             {{/each}}
@@ -48,24 +44,24 @@
             <button type="button" {{on 'click' this.challenge}}>Challenge</button>
             <button type="button" {{on 'click' this.passChallenge}}>Pass</button>
         {{/if}}
-        <h2>Reveal Card State (if you have been challenged)</h2>
         {{#if this.promptRevealCard}}
+            <h2>Reveal Card State (if you have been challenged)</h2>
             {{#each this.cards as |card|}}
                 {{#unless card.revealed}}
                     <button type="button" {{on 'click' (fn this.revealCard card.id)}}>Reveal {{card.name}}</button>
                 {{/unless}}
             {{/each}}
         {{/if}}
-        <h2>Lose Influence State</h2>
         {{#if this.promptLoseInfluenceState}}
+            <h2>Lose Influence State</h2>
             {{#each this.cards as |card|}}
                 {{#unless card.revealed}}
                     <button type="button" {{on 'click' (fn this.loseInfluence card.id)}}>Card: {{card.name}}</button>
                 {{/unless}}
             {{/each}}
         {{/if}}
-        <h2>Exchange State</h2>
         {{#if this.promptExchangeState}}
+            <h2>Exchange State</h2>
             <div>Exchange state active!</div>
             <button type="button" {{on 'click' this.handleConfirmExchange}}>Confirm Exchange</button>
             <div>New cards:</div>
@@ -81,8 +77,10 @@
         {{/if}}
     </div>
     <div>
-        <h2>Your Data:</h2>
-            <Player @playerData={{this.player}} @cards={{this.cards}} @self={{true}} @loadId={{this.loadId}} @sourceId={{this.player.id}} @highlight={{false}}/>
+        <h2>You</h2>
+        <div class="client-data">
+            <Player @playerData={{this.player}} @cards={{this.cards}} @self={{true}} @loadId={{this.loadId}} @highlight={{false}}/>
+        </div>
     </div>
     <div>
 
@@ -92,6 +90,8 @@
             {{/each}}
         {{/if}}
         <div>
+            <br>
+            <br>
             End of file
         </div>
     </div>

@@ -1,0 +1,6 @@
+<div class="inline-alert {{@type}} {{unless this.visible 'hide'}}">
+    <div>{{@message}}</div>
+    <button aria-label="Close" class="btn-close" type="button" {{on 'click' this.dismissAlert}}>
+        {{!-- (fn (mut this.visible)) --}}
+    </button>
+</div>

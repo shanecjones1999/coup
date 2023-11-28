@@ -1,0 +1,29 @@
+<div class="create-game">
+    <InlineAlert @type="danger" @message={{this.alertMessage}} @visible={{this.showAlert}} @onDismiss={{this.onDismiss}}/>
+    <BsForm
+        @formLayout="vertical"
+        @model={{this}}
+        @onSubmit={{this.submit}}
+        as |form|
+    >
+        <form.element @label="Game name" @property="gameName" as |el|>
+            <el.control/>
+        </form.element>
+        <form.element @label="Number of players ({{this.numPlayers}})" @property="numPlayers" as |el|>
+            <input class="form-control" type="range" id={{el.id}} min={{this.minPlayers}} max={{this.maxPlayers}} 
+                value={{this.numPlayers}}
+                {{on "input" this.handleNumPlayersChange}}
+            />
+        </form.element>
+        <form.element @controlType="switch" @label="Enable turn timer" @property="enableTimer" />
+        {{#if this.enableTimer}}
+            <form.element @label="Turn length ({{this.turnLength}} seconds)" @property="turnLength" as |el|>
+                <input class="form-control" type="range" id={{el.id}} min={{this.minTurnLength}} max={{this.maxTurnLength}} step={{this.turnLengthStep}} 
+                    value={{this.turnLength}}
+                    {{on "input" this.handleTurnLengthChange}}
+                />
+            </form.element>
+        {{/if}}
+        <form.submitButton>Create Game</form.submitButton>
+    </BsForm>
+</div>

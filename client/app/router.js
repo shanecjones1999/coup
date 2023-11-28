@@ -11,4 +11,5 @@ Router.map(function () {
   this.route('play');
   this.route('games');
   this.route('game', { path: '/game/:game_id' });
+  this.route('create-game', {path : '/create'});
 });

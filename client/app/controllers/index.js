@@ -22,9 +22,9 @@ export default class IndexController extends Controller {
                 this.user
             );
             this.websocket.socket.emit('lobby_update');
-            // this.router.transitionTo('games');
+            this.router.transitionTo('games');
         } catch (error) {
-        console.error('Error adding user to lobby catch:', error);
+            console.error('Error adding user to lobby catch:', error);
         }
     }
 }

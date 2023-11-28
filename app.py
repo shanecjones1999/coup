@@ -17,7 +17,7 @@ cors = CORS(app, supports_credentials=True) #resources={r"/socket.io/*": {"origi
 
 lobby = {} # token -> player
 global_players = {} # token -> player
-games = { 'apple': Game('Apple Game', 'apple', socketio), 'banana': Game('Banana Game', 'banana', socketio)}
+games = { 'apple': Game('Apple Game', 'apple', 4, True, 30, socketio), 'banana': Game('Banana Game', 'banana', 5, False, 40, socketio)}
 
 @app.route('/api/getGames', methods=['GET'])
 def get_games():
@@ -28,6 +28,8 @@ def get_games():
             'name': game.name,
             'id': game.id,
             'isStarted': game.started,
+            'numPlayers': len(game.players),
+            'totalPlayers': game.num_players,
         }
         res.append(data)
     return jsonify(res), 200
@@ -112,6 +114,28 @@ def invalidate_session():
         game_state = game.get_game_state()
         socketio.emit('game_state_update', game_state, room=game.id)
     return jsonify('Successfully invalidated session'), 200
+
+@app.route('/api/createGame', methods=['POST'])
+def handle_create_game():
+    name = request.json.get('name')
+    num_players = request.json.get('numPlayers')
+    turn_timer_enabled = request.json.get('enableTurnTimer')
+    turn_length = request.json.get('turnLength')
+    if not validate_game_name(name):
+        return jsonify('The game name is invalid or in use.'), 423
+    game = Game(name, name, num_players, turn_timer_enabled, turn_length, socketio)
+    global games
+    games[name] = game
+    return jsonify(game.id), 200
+
+def validate_game_name(name):
+    if not name:
+        return False
+    global games
+    for game in games.values():
+        if game.name.upper() == name.upper():
+            return False
+    return True
 
 @socketio.on('connect')
 def handle_connect():
@@ -281,6 +305,8 @@ def handle_lose_influence(data):
     player = game.players[player_id]
     cards = [card.to_dict(False) for card in player.cards]
     emit('set_cards', cards, room=player.token)
+
+    game.lose_influence_state.reset()
 
     game_state = game.get_game_state()
     emit('game_state_update', game_state, room=game.id)

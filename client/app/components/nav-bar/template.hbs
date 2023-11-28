@@ -1,3 +1,18 @@
-<div>
-    <button type="button" {{on "click" this.invalidateSession}}>Sign Out</button>
-</div>
+<BsNavbar @toggleBreakpoint={{'sm'}} as |navbar|>
+  <div class="navbar-header">
+    <navbar.toggle />
+    <a class="navbar-brand" href="#">Coup</a>
+  </div>
+  <navbar.content>
+    <navbar.nav as |nav|>
+      <nav.item>
+        <nav.linkTo @route="index">Home</nav.linkTo>
+      </nav.item>
+      {{#if this.session.isAuthenticated}}
+        <nav.item>
+            <button class="nav-link" type="button" {{on "click" this.invalidateSession}}>Sign Out</button>
+        </nav.item>
+      {{/if}}
+    </navbar.nav>
+  </navbar.content>
+</BsNavbar>

@@ -8,8 +8,8 @@ class ExchangeState:
     def activate_exchange_state(self, player, deck):
         self.active = True
         self.player_id = player.id
-        self.cards = deck.draw(2)
         self.expected_exchange_count = sum(1 for card in player.cards if not card.revealed)
+        self.cards = deck.draw(self.expected_exchange_count)
 
     def reset(self):
         self.active = False

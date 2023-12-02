@@ -15,7 +15,8 @@ export default class ChallengeState extends Component {
 
     @computed('args.totalExchangeCards')
     get totalExchangeCards() {
-        return this.args.totalExchangeCards;
+        console.log(this.args.totalExchangeCards);
+        return this.args.totalExchangeCards.filter(card => !card.revealed);
     }
 
     @computed('args.selectedCardIds')

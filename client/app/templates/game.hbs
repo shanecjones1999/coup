@@ -103,12 +103,18 @@
     <div>
         <h2>You</h2>
         <div class="client-data">
-            <Player @playerData={{this.player}} @cards={{this.cards}} @self={{true}} @loadId={{this.loadId}} @highlight={{false}}/>
+            <Player 
+                @playerData={{this.player}} 
+                @cards={{this.cards}} 
+                @self={{true}} 
+                @loadId={{this.loadId}} 
+                @highlight={{false}}
+            />
         </div>
     </div>
     <div>
 
-        {{#if (eq this.model.playerId this.currentTurnPlayerId)}}
+        {{#if (and (eq this.model.playerId this.currentTurnPlayerId) (not this.inActiveState))}}
             {{!-- <div class="action-buttons">
                 {{#each this.actions as |action|}}
                     <div class="action-button">

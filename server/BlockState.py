@@ -1,4 +1,4 @@
-from Deck import cards
+from Deck import influences
 
 class BlockState:
     def __init__(self):
@@ -15,9 +15,9 @@ class BlockState:
         self.action_id = action_id
         self.source_id = source_id
         self.target_id = target_id
-        for card in cards:
-            if card.block_action_id == action_id:
-                self.block_cards.append(card.to_dict())
+        for influence in influences:
+            if influence.block_action_id == action_id:
+                self.block_cards.append(influence.to_dict())
         # All players can block foreign aid (make sure they haven't lost)
         if action_id == 2:
             pending_player_ids = []

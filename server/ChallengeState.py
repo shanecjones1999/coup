@@ -1,4 +1,4 @@
-from Deck import cards_dict
+from Deck import influences_dict
 
 class ChallengeState:
     def __init__(self):
@@ -14,7 +14,7 @@ class ChallengeState:
 
     def activate_challenge_state(self, card_claimed_id, action_id, source_id, from_block, players, target_id = None):
         self.active = True
-        self.card_claimed = cards_dict[card_claimed_id]
+        self.card_claimed = influences_dict[card_claimed_id]
         self.action_id = action_id
         self.source_id = source_id
         self.source_name = players[self.source_id].name if self.source_id else None

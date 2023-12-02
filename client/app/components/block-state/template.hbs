@@ -10,7 +10,7 @@
             <p>Unknown action id: {{@blockState.actionId}}</p>
         {{/if}}
         {{#each @blockState.blockCards as |blockCard|}}
-                <BsButton {{on 'click' (fn @blockAction blockCard.id)}}>Block as {{blockCard.name}}</BsButton>
+                <BsButton {{on 'click' (fn @blockAction blockCard.typeId)}}>Block as {{blockCard.name}}</BsButton>
         {{/each}}
             <BsButton {{on 'click' @pass}}>Pass</BsButton>
     {{else}}

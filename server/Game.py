@@ -1,6 +1,6 @@
 import random
 import string
-from Deck import Deck, cards_dict
+from Deck import Deck, influences_dict
 import asyncio
 import time
 from BlockState import BlockState
@@ -10,6 +10,7 @@ from RevealCardState import RevealCardState
 from Action import Action
 from ExchangeState import ExchangeState
 from UnresolvedAction import UnresolvedAction
+from Player import Player
 # from app import socketio
 
 # Action attributes: (name, ID, card claimed, cards blocking, cost)
@@ -143,10 +144,17 @@ class Game:
                 # Reset challenge state as block may be challenged later in turn
                 self.challenge_state.reset()
                 # Resolve the action (before block if applicable)
+
+                # If the player lost in the challenge state, we need to take the necessary action.
+                if self.players.get(target_id) and self.players.get(target_id).lost:
+                    if action_id == 7:
+                        self.handle_steal(source_id, target_id, True)
+                    else:
+                        self.move_turn()
+                    return
+
                 # TODO WEBSOCKET EXCHANGE
                 self.resolve_action(action_id, source_id, target_id)
-
-
 
     def check_game_over(self):
         players_left = 0
@@ -249,11 +257,15 @@ class Game:
     # return the player with updated cards if we find, otherwise we return None
     def handle_revealed_card(self, player_id, card_id):
         # We should only ever get here from a challenge state
-        is_correct_card = card_id == self.challenge_state.card_claimed.id
+        player = self.players[player_id]
+        card = next((card for card in player.cards if card.id == card_id), None)
+        if not card:
+            raise Exception('Player did not reveal a card they have')
+        is_correct_card = card.type_id == self.challenge_state.card_claimed.type_id
         # Challenger loses card
         if is_correct_card:
             player = self.players[self.challenge_state.source_id]
-            self.replace_card_for_player(player, card_id)
+            self.replace_card_for_player(player, card.id)
             update_card_player = player
 
             # If we were in a block state, mark the unresolved action successful block as True
@@ -289,9 +301,9 @@ class Game:
                 # Original action becomes void, turn ends
                 self.move_turn()
 
-    def replace_card_for_player(self, player, card_id):
-        index = player.remove_card(card_id)
-        self.deck.append(cards_dict[card_id])
+    def replace_card_for_player(self, player: Player, card_id: int):
+        index, card = player.remove_card(card_id)
+        self.deck.append(card)
         # LIST
         new_card_list = self.deck.draw(1)
         # Preserve order of the cards so the card that remains doesn't switch
@@ -342,19 +354,29 @@ class Game:
         else:
             self.block_state.activate_block_state(7, source_id, self.players, target_id)
     
-    def handle_resolve_exchange(self, player_id, selected_card_ids):
+    def handle_resolve_exchange(self, player_id, selected_card_ids: list[int]):
         player = self.players[player_id]
-        selection_count = len([card for card in player.cards if not card.revealed])
+        selection_count = self.exchange_state.expected_exchange_count
         if selection_count != len(selected_card_ids):
             raise Exception('Player selected wrong number of cards in Exchange')
-        player_cards = [card.id for card in player.cards]
-        total_ids = selected_card_ids + player_cards
+        
+        active_player_card_ids = [card.id for card in player.cards if not card.revealed]
+        total_ids = selected_card_ids + active_player_card_ids
         for id in selected_card_ids:
             total_ids.remove(id)
+
+        active_player_cards = [card for card in player.cards if not card.revealed]
+        exchange_cards = self.exchange_state.cards
+        total_cards = active_player_cards + exchange_cards
         for id in total_ids:
-            self.deck.append(cards_dict[id])
-        new_cards = [cards_dict[id] for id in selected_card_ids]
-        player.cards = new_cards
+            for card in total_cards:
+                if id == card.id:
+                    self.deck.append(card)
+
+        new_cards = [card for card in total_cards if card.id in selected_card_ids]
+        old_revealed_cards = [card for card in player.cards if card.revealed]
+        player.cards = new_cards + old_revealed_cards
+
         # can't move turn here, need to move turn in app.py after emit
         #self.move_turn()
 

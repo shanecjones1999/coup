@@ -34,8 +34,7 @@ export default class GameController extends Controller {
     get totalExchangeCards() {
         const exchangeCards = [...this.cards, ...this.exchangeCards];
         for (let i = 0; i < exchangeCards.length; i++) {
-            exchangeCards[i].tempId = i;
-            const isSelected = this.selectedCardIds.find(card => card.tempId == i) ? true : false;
+            const isSelected = this.selectedCardIds.includes(exchangeCards[i].id);
             set(exchangeCards[i], 'isSelected', isSelected);
         }
         
@@ -97,6 +96,11 @@ export default class GameController extends Controller {
 
     @alias('model.gameState.exchangeState') exchangeState;
 
+    @computed('blockState', 'revealCardState', 'loseInfluenceState', 'exchangeState', 'challengeState')
+    get inActiveState() {
+        return this.blockState.active || this.challengeState.active || this.revealCardState.active || this.loseInfluenceState.active || this.exchangeState.active;
+    }
+
     @computed('exchangeState.active')
     get promptExchangeState() {
         return this.exchangeState.active;
@@ -118,13 +122,13 @@ export default class GameController extends Controller {
         super.init(...arguments);
         this.websocket.socket.on('leave_game', this.handleLeaveGame.bind(this));
         this.websocket.socket.on(
-        'game_state_update',
-        this.handleGameStateUpdate.bind(this)
+            'game_state_update',
+            this.handleGameStateUpdate.bind(this)
         );
         this.websocket.socket.on('set_cards', this.handleSetCards.bind(this));
         this.websocket.socket.on(
-        'update_exchange_cards',
-        this.handleUpdateExchangeCards.bind(this)
+            'update_exchange_cards',
+            this.handleUpdateExchangeCards.bind(this)
         );
     }
 
@@ -248,16 +252,12 @@ export default class GameController extends Controller {
     @action
     selectCardToExchange(card) {
         const exchangeCount = this.exchangeState.expectedExchangeCount;
-        const newCard = {
-            id: card.id,
-            tempId: card.tempId,
-        }
 
-        if (this.selectedCardIds.find(card => card.tempId == newCard.tempId)) {
+        if (this.selectedCardIds.find(c => c.id == card.id)) {
             return;
         }
 
-        this.selectedCardIds.push(newCard);
+        this.selectedCardIds.push(card.id);
 
         if (this.selectedCardIds.length > exchangeCount) {
             this.selectedCardIds.shift();
@@ -271,7 +271,7 @@ export default class GameController extends Controller {
         const data = {
             gameId: this.model.gameId,
             playerId: this.player.id,
-            selectedCardIds: this.selectedCardIds.map(card => card.id),
+            selectedCardIds: this.selectedCardIds,
         };
         this.websocket.socket.emit('resolve_exchange_state', data);
         this.selectedCardIds = [];

@@ -1,10 +1,8 @@
 from flask import Flask, request, jsonify
 from flask_socketio import SocketIO, emit, join_room, leave_room
-from Player import Player
-from Game import Game
-import json
+from server.Player import Player
+from server.Game import Game
 import jwt
-from Deck import Deck, cards
 
 from flask_cors import CORS
 

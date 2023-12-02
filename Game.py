@@ -101,8 +101,7 @@ class Game:
         action = actions_dict[action_id]
         player = self.players[source_id]
         if action.cost > player.coins:
-            # TODO add front-end handling
-            raise Exception("Player cannot pay for action")
+            return 'You need more coins to take this action.'
         else:
             player.coins -= action.cost
         
@@ -189,10 +188,12 @@ class Game:
             action_id = self.challenge_state.action_id
             source_id = self.challenge_state.source_id
             target_id = self.challenge_state.target_id
+            self.challenge_state.active = False
             # Move to block state if the action is blockable
             # Do we want this?
             block_state_already = self.block_state.action_id is not None
             if not block_state_already and actions_dict[self.challenge_state.action_id].block_card_ids:
+                # self.challenge_state.active = False
                 self.block_state.activate_block_state(action_id, source_id, self.players, target_id)
             # otherwise resolve the action
             # What if you are challenging a block?
@@ -200,6 +201,12 @@ class Game:
                 action_id = self.challenge_state.action_id
                 source_id = self.challenge_state.source_id
                 target_id = self.challenge_state.target_id
+                # Edge case: foreign aid
+                # At this point, block state has already occurred and someone blocked as Duke
+                if action_id == 2:
+                    self.move_turn()
+                    return
+
                 # TODO WEBSOCKET EXCHANGE
                 self.resolve_action(action_id, source_id, target_id)
 
@@ -210,6 +217,7 @@ class Game:
             action_id = self.block_state.action_id
             source_id = self.block_state.source_id
             target_id = self.block_state.target_id
+            self.block_state.active = False
             self.resolve_action_from_block(action_id, source_id, target_id)
     
     # TODO FIX THIS
@@ -262,6 +270,8 @@ class Game:
         else:
             player = self.players.get(player_id)
             player.lose_influence(card_id)
+            cards = [card.to_dict(False) for card in player.cards]
+            self.socket.emit('set_cards', cards, room=player.token)
             # Here we need to update the player cards status on the frontend
             # Repro: block as duke, challenge, dont reveal duke - card should say 'revealed'
             over = self.check_game_over()

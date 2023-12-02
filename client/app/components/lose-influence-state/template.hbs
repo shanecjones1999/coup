@@ -1,0 +1,12 @@
+<div class="lose-influence-state">
+    {{#if this.isSource}}
+        <p>Select an influence to lose.</p>
+        {{#each @cards as |card|}}
+            {{#unless card.revealed}}
+                <BsButton {{on 'click' (fn @loseInfluence card.id)}}>Lose {{card.name}}</BsButton>
+            {{/unless}}
+        {{/each}}
+    {{else}}
+        <p>Waiting for other players.</p>
+    {{/if}}
+</div>

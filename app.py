@@ -235,7 +235,9 @@ def initiate_action(data):
     source_id = data.get('sourceId')
     target_id = data.get('targetId')
     validate_turn(source_id, game)
-    game.handle_action(action_id, source_id, target_id)
+    error = game.handle_action(action_id, source_id, target_id)
+    if error:
+        return
     game_state = game.get_game_state()
     emit('game_state_update', game_state, room=game.id)
 

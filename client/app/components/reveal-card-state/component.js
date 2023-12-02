@@ -6,9 +6,9 @@ import ENV from 'client/config/environment';
 import { set } from '@ember/object';
 import { computed } from '@ember/object';
 
-export default class Card extends Component {
-    @computed('args.card.name')
-    get cardClass() {
-        return this.args.card.name.toLowerCase();
+export default class RevealCardState extends Component {
+    @computed('args.{revealCardState,playerId}')
+    get isRevealingPlayer() {
+        return this.args.revealCardState.revealerId == this.args.playerId;
     }
 }

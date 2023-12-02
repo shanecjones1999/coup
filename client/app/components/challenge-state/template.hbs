@@ -1,0 +1,20 @@
+<div class="challenge-state">
+    {{#if this.isSource}}
+        <p>Waiting for other players.</p>
+    {{else}}
+        {{#if (eq @challengeState.actionId 2)}}
+            <p>{{@challengeState.sourceName}} is attemping to block foreign aid {{@challengeState.targetName}}.</p>
+        {{else if (eq @challengeState.actionId 4)}}
+            <p>{{@challengeState.sourceName}} is attemping to tax.</p>
+        {{else if (eq @challengeState.actionId 5)}}
+            <p>{{@challengeState.sourceName}} is attemping to assassinate {{@challengeState.targetName}}.</p>
+        {{else if (eq @challengeState.actionId 6)}}
+            <p>{{@challengeState.sourceName}} is attemping to exchange.</p>
+        {{else if (eq @challengeState.actionId 7)}}
+            <p>{{@challengeState.sourceName}} is attemping to steal from {{@challengeState.targetName}}.</p>
+        {{/if}}
+        <BsButton {{on 'click' @challenge}}>Challenge</BsButton>
+        <BsButton {{on 'click' @pass}}>Pass</BsButton>
+    {{/if}}
+    <p>Card claimed: {{@challengeState.cardClaimed.name}}</p>
+</div>

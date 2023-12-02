@@ -2,14 +2,21 @@ import Component from '@glimmer/component';
 import { inject as service } from '@ember/service';
 import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
+import { computed } from '@ember/object';
 
 export default class Player extends Component {
-  @action
-  getId() {
-    if (this.args.playerData.lost) {
-        console.log('You cannot select a player that already lost');
-        return;
+    @action
+    selectPlayer() {
+        if (!this.selectable || this.args.playerData.lost) {
+            console.log('You cannot select this player');
+            return;
+        }
+        this.args.selectPlayerId(this.args.playerData.id);
     }
-    this.args.loadId(this.args.playerData.id);
+
+    @computed('args.canSelectPlayer')
+    get selectable() {
+        return this.args.canSelectPlayer;
     }
+
 }

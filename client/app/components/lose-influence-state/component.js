@@ -6,9 +6,9 @@ import ENV from 'client/config/environment';
 import { set } from '@ember/object';
 import { computed } from '@ember/object';
 
-export default class Card extends Component {
-    @computed('args.card.name')
-    get cardClass() {
-        return this.args.card.name.toLowerCase();
+export default class LoseInfluenceState extends Component {
+    @computed('args.{loseInfluenceState,playerId}')
+    get isSource() {
+        return this.args.loseInfluenceState.playerId == this.args.playerId;
     }
 }

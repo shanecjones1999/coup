@@ -1,4 +1,4 @@
-<span class="card-wrapper {{@card.name}} {{if (and @card.revealed @self) 'revealed'}}">
+<span class="card-wrapper {{this.cardClass}} {{if (and @card.revealed @self) 'revealed'}}">
     <span class="card-name">{{@card.name}}
     {{#if (and @card.revealed @self)}}
         <span class="revealed-text">(Revealed)</span>

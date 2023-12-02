@@ -1,0 +1,5 @@
+<div class="actions-selector">
+    {{#each @actions as |action|}}
+        <BsButton disabled={{gt action.cost @coins}} {{on 'click' (fn @initiateAction action)}}>{{action.name}}</BsButton>
+    {{/each}}
+</div>

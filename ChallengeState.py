@@ -5,8 +5,10 @@ class ChallengeState:
         self.active = False
         self.card_claimed = None
         self.action_id = None
-        self.source_id= None
+        self.source_id = None
+        self.source_name = None
         self.target_id = None
+        self.target_name = None
         self.from_block = False
         self.pending_player_ids = []
 
@@ -15,8 +17,10 @@ class ChallengeState:
         self.card_claimed = cards_dict[card_claimed_id]
         self.action_id = action_id
         self.source_id = source_id
+        self.source_name = players[self.source_id].name if self.source_id else None
         self.from_block = from_block
         self.target_id = target_id
+        self.target_name = players[self.target_id].name if self.target_id else None
         pending_player_ids = []
         for player in players.values():
             if player.id != source_id and not player.lost:
@@ -38,7 +42,9 @@ class ChallengeState:
                 'cardClaimed': self.card_claimed.to_dict() if self.card_claimed is not None else None,
                 'actionId': self.action_id,
                 'sourceId': self.source_id,
+                'sourceName': self.source_name,
                 'targetId': self.target_id,
+                'targetName': self.target_name,
                 'fromBlock': self.from_block,
                 'pendingPlayerIds': self.pending_player_ids,
             }

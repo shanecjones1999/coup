@@ -1,0 +1,17 @@
+<div class="exchange-state">
+    {{#if this.isSource}}
+        {{#if (gt this.remainingSelectCount 0)}}
+            <p>Select {{this.remainingSelectCount}} card(s) to exchange.</p>
+        {{/if}}
+        {{#each this.totalExchangeCards as |card|}}
+            <BsButton class='{{if card.isSelected 'selected'}}' {{on 'click' (fn @selectCard card)}}>{{card.name}}</BsButton>
+        {{/each}}
+        {{#unless this.selectedCards}}
+        <div>
+            <BsButton disabled={{this.selectedCards}} {{on 'click' @confirmExchange}}>Confirm Exchange</BsButton>
+        </div>
+        {{/unless}}
+    {{else}}
+        <p>Waiting for {{@playerId}} to exchange with the court deck.</p>
+    {{/if}}
+</div>

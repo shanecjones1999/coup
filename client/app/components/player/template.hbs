@@ -1,11 +1,12 @@
-<button type="button" class="player {{if @playerData.isTurn "is-turn"}} {{if @highlight "highlight"}}" {{on 'click' this.getId}}>
-    <span class="name">{{@playerData.name}}</span>
+<button type="button" 
+    class="player-info {{if @playerData.isTurn "is-turn"}} {{if this.selectable "select"}} {{if @playerData.lost "lost"}}" 
+    {{on 'click' this.selectPlayer}}
+>
+    <span class="player-name">{{@playerData.name}}</span>
     <span class="player-cards">
         {{#each @cards as |card|}}
-            {{!-- <p class="cards">Card: {{card.name}} {{if (and card.revealed @self) '(revealed)'}}</p> --}}
             <Card @card={{card}} @self={{@self}}/>
         {{/each}}
     </span>
-    <span class="coins">{{@playerData.coins}} coins</span>
-    {{!-- <p>{{@playerData.isTurn}}</p> --}}
+    <span class="player-coins">{{@playerData.coins}} coins</span>
 </button>

@@ -6,9 +6,10 @@ import ENV from 'client/config/environment';
 import { set } from '@ember/object';
 import { computed } from '@ember/object';
 
-export default class Card extends Component {
-    @computed('args.card.name')
-    get cardClass() {
-        return this.args.card.name.toLowerCase();
+export default class BlockState extends Component {
+    @computed('args.{blockState,playerId}')
+    get isTarget() {
+        return this.args.blockState.targetId == this.args.playerId || 
+        (this.args.blockState.actionId == 2 && this.args.playerId != this.args.blockState.sourceId);
     }
 }

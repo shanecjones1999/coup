@@ -1,4 +1,4 @@
-from Influence import Influence
+from server.Influence import Influence
 
 class Card(Influence):
     def __init__(self, id: int, revealed: bool, influence):

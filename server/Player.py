@@ -1,6 +1,6 @@
 import random
 import string
-from Card import Card
+from server.Card import Card
 
 class Player:
     def __init__(self, name: string, token: string):

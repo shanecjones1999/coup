@@ -1,6 +1,6 @@
 import random
-from Card import Card
-from Card import Influence
+from server.Card import Card
+from server.Card import Influence
 
 # cards = [
 #             Card(1, 'Duke', 4, 2, False),

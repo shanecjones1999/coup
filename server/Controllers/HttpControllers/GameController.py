@@ -1,41 +1,13 @@
-from flask import Flask, Blueprint, request, jsonify
-from flask_socketio import SocketIO
+from flask import Blueprint, request, jsonify
 from flask_cors import CORS
 from server.Game import Game
 from server.Utils import *
-from server.Player import Player
-import jwt
 from server.CreateApp import app
-
-# app = Flask(__name__)
-# app.config["SECRET_KEY"] = "topSecret"
-# socketio = SocketIO(app, cors_allowed_origins="*")
-
-# cors = CORS(app, supports_credentials=True)
 from server.CreateApp import socketio
 
-# lobby = {} # token -> player
-# global_players = {} # token -> player
-# games = { 'apple': Game('Apple Game', 'apple', 4, True, 30, socketio), 'banana': Game('Banana Game', 'banana', 5, False, 40, socketio) }
+game_blueprint = Blueprint('game', __name__)
 
-http_blueprint = Blueprint('http', __name__)
-
-@http_blueprint.route('/api/getGames', methods=['GET'])
-def get_games():
-    res = []
-    global games
-    for game in games.values():
-        data = {
-            'name': game.name,
-            'id': game.id,
-            'isStarted': game.started,
-            'numPlayers': len(game.players),
-            'totalPlayers': game.num_players,
-        }
-        res.append(data)
-    return jsonify(res), 200
-
-@http_blueprint.route('/api/joinGame', methods=['POST'])
+@game_blueprint.route('/api/joinGame', methods=['POST'])
 def join_game():
     token = request.headers.get('Authorization')
     game_id = request.json.get('id')
@@ -61,7 +33,7 @@ def join_game():
     return jsonify(f'Invalid token or game Id: {token}, {game_id}')
 
 # Make sure we remove the player from correct rooms
-@http_blueprint.route('/api/invalidateSession', methods=['POST'])
+@game_blueprint.route('/api/invalidateSession', methods=['POST'])
 def invalidate_session():
     token = request.headers.get('Authorization')
     name, game, id = remove_player_from_global(token)
@@ -74,7 +46,7 @@ def invalidate_session():
         socketio.emit('game_state_update', game_state, room=game.id)
     return jsonify('Successfully invalidated session'), 200
 
-@http_blueprint.route('/api/createGame', methods=['POST'])
+@game_blueprint.route('/api/createGame', methods=['POST'])
 def handle_create_game():
     name = request.json.get('name')
     num_players = request.json.get('numPlayers')
@@ -87,7 +59,7 @@ def handle_create_game():
     games[name] = game
     return jsonify(game.id), 200
 
-@http_blueprint.route('/api/getCurrentUser', methods=['GET'])
+@game_blueprint.route('/api/getCurrentUser', methods=['GET'])
 def get_current_user():
     token = request.headers.get('Authorization')
     player = get_player(token)
@@ -95,25 +67,3 @@ def get_current_user():
     if (player):
         username = player.name
     return jsonify(username), 200
-
-@http_blueprint.route('/api/getCurrentLobby', methods=['GET'])
-def get_current_lobby():
-    players = get_players_in_lobby()
-    res = [player.to_dict() for player in players]
-    return jsonify(res), 200
-
-@http_blueprint.route('/api/tokenAuth', methods=['POST'])
-def token_auth():
-    name = request.json.get('username')
-    cleaned_name = name.strip()
-    if is_valid_name(cleaned_name):
-        payload = {}
-        payload['playerName'] = cleaned_name
-        token = jwt.encode(payload, app.config['SECRET_KEY'], algorithm='HS256')
-        player = Player(cleaned_name, token)
-        global global_players
-        global_players[token] = player
-        global lobby
-        lobby[token] = player
-        return jsonify({'token': token}), 200
-    return jsonify('Username is taken or invalid.'), 403

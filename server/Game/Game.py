@@ -1,16 +1,16 @@
 import random
 import string
-from server.Deck import Deck, influences_dict
+from server.Game.Deck import Deck, influences_dict
 import asyncio
 import time
-from server.BlockState import BlockState
-from server.ChallengeState import ChallengeState
-from server.LoseInfluenceState import LoseInfluenceState
-from server.RevealCardState import RevealCardState
-from server.Action import Action
-from server.ExchangeState import ExchangeState
-from server.UnresolvedAction import UnresolvedAction
-from server.Player import Player
+from server.Game.BlockState import BlockState
+from server.Game.ChallengeState import ChallengeState
+from server.Game.LoseInfluenceState import LoseInfluenceState
+from server.Game.RevealCardState import RevealCardState
+from server.Game.Action import Action
+from server.Game.ExchangeState import ExchangeState
+from server.Game.UnresolvedAction import UnresolvedAction
+from server.Game.Player import Player
 # from app import socketio
 
 # Action attributes: (name, ID, card claimed, cards blocking, cost)

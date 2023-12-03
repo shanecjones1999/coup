@@ -1,5 +1,5 @@
 from server.CreateApp import socketio
-from server.Game import Game
+from server.Game.Game import Game
 
 lobby = {} # token -> player
 global_players = {} # token -> player

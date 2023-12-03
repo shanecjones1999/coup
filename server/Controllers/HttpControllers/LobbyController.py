@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from server.Player import Player
+from server.Game.Player import Player
 import jwt
 from server.Utils import *
 from server.CreateApp import app

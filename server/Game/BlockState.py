@@ -1,4 +1,4 @@
-from server.Deck import influences
+from server.Game.Deck import influences
 
 class BlockState:
     def __init__(self):

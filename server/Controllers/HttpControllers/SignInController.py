@@ -1,12 +1,12 @@
 from flask import Blueprint, request, jsonify
-from server.Player import Player
+from server.Game.Player import Player
 import jwt
 from server.Utils import *
 from server.CreateApp import app
 
 signin_blueprint = Blueprint('signin', __name__)
 
-@signin_blueprint.route('/api/tokenAuth', methods=['POST'])
+@signin_blueprint.route('/api/signin', methods=['POST'])
 def token_auth():
     name = request.json.get('username')
     cleaned_name = name.strip()

@@ -12,8 +12,6 @@ export default class IndexController extends Controller {
         username: ''
     };
 
-    username = '';
-
     @action
     async enterLobby() {
         try {

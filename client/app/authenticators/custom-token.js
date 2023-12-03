@@ -11,7 +11,7 @@ export default class CustomTokenAuthenticator extends BaseAuthenticator {
 
     async authenticate(user) {
         try {
-            const response = await fetch(`${ENV.API_HOST}/api/tokenAuth`, {
+            const response = await fetch(`${ENV.API_HOST}/api/signin`, {
                 method: 'POST',
                 body: JSON.stringify(user),
                 headers: {

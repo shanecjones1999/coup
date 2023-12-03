@@ -1,4 +1,4 @@
-from server.Deck import influences_dict
+from server.Game.Deck import influences_dict
 
 class ChallengeState:
     def __init__(self):

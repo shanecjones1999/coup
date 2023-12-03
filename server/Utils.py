@@ -84,14 +84,3 @@ def validate_turn(player_id, game):
         raise Exception("No game found")
     if player_id != game.get_player_turn():
         raise Exception("Player not in game")
-
-def is_valid_name(name):
-    if not name:
-        return False
-    if not isinstance(name, str):
-        return False
-    players = get_players_in_global()
-    for player in players:
-        if name == player.name:
-            return False
-    return True

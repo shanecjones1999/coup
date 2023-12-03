@@ -1,8 +1,11 @@
 from flask import Blueprint, request, jsonify
 from server.Game.Player import Player
-import jwt
+# import jwt
 from server.Utils import *
-from server.CreateApp import app
+# from server.CreateApp import app
+#from server.Utils.SignInUtils import is_valid_name
+# from server.Utils.TokenUtils import generate_token
+from server.NewUtils.TokenUtils import generate_token
 
 signin_blueprint = Blueprint('signin', __name__)
 
@@ -10,10 +13,9 @@ signin_blueprint = Blueprint('signin', __name__)
 def token_auth():
     name = request.json.get('username')
     cleaned_name = name.strip()
+    global global_players
     if is_valid_name(cleaned_name):
-        payload = {}
-        payload['playerName'] = cleaned_name
-        token = jwt.encode(payload, app.config['SECRET_KEY'], algorithm='HS256')
+        token = generate_token(cleaned_name)
         player = Player(cleaned_name, token)
         global global_players
         global_players[token] = player

@@ -46,19 +46,6 @@ def invalidate_session():
         socketio.emit('game_state_update', game_state, room=game.id)
     return jsonify('Successfully invalidated session'), 200
 
-@game_blueprint.route('/api/createGame', methods=['POST'])
-def handle_create_game():
-    name = request.json.get('name')
-    num_players = request.json.get('numPlayers')
-    turn_timer_enabled = request.json.get('enableTurnTimer')
-    turn_length = request.json.get('turnLength')
-    if not validate_game_name(name):
-        return jsonify('The game name is invalid or in use.'), 423
-    game = Game(name, name, num_players, turn_timer_enabled, turn_length, socketio)
-    global games
-    games[name] = game
-    return jsonify(game.id), 200
-
 @game_blueprint.route('/api/getCurrentUser', methods=['GET'])
 def get_current_user():
     token = request.headers.get('Authorization')

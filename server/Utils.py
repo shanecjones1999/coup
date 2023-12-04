@@ -5,8 +5,7 @@ from server.Globals import *
 def validate_game_name(name):
     if not name:
         return False
-    global games
-    for game in games.values():
+    for game in games.get_games():
         if game.name.upper() == name.upper():
             return False
     return True
@@ -15,11 +14,7 @@ def get_player(token):
     global global_players
     if token in global_players:
         return global_players.get(token)
-    
-def get_game(id):
-    global games
-    if id in games:
-        return games.get(id)
+
 
 def get_players_in_global():
     global global_players
@@ -35,8 +30,7 @@ def remove_player_from_global(token):
     global global_players
     if token in global_players:
         player = global_players.get(token)
-        global games
-        for game in games.values():
+        for game in games.get_games():
             if player.id in game.players:
                 tmp = game.players
                 tmp.pop(player.id)
@@ -50,10 +44,7 @@ def remove_player_from_global(token):
     return resName, resGame, resId
 
 def validate_game(game_id):
-    global games
-    if game_id not in games:
-        raise Exception('Invalid game id')
-    game = games.get(game_id)
+    game = games.get_game(game_id)
     if not game.started:
         raise Exception('Game not started')
     if not game.players:

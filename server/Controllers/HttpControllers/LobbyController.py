@@ -6,8 +6,8 @@ lobby_blueprint = Blueprint('lobby', __name__)
 @lobby_blueprint.route('/api/getGames', methods=['GET'])
 def get_games():
     res = []
-    global games
-    for game in games.values():
+    for game in games.get_games():
+        # TODO: Func
         data = {
             'name': game.name,
             'id': game.id,

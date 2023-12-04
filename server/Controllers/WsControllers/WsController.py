@@ -10,8 +10,7 @@ def handle_connect():
     global global_players
     if token in global_players:
         player = global_players.get(token)
-        global games
-        for game in games.values():
+        for game in games.get_games():
             if player.id in game.players:
                 join_room(game.id)
                 join_room(token)
@@ -59,11 +58,10 @@ def handle_invalidate_session(token):
 @socketio.on('join_game')
 def handle_join_game(data):
     token = data.get('token')
-    id = data.get('id')
-    global games
-    if id in games:
+    game_id = data.get('id')
+    if games.has_game(game_id):
         if lobby.has_player(token):
-            game = games.get(id)
+            game = games.get_game(game_id)
             game_state = game.get_game_state()
             emit('game_state_update', game_state, room=game.id)
             join_room(game.id)
@@ -71,15 +69,12 @@ def handle_join_game(data):
             lobby.remove_player(token)
             lobby_players = lobby.get_players()
             ret = [player.to_dict() for player in lobby_players]
-            emit('lobby_update', ret, room='lobby')
-            # remove_player_from_lobby(token)
             leave_room('lobby')
+            emit('lobby_update', ret, room='lobby')
 
 @socketio.on('start_game')
 def handle_start_game(id):
-    game = get_game(id)
-    if not game:
-        raise Exception('No game found')
+    game = games.get_game(id)
     game.start_game()
     gameState = game.get_game_state()
     emit('game_state_update', gameState, room=game.id)

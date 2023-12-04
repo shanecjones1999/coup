@@ -2,7 +2,7 @@ from flask import Blueprint, request, jsonify
 from flask_cors import CORS
 from server.Game.Game import Game
 from server.Utils import *
-from server.CreateApp import app
+# from server.CreateApp import app
 from server.CreateApp import socketio
 
 game_blueprint = Blueprint('game', __name__)
@@ -13,7 +13,7 @@ def join_game():
     game_id = request.json.get('id')
     player = get_player(token)
     if (player):
-        game = get_game(game_id)
+        game = games.get_game(game_id)
         if (game):
             # TODO: ADD Game.add_player() method
             game.add_player(player)

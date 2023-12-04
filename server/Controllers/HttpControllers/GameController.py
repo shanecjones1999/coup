@@ -1,9 +1,8 @@
 from flask import Blueprint, request, jsonify
 from flask_cors import CORS
 from server.Game.Game import Game
-from server.Utils import *
-# from server.CreateApp import app
 from server.CreateApp import socketio
+from server.Globals import *
 
 game_blueprint = Blueprint('game', __name__)
 
@@ -11,7 +10,7 @@ game_blueprint = Blueprint('game', __name__)
 def join_game():
     token = request.headers.get('Authorization')
     game_id = request.json.get('id')
-    player = get_player(token)
+    player = players.get_player(token)
     if (player):
         game = games.get_game(game_id)
         if (game):
@@ -49,7 +48,7 @@ def invalidate_session():
 @game_blueprint.route('/api/getCurrentUser', methods=['GET'])
 def get_current_user():
     token = request.headers.get('Authorization')
-    player = get_player(token)
+    player = players.get_player(token)
     username = 'INVALID NAME BUG CAUGHT'
     if (player):
         username = player.name

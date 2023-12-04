@@ -1,15 +1,14 @@
 from flask import request
 from flask_socketio import emit, join_room, leave_room
-from server.Utils import *
+from server.Globals import *
 
 @socketio.on('connect')
 def handle_connect():
     token = request.args.get('token')
     if lobby.has_player(token):
         join_room('lobby')
-    global global_players
-    if token in global_players:
-        player = global_players.get(token)
+    if players.has_player(token):
+        player = players.get_player(token)
         for game in games.get_games():
             if player.id in game.players:
                 join_room(game.id)
@@ -23,14 +22,6 @@ def handle_disconnect():
     except Exception as e:
         # Handle the exception, for example, log the error
         print(f"An error occurred: {str(e)}")
-
-@socketio.on('join_lobby')
-def handle_join_lobby(token):
-    global lobby
-    if token in lobby:
-        player = lobby.get(token)
-        emit('join_lobby', player.name, room='lobby')
-        join_room('lobby')
 
 @socketio.on('leave_lobby')
 def handle_leave_lobby(token):
@@ -86,11 +77,11 @@ def handle_start_game(id):
 @socketio.on('initiate_action')
 def initiate_action(data):
     game_id = data.get('gameId')
-    game = validate_game(game_id)
+    game = games.get_game(game_id)
     action_id = data.get('actionId')
     source_id = data.get('sourceId')
     target_id = data.get('targetId')
-    validate_turn(source_id, game)
+    # validate_turn(source_id, game)
     error = game.handle_action(action_id, source_id, target_id)
     if error:
         return
@@ -103,7 +94,7 @@ def handle_block(data):
     game_id = data.get('gameId')
     blocker_id = data.get('playerId')
     block_card_id = data.get('blockCardId')
-    game = validate_game(game_id)
+    game = games.get_game(game_id)
     blocked_action_id = game.block_state.action_id
     target_id = game.block_state.target_id
     game.handle_block(block_card_id, blocked_action_id, blocker_id, target_id)
@@ -115,7 +106,7 @@ def handle_block(data):
 def handle_pass_block(data):
     game_id = data.get('gameId')
     player_id = data.get('playerId')
-    game = validate_game(game_id)
+    game = games.get_game(game_id)
     game.handle_pass_block(player_id)
 
     game_state = game.get_game_state()
@@ -125,7 +116,7 @@ def handle_pass_block(data):
 def handle_pass_challenge(data):
     game_id = data.get('gameId')
     player_id = data.get('playerId')
-    game = validate_game(game_id)
+    game = games.get_game(game_id)
     game.handle_pass_challenge(player_id)
     game_state = game.get_game_state()
     emit('game_state_update', game_state, room=game.id)
@@ -134,7 +125,7 @@ def handle_pass_challenge(data):
 def handle_challenge(data):
     game_id = data.get('gameId')
     player_id = data.get('playerId')
-    game = validate_game(game_id)
+    game = games.get_game(game_id)
     game.handle_challenge(player_id)
     game_state = game.get_game_state()
     emit('game_state_update', game_state, room=game.id)
@@ -143,7 +134,7 @@ def handle_challenge(data):
 def handle_reveal_card(data):
     game_id = data.get('gameId')
     player_id = data.get('playerId')
-    game = validate_game(game_id)
+    game = games.get_game(game_id)
     card_id = data.get('cardId')
     update_cards_player = game.handle_revealed_card(player_id, card_id)
     if update_cards_player:
@@ -156,7 +147,7 @@ def handle_reveal_card(data):
 def handle_lose_influence(data):
     game_id = data.get('gameId')
     player_id = data.get('playerId')
-    game = validate_game(game_id)
+    game = games.get_game(game_id)
     card_id = data.get('cardId')
 
     game.handle_lose_influence(player_id, card_id)
@@ -173,7 +164,7 @@ def handle_lose_influence(data):
 def handle_resolve_exchange_state(data):
     game_id = data.get('gameId')
     player_id = data.get('playerId') # Can we just use exchange_state.player_id?
-    game = validate_game(game_id)
+    game = games.get_game(game_id)
     selected_card_ids = data.get('selectedCardIds')
     game.handle_resolve_exchange(player_id, selected_card_ids)
     player = game.players[player_id]

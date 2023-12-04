@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from server.Game.Player import Player
-from server.NewUtils.SignInUtils import handle_signin
+from server.Utils.SignInUtils import handle_signin
 
 signin_blueprint = Blueprint('signin', __name__)
 

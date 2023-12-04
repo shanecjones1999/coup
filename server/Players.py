@@ -13,9 +13,16 @@ class Players:
     def remove_player(self, token):
         if token not in self.players:
             raise Exception('Trying to remove player id that does not exist')
-        self.players.pop(token)
+        return self.players.pop(token)
         
     def get_player(self, token):
-        if token not in self.players:
-            raise Exception('Trying to find player id that does not exist')
-        return self.players[token]
+        # TODO btr logic, used for INVALID NAME BUG
+        # if token not in self.players:
+        #     raise Exception('Trying to find player id that does not exist')
+        return self.players.get(token)
+    
+    def get_players(self):
+        return self.players.values()
+    
+    def has_player(self, token):
+        return token in self.players

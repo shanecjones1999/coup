@@ -19,7 +19,6 @@ def handle_signin(username: str) -> str:
         player = Player(cleaned_name, token)
         global global_players
         global_players[token] = player
-        global lobby
-        lobby[token] = player
+        lobby.add_player(player)
         return token
     return None

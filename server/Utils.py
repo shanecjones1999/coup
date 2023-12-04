@@ -1,9 +1,6 @@
-from server.CreateApp import socketio
-from server.Game.Game import Game
-
-lobby = {} # token -> player
-global_players = {} # token -> player
-games = { 'apple': Game('Apple Game', 'apple', 4, True, 30, socketio), 'banana': Game('Banana Game', 'banana', 5, False, 40, socketio) }
+# from server.CreateApp import socketio
+# from server.Game.Game import Game
+from server.Globals import *
 
 def validate_game_name(name):
     if not name:
@@ -24,33 +21,17 @@ def get_game(id):
     if id in games:
         return games.get(id)
 
-def get_players_in_lobby():
-    global lobby
-    return lobby.values()
-
 def get_players_in_global():
     global global_players
     return global_players.values()
-
-def remove_player_from_lobby(token):
-    global lobby
-    if token in lobby:
-        tmp = lobby
-        player = tmp.pop(token)
-        lobby = tmp
-        return player.name
-    return None
 
 # Remove the player from every possible instance.
 def remove_player_from_global(token):
     resGame = None
     resName = None
     resId = None
-    global lobby
-    if token in lobby:
-        tmp = lobby
-        tmp.pop(token)
-        lobby = tmp
+    if lobby.has_player(token):
+        lobby.remove_player(token)
     global global_players
     if token in global_players:
         player = global_players.get(token)

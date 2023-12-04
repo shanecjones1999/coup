@@ -1,8 +1,5 @@
-from flask import Blueprint, request, jsonify
-from server.Game.Player import Player
-import jwt
+from flask import Blueprint, jsonify
 from server.Utils import *
-from server.CreateApp import app
 
 lobby_blueprint = Blueprint('lobby', __name__)
 
@@ -23,6 +20,6 @@ def get_games():
 
 @lobby_blueprint.route('/api/getCurrentLobby', methods=['GET'])
 def get_current_lobby():
-    players = get_players_in_lobby()
+    players = lobby.get_players()
     res = [player.to_dict() for player in players]
     return jsonify(res), 200

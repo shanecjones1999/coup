@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from flask_cors import CORS
-from server.Game import Game
+from server.Game.Game import Game
 from server.Utils import *
 from server.CreateApp import app
 from server.CreateApp import socketio
@@ -38,7 +38,7 @@ def invalidate_session():
     token = request.headers.get('Authorization')
     name, game, id = remove_player_from_global(token)
     if (name):
-        lobby_players = get_players_in_lobby()
+        lobby_players = lobby.get_players()
         ret = [player.to_dict() for player in lobby_players]
         socketio.emit('lobby_update', ret, room='lobby')
     if (game):

@@ -5,8 +5,7 @@ from server.Utils import *
 @socketio.on('connect')
 def handle_connect():
     token = request.args.get('token')
-    global lobby
-    if token in lobby:
+    if lobby.has_player(token):
         join_room('lobby')
     global global_players
     if token in global_players:
@@ -36,12 +35,12 @@ def handle_join_lobby(token):
 
 @socketio.on('leave_lobby')
 def handle_leave_lobby(token):
-    name = remove_player_from_lobby(token)
+    name = lobby.remove_player(token)
     emit('leave_lobby', name, room='lobby')
 
 @socketio.on('lobby_update')
 def handle_lobby_update():
-    players = get_players_in_lobby()
+    players = lobby.get_players()
     ret = [player.to_dict() for player in players]
     emit('lobby_update', ret, room='lobby')
 
@@ -50,7 +49,7 @@ def handle_lobby_update():
 def handle_invalidate_session(token):
     name, game, id = remove_player_from_global(token)
     if (name):
-        lobby_players = get_players_in_lobby()
+        lobby_players = lobby.get_players()
         ret = [player.to_dict() for player in lobby_players]
         emit('lobby_update', ret, room='lobby')
         leave_room('lobby')
@@ -63,18 +62,17 @@ def handle_join_game(data):
     id = data.get('id')
     global games
     if id in games:
-        global lobby
-        if token in lobby:
+        if lobby.has_player(token):
             game = games.get(id)
             game_state = game.get_game_state()
             emit('game_state_update', game_state, room=game.id)
             join_room(game.id)
             join_room(token)
-            remove_player_from_lobby(token)
-            lobby_players = get_players_in_lobby()
+            lobby.remove_player(token)
+            lobby_players = lobby.get_players()
             ret = [player.to_dict() for player in lobby_players]
             emit('lobby_update', ret, room='lobby')
-            remove_player_from_lobby(token)
+            # remove_player_from_lobby(token)
             leave_room('lobby')
 
 @socketio.on('start_game')

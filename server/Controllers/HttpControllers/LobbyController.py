@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify
+from server.Game.Game import Game
 from server.Globals import *
 
 lobby_blueprint = Blueprint('lobby', __name__)

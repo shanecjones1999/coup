@@ -1,27 +1,21 @@
 from typing import Dict
 from server.Game.Player import Player
+from server.Games import Games
+from server.Players import Players
 
 class Lobby:
     def __init__(self):
-        # Stores tokens -> players.
-        self.players: Dict[str, Player] = {}
+        self.players: Players = Players()
+        self.games: Games = Games()
 
     def add_player(self, player: Player):
-        if player.token in self.players:
-            raise Exception('Trying to add player with duplicate id')
-        self.players[player.token] = player
+        self.players.add_player(player)
 
     def remove_player(self, token):
-        if token not in self.players:
-            raise Exception('Trying to remove token that does not exist')
-        player = self.players.pop(token)
-        return player.name
+        self.players.remove_player(token)
 
     def get_players(self):
-        return self.players.values()
+        return self.players.get_players()
     
     def has_player(self, token: str) -> bool:
-        return token in self.players
-
-    # def get_player_names(self):
-    #     return set([player.name for player in self.players])
+        return self.players.has_player(token)

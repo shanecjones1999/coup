@@ -10,7 +10,7 @@ def handle_connect():
     if players.has_player(token):
         player = players.get_player(token)
         for game in games.get_games():
-            if player.id in game.players:
+            if game.players.has_player(player.id):
                 join_room(game.id)
                 join_room(token)
 
@@ -69,7 +69,7 @@ def handle_start_game(id):
     game.start_game()
     gameState = game.get_game_state()
     emit('game_state_update', gameState, room=game.id)
-    for player in game.players.values():
+    for player in game.players.get_players():
         cards = [card.to_dict(False) for card in player.cards]
         emit('set_cards', cards, room=player.token)
     emit('game_start', id, room='lobby')
@@ -151,7 +151,7 @@ def handle_lose_influence(data):
     card_id = data.get('cardId')
 
     game.handle_lose_influence(player_id, card_id)
-    player = game.players[player_id]
+    player = game.players.get_player(player_id)
     cards = [card.to_dict(False) for card in player.cards]
     emit('set_cards', cards, room=player.token)
 
@@ -167,7 +167,7 @@ def handle_resolve_exchange_state(data):
     game = games.get_game(game_id)
     selected_card_ids = data.get('selectedCardIds')
     game.handle_resolve_exchange(player_id, selected_card_ids)
-    player = game.players[player_id]
+    player = game.players.get_player(player_id)
     cards = [card.to_dict(False) for card in player.cards]
     game.move_turn()
     game_state = game.get_game_state()

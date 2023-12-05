@@ -1,4 +1,5 @@
 from server.Game.Deck import influences
+from server.Players import Players
 
 class BlockState:
     def __init__(self):
@@ -10,7 +11,7 @@ class BlockState:
         self.pending_player_ids = []
         self.player_ids = []
 
-    def activate_block_state(self, action_id, source_id, players, target_id = None):
+    def activate_block_state(self, action_id, source_id, players: Players, target_id = None):
         self.active = True
         self.action_id = action_id
         self.source_id = source_id
@@ -21,13 +22,13 @@ class BlockState:
         # All players can block foreign aid (make sure they haven't lost)
         if action_id == 2:
             pending_player_ids = []
-            for player in players.values():
+            for player in players.get_players():
                 if player.id != source_id and not player.lost:
                     pending_player_ids.append(player.id)
             self.pending_player_ids = pending_player_ids
         # Only the target player can block (will be assassinate or steal)
         else:
-            if players[target_id].lost:
+            if players.get_player(target_id).lost:
                 raise Exception('Blocked player has already lost')
             self.pending_player_ids = [target_id]
 

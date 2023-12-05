@@ -13,7 +13,7 @@ def get_games():
             'name': game.name,
             'id': game.id,
             'isStarted': game.started,
-            'numPlayers': len(game.players),
+            'numPlayers': len(game.players.get_players()),
             'totalPlayers': game.num_players,
         }
         res.append(data)

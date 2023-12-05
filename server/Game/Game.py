@@ -1,8 +1,4 @@
-import random
-import string
-from server.Game.Deck import Deck, influences_dict
-import asyncio
-import time
+from server.Game.Deck import Deck
 from server.Game.BlockState import BlockState
 from server.Game.ChallengeState import ChallengeState
 from server.Game.LoseInfluenceState import LoseInfluenceState
@@ -11,7 +7,7 @@ from server.Game.Action import Action
 from server.Game.ExchangeState import ExchangeState
 from server.Game.UnresolvedAction import UnresolvedAction
 from server.Game.Player import Player
-# from app import socketio
+from server.Players import Players
 
 # Action attributes: (name, ID, card claimed, cards blocking, cost)
 actions_dict = {
@@ -27,7 +23,7 @@ actions_dict = {
 class Game:
     def __init__(self, name, id, num_players, turn_timer_enabled, turn_length, socket):
         self.name = name
-        self.players = {}
+        self.players = Players(False)
         self.turn_order_ids = []
         self.id = id
         self.started = False
@@ -53,19 +49,18 @@ class Game:
         self.deck = Deck()
         self.reset_states()
         self.initialize_players()
-        self.turn_order_ids = list(self.players.keys())
+        self.turn_order_ids = [player.id for player in self.players.get_players()]
         first_player = self.turn_order_ids[0]
-        self.players[first_player].is_turn = True
-        self.block_state.player_ids = list(self.players.keys())
-        self.challenge_state.player_ids = list(self.players.keys())
+        self.players.get_player(first_player).is_turn = True
+        self.block_state.player_ids = list(self.players.get_players())
+        self.challenge_state.player_ids = list(self.players.get_players())
         self.started = True
 
     def add_player(self, player):
-        if player.id not in self.players:
-            self.players[player.id] = player
+        self.players.add_player(player)
 
     def initialize_players(self):
-        for player in self.players.values():
+        for player in self.players.get_players():
             player.coins = 2
             player.cards = self.deck.draw(2)
             player.is_turn = False
@@ -73,7 +68,7 @@ class Game:
     
     def get_player_data(self):
         player_data = []
-        for player in self.players.values():
+        for player in self.players.get_players():
             data = player.to_dict()
             player_data.append(data)
         return player_data
@@ -100,7 +95,7 @@ class Game:
     
     def handle_action(self, action_id, source_id, target_id):
         action = actions_dict[action_id]
-        player = self.players[source_id]
+        player = self.players.get_player(source_id)
         if action.cost > player.coins:
             return 'You need more coins to take this action.'
         else:
@@ -117,7 +112,7 @@ class Game:
             self.resolve_action(action_id, source_id, target_id)
     
     def handle_lose_influence(self, player_id, card_id):
-        player = self.players[player_id]
+        player = self.players.get_player(player_id)
         player.lose_influence(card_id)
 
         self.over = self.check_game_over()
@@ -146,7 +141,7 @@ class Game:
                 # Resolve the action (before block if applicable)
 
                 # If the player lost in the challenge state, we need to take the necessary action.
-                if self.players.get(target_id) and self.players.get(target_id).lost:
+                if self.players.has_player(target_id) and self.players.get_player(target_id).lost:
                     if action_id == 7:
                         self.handle_steal(source_id, target_id, True)
                     else:
@@ -158,7 +153,7 @@ class Game:
 
     def check_game_over(self):
         players_left = 0
-        for player in self.players.values():
+        for player in self.players.get_players():
             if not player.lost:
                 players_left += 1
         if players_left >= 2:
@@ -257,14 +252,14 @@ class Game:
     # return the player with updated cards if we find, otherwise we return None
     def handle_revealed_card(self, player_id, card_id):
         # We should only ever get here from a challenge state
-        player = self.players[player_id]
+        player = self.players.get_player(player_id)
         card = next((card for card in player.cards if card.id == card_id), None)
         if not card:
             raise Exception('Player did not reveal a card they have')
         is_correct_card = card.type_id == self.challenge_state.card_claimed.type_id
         # Challenger loses card
         if is_correct_card:
-            player = self.players[self.challenge_state.source_id]
+            player = self.players.get_player(self.challenge_state.source_id)
             self.replace_card_for_player(player, card.id)
             update_card_player = player
 
@@ -280,7 +275,7 @@ class Game:
             return update_card_player
         # Player challenged loses card
         else:
-            player = self.players.get(player_id)
+            player = self.players.get_player(player_id)
             player.lose_influence(card_id)
             cards = [card.to_dict(False) for card in player.cards]
             self.socket.emit('set_cards', cards, room=player.token)
@@ -315,22 +310,22 @@ class Game:
             raise Exception('Invalid card index')
 
     def handle_income(self, source_id):
-        self.players[source_id].coins += 1
+        self.players.get_player(source_id).coins += 1
         self.move_turn()
 
     def handle_foreign_aid(self, source_id, block_state_resolved = False):
         if block_state_resolved:
-            self.players[source_id].coins += 2
+            self.players.get_player(source_id).coins += 2
             self.move_turn()
         else:
             self.block_state.activate_block_state(2, source_id, self.players, None)
 
     def handle_coup(self, source_id, target_id):
-        target_player = self.players[target_id]
+        target_player = self.players.get_player(target_id)
         self.lose_influence_state.activate_lose_influence_state(target_player.id, False)
     
     def handle_tax(self, source_id):
-        self.players[source_id].coins += 3
+        self.players.get_player(source_id).coins += 3
         self.move_turn()
     
     def handle_assassinate(self, source_id, target_id, block_state_resolved = False):
@@ -340,22 +335,22 @@ class Game:
             self.block_state.activate_block_state(5, source_id, self.players, target_id)
     
     def handle_exchange(self, source_id):
-        player = self.players[source_id]
+        player = self.players.get_player(source_id)
         self.exchange_state.activate_exchange_state(player, self.deck)
         cards = [card.to_dict(False) for card in self.exchange_state.cards]
         self.socket.emit('update_exchange_cards', cards, room=player.token)
     
     def handle_steal(self, source_id, target_id, block_state_resolved = False):
         if block_state_resolved:
-            coins_stolen = min(2, self.players[target_id].coins)
-            self.players[source_id].coins += coins_stolen
-            self.players[target_id].coins -= coins_stolen
+            coins_stolen = min(2, self.players.get_player(target_id).coins)
+            self.players.get_player(source_id).coins += coins_stolen
+            self.players.get_player(target_id).coins -= coins_stolen
             self.move_turn()
         else:
             self.block_state.activate_block_state(7, source_id, self.players, target_id)
     
     def handle_resolve_exchange(self, player_id, selected_card_ids: list[int]):
-        player = self.players[player_id]
+        player = self.players.get_player(player_id)
         selection_count = self.exchange_state.expected_exchange_count
         if selection_count != len(selected_card_ids):
             raise Exception('Player selected wrong number of cards in Exchange')
@@ -383,11 +378,11 @@ class Game:
     def move_turn(self):
         # TODO: MOVE TO next player that IS NOT LOST
         active_id = None
-        for id, player in self.players.items():
+        for player in self.players.get_players():
             if player.is_turn:
                 if active_id:
                     raise Exception("More than 1 player's turn at a time")
-                active_id = id
+                active_id = player.id
                 player.is_turn = False
         if not active_id:
             raise Exception("No active player")
@@ -397,13 +392,13 @@ class Game:
         looked_at = 0
         next_player_set = False
         look_index = (current_player_index + 1) % len(self.turn_order_ids)
-        while looked_at < len(self.players) and not next_player_set:
+        while looked_at < len(self.players.get_players()) and not next_player_set:
             next_player_id = self.turn_order_ids[look_index]
-            if next_player_id not in self.players:
+            if not self.players.has_player(next_player_id):
                 raise Exception("Next player Id not found")
-            if not self.players[next_player_id].lost:
+            if not self.players.get_player(next_player_id).lost:
                 next_player_set = True
-                self.players[next_player_id].is_turn = True
+                self.players.get_player(next_player_id).is_turn = True
             look_index = (look_index + 1) % len(self.turn_order_ids)
             looked_at += 1
         if not next_player_set:
@@ -412,7 +407,7 @@ class Game:
         self.reset_states()
 
     def get_player_turn(self):
-        players = self.players.values()
+        players = self.players.get_players()
         for player in players:
             if player.is_turn:
                 return player.id
@@ -424,8 +419,3 @@ class Game:
         self.reveal_card_state = RevealCardState()
         self.exchange_state = ExchangeState()
         self.unresolved_action = UnresolvedAction()
-            
-    def start_timer(self):
-         for _ in range(self.turn_length, 0, -1):
-            self.time_left -= 1
-            time.sleep(1)

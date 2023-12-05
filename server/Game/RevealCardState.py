@@ -4,7 +4,7 @@ class RevealCardState:
         self.revealer_id = None
         self.challenger_id = None
 
-    def activate_reveal_card_state(self, revealer_id, challenger_id):
+    def activate(self, revealer_id, challenger_id):
         self.active = True
         self.revealer_id = revealer_id
         self.challenger_id = challenger_id

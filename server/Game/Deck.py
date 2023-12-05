@@ -2,22 +2,6 @@ import random
 from server.Game.Card import Card
 from server.Game.Card import Influence
 
-# cards = [
-#             Card(1, 'Duke', 4, 2, False),
-#             Card(2, 'Assassin', 5, None, False),
-#             Card(3, 'Captain', 7, 7, False),
-#             Card(4, 'Ambassador', 6, 7, False),
-#             Card(5, 'Contessa', None, 5, False),
-#         ]
-
-influences = [
-            Influence(1, 'Duke', 4, 2),
-            Influence(2, 'Assassin', 5, None),
-            Influence(3, 'Captain', 7, 7),
-            Influence(4, 'Ambassador', 6, 7),
-            Influence(5, 'Contessa', None, 5),
-        ]
-
 influences_dict = {
             1: Influence(1, 'Duke', 4, 2),
             2: Influence(2, 'Assassin', 5, None),
@@ -25,14 +9,6 @@ influences_dict = {
             4: Influence(4, 'Ambassador', 6, 7),
             5: Influence(5, 'Contessa', None, 5),
         }
-
-# cards_dict = {
-#             1: Card(1, 1, 'Duke', 4, 2, False),
-#             2: Card(2, 2, 'Assassin', 5, None, False),
-#             3: Card(3, 3, 'Captain', 7, 7, False),
-#             4: Card(4, 4, 'Ambassador', 6, 7, False),
-#             5: Card(5, 5, 'Contessa', None, 5, False),
-#         }
 
 total_cards = 15
 

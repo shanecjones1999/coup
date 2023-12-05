@@ -1,4 +1,4 @@
-from server.Game.Deck import influences
+from server.Game.Deck import influences_dict
 from server.Players import Players
 
 class BlockState:
@@ -11,12 +11,12 @@ class BlockState:
         self.pending_player_ids = []
         self.player_ids = []
 
-    def activate_block_state(self, action_id, source_id, players: Players, target_id = None):
+    def activate(self, action_id, source_id, players: Players, target_id = None):
         self.active = True
         self.action_id = action_id
         self.source_id = source_id
         self.target_id = target_id
-        for influence in influences:
+        for influence in influences_dict.values():
             if influence.block_action_id == action_id:
                 self.block_cards.append(influence.to_dict())
         # All players can block foreign aid (make sure they haven't lost)

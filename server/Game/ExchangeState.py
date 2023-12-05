@@ -5,7 +5,7 @@ class ExchangeState:
         self.cards = []
         self.expected_exchange_count = 0
 
-    def activate_exchange_state(self, player, deck):
+    def activate(self, player, deck):
         self.active = True
         self.player_id = player.id
         self.expected_exchange_count = sum(1 for card in player.cards if not card.revealed)

@@ -1,4 +1,4 @@
-from server.Utils.TokenUtils import generate_token
+from server.Utils.AuthUtils import generate_token
 from server.Game.Player import Player
 from server.Globals import *
 

@@ -5,8 +5,8 @@ from server.CreateApp import socketio
 class Games:
     def __init__(self):
         self.games:Dict[str, Game] = {}
-        appleGame = Game('Apple Game', 'apple', 4, True, 30, socketio)
-        bananaGame = Game('Banana Game', 'banana', 5, False, 40, socketio)
+        appleGame = Game('Apple Game', 4, True, 30, socketio)
+        bananaGame = Game('Banana Game', 5, False, 40, socketio)
         self.add_game(appleGame)
         self.add_game(bananaGame)
     

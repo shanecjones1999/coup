@@ -13,7 +13,7 @@ class ChallengeState:
         self.from_block = False
         self.pending_player_ids = []
 
-    def activate_challenge_state(self, card_claimed_id, action_id, source_id, from_block, players: Players, target_id = None):
+    def activate(self, card_claimed_id, action_id, source_id, from_block, players: Players, target_id = None):
         self.active = True
         self.card_claimed = influences_dict[card_claimed_id]
         self.action_id = action_id

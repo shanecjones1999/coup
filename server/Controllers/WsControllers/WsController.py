@@ -66,7 +66,7 @@ def handle_join_game(data):
 @socketio.on('start_game')
 def handle_start_game(id):
     game = games.get_game(id)
-    game.start_game()
+    game.start()
     gameState = game.get_game_state()
     emit('game_state_update', gameState, room=game.id)
     for player in game.players.get_players():

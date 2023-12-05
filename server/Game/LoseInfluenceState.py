@@ -8,7 +8,7 @@ class LoseInfluenceState:
 
     # who is losing influence
     # if they only have one card, they lose
-    def activate_lose_influence_state(self, player_id, from_reveal_state):
+    def activate(self, player_id, from_reveal_state):
         self.active = True
         self.player_id = player_id
         self.from_reveal_state = from_reveal_state

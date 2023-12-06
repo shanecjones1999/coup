@@ -183,7 +183,7 @@ class Game:
             self.handle_exchange(source_id)
         elif action_id == 7:
             self.handle_steal(source_id, target_id, block_state_resolved)
-        case _:
+        else:
             raise Exception("Invalid action taken:", action_id)
 
     def handle_pass_challenge(self, player_id):

@@ -48,6 +48,7 @@ module.exports = function (environment) {
   }
 
   if (environment === 'production') {
+    ENV.API_HOST = 'ec2-18-116-132-195.us-east-2.compute.amazonaws.com';
     // here you can enable a production-specific feature
   }
 

@@ -7,6 +7,8 @@ from server.Game.Action import Action
 from server.Game.ExchangeState import ExchangeState
 from server.Game.UnresolvedAction import UnresolvedAction
 from server.Game.Player import Player
+from server.ChatLog import ChatLog
+from server.Game.Logs import Logs
 from server.Players import Players
 import random
 import string
@@ -41,6 +43,8 @@ class Game:
         self.reveal_card_state = RevealCardState()
         self.exchange_state = ExchangeState()
         self.unresolved_action = UnresolvedAction()
+        self.chat_log = ChatLog()
+        self.logs = Logs()
         self.socket = socket
 
     def start(self):
@@ -92,6 +96,8 @@ class Game:
             'revealCardState': reveal_card_state,
             'exchangeState': exchange_state,
             'over': self.over,
+            'gameLogs': self.logs.get_logs(),
+            'chatLog': self.get_messages(),
         }
     
     def handle_action(self, action_id, source_id, target_id):
@@ -415,3 +421,10 @@ class Game:
         self.reveal_card_state = RevealCardState()
         self.exchange_state = ExchangeState()
         self.unresolved_action = UnresolvedAction()
+
+    def add_message(self, player_id, message):
+        player_name = self.players.get_player(player_id)
+        self.chat_log.add_message(player_name, message)
+    
+    def get_messages(self):
+        return self.chat_log.get_messages()

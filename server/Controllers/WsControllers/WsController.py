@@ -23,6 +23,16 @@ def handle_disconnect():
         # Handle the exception, for example, log the error
         print(f"An error occurred: {str(e)}")
 
+@socketio.on('message')
+def handle_messsage(data):
+    game_id = data.get('gameId')
+    player_id = data.get('playerId')
+    message = data.get('message')
+    if game_id:
+        game = games.get_game(game_id)
+        game.add_message(player_id, message)
+        emit('message_update', game.get_messages(), room=game.id)
+
 @socketio.on('leave_lobby')
 def handle_leave_lobby(token):
     name = lobby.remove_player(token)

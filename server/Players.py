@@ -8,9 +8,8 @@ class Players:
 
     def add_player(self, player: Player):
         lookup_value = player.token if self.use_token else player.id
-        if lookup_value in self.players:
-            raise Exception('Trying to add duplicate player id')
-        self.players[lookup_value] = player
+        if lookup_value not in self.players:
+            self.players[lookup_value] = player
 
     def remove_player(self, id):
         if id not in self.players:

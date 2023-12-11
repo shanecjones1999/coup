@@ -4,6 +4,11 @@ from server.Globals import *
 
 lobby_blueprint = Blueprint('lobby', __name__)
 
+# @lobby_blueprint.route('/games', methods=['GET'])
+# def index():
+#     print('Here lobby')
+#     return send_from_directory('../client/dist', 'index.html')
+
 @lobby_blueprint.route('/api/getGames', methods=['GET'])
 def get_games():
     res = []

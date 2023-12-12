@@ -106,6 +106,8 @@ export default class GameController extends Controller {
         return this.exchangeState.active;
     }
 
+    @alias('model.gameState.chatLog') chatLog;
+
     @tracked selectedPlayerId = undefined;
 
     actions = [
@@ -130,6 +132,12 @@ export default class GameController extends Controller {
             'update_exchange_cards',
             this.handleUpdateExchangeCards.bind(this)
         );
+        this.websocket.socket.on('message_update', this.handleMessageUpdate.bind(this));
+    }
+
+    handleMessageUpdate(message) {
+        const newChat = [...this.model.gameState.chatLog, message];
+        set(this.model.gameState, 'chatLog', newChat);
     }
 
     handleLeaveGame(id) {
@@ -218,6 +226,17 @@ export default class GameController extends Controller {
             cardId: cardId,
         };
         this.websocket.socket.emit('lose_influence', data);
+    }
+
+    @action
+    sendMessage(message) {
+        const playerId = this.player.id;
+        const data = {
+            gameId: this.model.gameId,
+            playerId: playerId,
+            message: message
+        };
+        this.websocket.socket.emit('message', data);
     }
 
     @tracked canSelectPlayer = false;

@@ -1,6 +1,6 @@
 {{page-title "Game"}}
 <div>
-    <Chat/>
+    <Chat @sendMessage={{this.sendMessage}} @messages={{this.chatLog}}/>
     <div>
         {{#if this.started}}
             <p>Game has started!</p>

@@ -22,6 +22,9 @@ class Players:
         #     raise Exception('Trying to find player id that does not exist')
         return self.players.get(id)
     
+    def get_player_name(self, id):
+        return self.players.get(id).name
+    
     def get_players(self):
         return self.players.values()
     

@@ -1,6 +1,5 @@
 import random
 import string
-from server.Game.Card import Card
 
 class Player:
     def __init__(self, name: string, token: string):
@@ -12,15 +11,18 @@ class Player:
         self.is_turn = False
         self.lost = False
     
-    def lose_influence(self, card_id) -> None:
+    def lose_influence(self, card_id):
         card_lost = False
+        lost_card = None
         for card in self.cards:
             if card.id == card_id and not card.revealed and not card_lost:
                 card.revealed = True
                 card_lost = True
+                lost_card = card
         if not card_lost:
             raise Exception("Card not lost")
         self.update_lost()
+        return lost_card
 
     def update_lost(self) -> None:
         lost = True

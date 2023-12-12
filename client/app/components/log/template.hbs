@@ -1,0 +1,11 @@
+<div class="chat-container">
+    <div class="chat-content">
+        {{#each @messages as |chat|}}
+            {{#if @isChat}}
+                <div class="chat-message">{{chat.name}}: {{chat.message}}</div>
+            {{else}}
+            <div class="chat-message">{{chat}}</div>
+            {{/if}}
+        {{/each}}
+    </div>
+</div>

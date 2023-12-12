@@ -30,8 +30,8 @@ def handle_messsage(data):
     message = data.get('message')
     if game_id:
         game = games.get_game(game_id)
-        game.add_message(player_id, message)
-        emit('message_update', game.get_messages(), room=game.id)
+        msg = game.add_message(player_id, message)
+        emit('message_update', msg, room=game.id)
 
 @socketio.on('leave_lobby')
 def handle_leave_lobby(token):

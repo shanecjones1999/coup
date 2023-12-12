@@ -1,6 +1,7 @@
+<Log @messages={{@messages}} @isChat={{true}}/>
 <BsForm @model={{this}} @onSubmit={{this.submit}} as |form|>
-  <form.element @label="Chat" @property="message" as |el|>
-    <el.control placeholder="Message" class="border-info" />
-  </form.element>
-  <form.submitButton>Submit</form.submitButton>
+    <form.element @label="Chat" @property="message" as |el|>
+        <el.control placeholder="Message" class="border-info" />
+    </form.element>
+    <form.submitButton>Submit</form.submitButton>
 </BsForm>

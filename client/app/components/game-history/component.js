@@ -6,12 +6,5 @@ import ENV from 'client/config/environment';
 import { set } from '@ember/object';
 import { computed } from '@ember/object';
 
-export default class Chat extends Component {
-    @tracked message = ''
-
-    @action
-    submit() {
-        this.args.sendMessage(this.message);
-        set(this, 'message', '');
-    }
+export default class GameHistory extends Component {
 }

@@ -108,6 +108,8 @@ export default class GameController extends Controller {
 
     @alias('model.gameState.chatLog') chatLog;
 
+    @alias('model.gameState.gameLogs') gameHistory;
+
     @tracked selectedPlayerId = undefined;
 
     actions = [

@@ -5,7 +5,6 @@
     flex-direction: column-reverse;
 
     .chat-message {
-        //height: 20px;
         transform: translateZ(0); /* fixes a bug in Safari iOS where the scroller doesn't update */
     }
 }

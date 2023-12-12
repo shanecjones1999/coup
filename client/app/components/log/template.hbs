@@ -1,10 +1,10 @@
 <div class="chat-container">
     <div class="chat-content">
-        {{#each @messages as |message|}}
-            {{#if @forChat}}
-                <div class="chat-message">{{message.name}}: {{message.message}}</div>
+        {{#each @messages as |chat|}}
+            {{#if @isChat}}
+                <div class="chat-message">{{chat.name}}: {{chat.message}}</div>
             {{else}}
-                <div class="chat-message">{{message}}</div>
+            <div class="chat-message">{{chat}}</div>
             {{/if}}
         {{/each}}
     </div>

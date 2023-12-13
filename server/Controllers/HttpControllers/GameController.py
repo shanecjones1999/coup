@@ -44,12 +44,3 @@ def invalidate_session():
         game_state = game.get_game_state()
         socketio.emit('game_state_update', game_state, room=game.id)
     return jsonify('Successfully invalidated session'), 200
-
-@game_blueprint.route('/api/getCurrentUser', methods=['GET'])
-def get_current_user():
-    token = request.headers.get('Authorization')
-    player = players.get_player(token)
-    username = 'INVALID NAME BUG CAUGHT'
-    if (player):
-        username = player.name
-    return jsonify(username), 200

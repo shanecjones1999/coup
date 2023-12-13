@@ -1,10 +1,9 @@
-from typing import Dict
 from server.Game.Game import Game
 from server.CreateApp import socketio
 
 class Games:
     def __init__(self):
-        self.games:Dict[str, Game] = {}
+        self.games: dict[str, Game] = {}
         appleGame = Game('Apple Game', 4, True, 30, socketio)
         bananaGame = Game('Banana Game', 5, False, 40, socketio)
         self.add_game(appleGame)
@@ -22,6 +21,19 @@ class Games:
 
     def get_games(self):
         return self.games.values()
+    
+    def get_games_json(self) -> list[Game]:
+        game_list = []
+        for game in self.get_games():
+            data = {
+                'name': game.name,
+                'id': game.id,
+                'isStarted': game.started,
+                'numPlayers': len(game.players.get_players()),
+                'totalPlayers': game.num_players,
+            }
+            game_list.append(data)
+        return game_list
     
     def has_game(self, game_id):
         return game_id in self.games

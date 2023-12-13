@@ -19,13 +19,13 @@ export default class GamesController extends Controller {
 
     @tracked gameName = '';
 
-    @computed('model.currentLobby')
-    get currentLobby() {
-        return this.model.currentLobby;
+    @computed('model.lobby')
+    get lobby() {
+        return this.model.lobby;
     }
 
-    @computed('model.{currentGames,games}')
-    get currentGames() {
+    @computed('model.games')
+    get games() {
         return this.model.games;
     }
 
@@ -42,7 +42,7 @@ export default class GamesController extends Controller {
     // TODO better logic here
     handleLobbyUpdate(updatedLobby) {
         if (this.model) {
-        set(this.model, 'currentLobby', updatedLobby);
+        set(this.model, 'lobby', updatedLobby);
         }
     }
 

@@ -1,3 +1,88 @@
-<div class="game">
-    <BsButton @type="primary" {{on "click" (fn this.joinGame @game.id)}}>{{@game.name}} ({{@game.numPlayers}}/{{@game.totalPlayers}})</BsButton>
+<div>
+    <Chat @sendMessage={{this.sendMessage}} @messages={{this.chatLog}}/>
+    <GameHistory @messages={{this.gameHistory}} />
+    <div>
+        {{#if this.started}}
+            <p>Game has started!</p>
+        {{/if}}
+        {{#if this.over}}
+            <div>
+                <p>Game is OVER!</p>
+                <BsButton {{on 'click' this.leaveGame}}>Back to lobby</BsButton>
+            </div>
+        {{/if}}
+            <BsButton type="button" {{on 'click' this.startGame}}>Start Game</BsButton>
+    </div>
+    <div>
+        <h2>Game Data</h2>
+        <p>Name: {{this.model.gameState.gameName}}</p>
+        <div class="players">
+            {{#each this.otherPlayers as |player|}}
+                <Player @playerData={{player}} @canSelectPlayer={{this.canSelectPlayer}} @cards={{player.cards}} @selectPlayerId={{this.selectPlayerId}} />            
+            {{/each}}
+        </div>
+    </div>
+    <div>
+        {{#if this.promptBlock}}
+            <BlockState
+                @blockState={{this.blockState}} 
+                @blockAction={{this.block}} 
+                @playerId={{this.player.id}}
+                @pass={{this.passBlock}}
+            />
+        {{/if}}
+        {{#if this.promptChallenge}}
+            <ChallengeState
+                @challengeState={{this.challengeState}}
+                @playerId={{this.player.id}}
+                @challenge={{this.challenge}}
+                @pass={{this.passChallenge}}
+                
+            />
+        {{/if}}
+        {{#if this.promptRevealCard}}
+            <RevealCardState
+                @revealCardState={{this.revealCardState}}
+                @cards={{this.cards}}
+                @revealCard={{this.revealCard}}
+                @playerId={{this.player.id}}
+            />
+        {{/if}}
+        {{#if this.promptLoseInfluenceState}}
+            <LoseInfluenceState
+                @loseInfluenceState={{this.loseInfluenceState}}
+                @cards={{this.cards}}
+                @playerId={{this.player.id}}
+                @loseInfluence={{this.loseInfluence}}
+            />
+        {{/if}}
+        {{#if this.promptExchangeState}}
+            <ExchangeState
+                @exchangeState={{this.exchangeState}}
+                @playerId={{this.player.id}}
+                @selectCard={{this.selectCardToExchange}}
+                @confirmExchange={{this.confirmExchange}}
+                @totalExchangeCards={{this.totalExchangeCards}}
+                @selectedCardIds={{this.selectedCardIds}}
+            />
+        {{/if}}
+    </div>
+    <div>
+        <h2>You</h2>
+        <div class="client-data">
+            <Player 
+                @playerData={{this.player}} 
+                @cards={{this.cards}} 
+                @self={{true}} 
+                @loadId={{this.loadId}} 
+                @highlight={{false}}
+            />
+        </div>
+    </div>
+    <div>
+
+        {{#if (and (eq this.model.playerId this.currentTurnPlayerId) (not this.inActiveState) (not this.over))}}
+            <ActionsSelector @actions={{this.actions}} @initiateAction={{this.initiateAction}} @coins={{this.player.coins}}/>
+        {{/if}}
+    </div>
 </div>

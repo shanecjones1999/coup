@@ -22,7 +22,6 @@ export default class GameRoute extends ProtectedRoute {
         });
 
         const jsonData = await response.json();
-        // controller.playerData = model.gameState.playerData;
 
         const data = { token: token, id: id };
         this.websocket.socket.emit('join_game', data);
@@ -34,15 +33,4 @@ export default class GameRoute extends ProtectedRoute {
             exchangeCards: jsonData.exchangeCards,
         };
     }
-
-    // setupController(controller, model) {
-    //     super.setupController(controller, model);
-    
-    //     // Set additional values on the controller
-    //     const foc = model.gameState.playerData.find(
-    //         (player) => player.id == model.playerId
-    //     );
-    //     console.log(foc)
-    //     controller.set('foc', foc);
-    //   }
 }

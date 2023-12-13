@@ -4,26 +4,12 @@ from server.Globals import *
 
 lobby_blueprint = Blueprint('lobby', __name__)
 
-@lobby_blueprint.route('/api/getGames', methods=['GET'])
-def get_games():
-    res = []
-    for game in games.get_games():
-        # TODO: Func
-        data = {
-            'name': game.name,
-            'id': game.id,
-            'isStarted': game.started,
-            'numPlayers': len(game.players.get_players()),
-            'totalPlayers': game.num_players,
-        }
-        res.append(data)
-    return jsonify(res), 200
-
-@lobby_blueprint.route('/api/getCurrentLobby', methods=['GET'])
-def get_current_lobby():
-    players = lobby.get_players()
-    res = [player.to_dict() for player in players]
-    return jsonify(res), 200
+@lobby_blueprint.route('/api/enterLobby', methods=['GET'])
+def enter_lobby():
+    game_list = games.get_games_json()
+    current_lobby = lobby.get_current_lobby_json()
+    data = {'games': game_list, 'lobby': current_lobby}
+    return jsonify(data), 200
 
 @lobby_blueprint.route('/api/createGame', methods=['POST'])
 def handle_create_game():

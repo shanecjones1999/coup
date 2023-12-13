@@ -1,8 +1,7 @@
 {{page-title "Games"}}
 <div>
-    <p>Hello {{this.model.currentPlayer}}</p>
     <h4>Lobby:</h4>
-        {{#each this.currentLobby as |player|}}
+        {{#each this.lobby as |player|}}
             <p>{{player.name}}</p>
         {{/each}}
     <div class="button-group2">
@@ -21,10 +20,9 @@
         <div class="">
         <h2>Games</h2>
         <div>
-            {{#each this.currentGames as |game|}}
+            {{#each this.games as |game|}}
                 {{#unless game.isStarted}}
-                    {{!-- <button type="button" {{on "click" (fn this.joinGame game.id)}}>{{game.name}}</button> --}}
-                    <Game @game={{game}} />
+                    <EnterGame @game={{game}} />
                 {{/unless}}
             {{/each}}
         </div>

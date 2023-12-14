@@ -171,23 +171,22 @@ class Game:
     # first resolution of action
     def resolve_action(self, action_id, source_id, target_id):
         block_state_resolved = self.block_state.source_id is not None
-        match action_id:
-            case 1:
-                self.handle_income(source_id)
-            case 2:
-                self.handle_foreign_aid(source_id, block_state_resolved)
-            case 3:
-                self.handle_coup(source_id, target_id)
-            case 4:
-                self.handle_tax(source_id)
-            case 5:
-                self.handle_assassinate(source_id, target_id, block_state_resolved)
-            case 6:
-                self.handle_exchange(source_id)
-            case 7:
-                self.handle_steal(source_id, target_id, block_state_resolved)
-            case _:
-                raise Exception("Invalid action taken:", action_id)
+        if action_id == 1:
+            self.handle_income(source_id)
+        elif action_id == 2:
+            self.handle_foreign_aid(source_id, block_state_resolved)
+        elif action_id == 3:
+            self.handle_coup(source_id, target_id)
+        elif action_id == 4:
+            self.handle_tax(source_id)
+        elif action_id == 5:
+            self.handle_assassinate(source_id, target_id, block_state_resolved)
+        elif action_id == 6:
+            self.handle_exchange(source_id)
+        elif action_id == 7:
+            self.handle_steal(source_id, target_id, block_state_resolved)
+        else:
+            raise Exception("Invalid action taken:", action_id)
 
     def handle_pass_challenge(self, player_id):
         self.challenge_state.pending_player_ids.remove(player_id)

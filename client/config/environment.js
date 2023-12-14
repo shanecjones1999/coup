@@ -22,12 +22,13 @@ module.exports = function (environment) {
       // Here you can pass flags/options to your application instance
       // when it is created
     },
-
-    API_HOST: 'http://127.0.0.1:5000',
+    //TESTED HOSTS:
+    // ''
+    API_HOST: '',
   };
 
   if (environment === 'development') {
-    ENV.API_HOST = 'http://127.0.0.1:5000';
+    ENV.API_HOST = '';
     // ENV.APP.LOG_RESOLVER = true;
     // ENV.APP.LOG_ACTIVE_GENERATION = true;
     // ENV.APP.LOG_TRANSITIONS = true;

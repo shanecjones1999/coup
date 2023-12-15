@@ -10,6 +10,8 @@ class BlockState:
         self.block_cards = []
         self.pending_player_ids = []
         self.player_ids = []
+        self.default_message = 'Waiting for PLAYER_NAME to block or pass '
+        self.blocked_player_message = 'PLAYER_NAME is attempting to X'
 
     def activate(self, action_id, source_id, players: Players, target_id = None):
         self.active = True

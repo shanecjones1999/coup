@@ -286,6 +286,7 @@ class Game:
             if self.reveal_card_state.active:
                 self.reveal_card_state.active = False
             # The rest of the logic will be handled in handle_lose_influence_state from here
+            self.reveal_card_state.active = False
             self.lose_influence_state.activate(challenger_id, True)
             return update_card_player
         # Player challenged loses card

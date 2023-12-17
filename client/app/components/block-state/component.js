@@ -10,6 +10,6 @@ export default class BlockState extends Component {
     @computed('args.{blockState,playerId}')
     get isTarget() {
         return this.args.blockState.targetId == this.args.playerId || 
-        (this.args.blockState.actionId == 2 && this.args.playerId != this.args.blockState.sourceId);
+        (this.args.blockState.actionId == 2 && this.args.playerId != this.args.blockState.sourceId && this.args.blockState.pendingPlayerIds.includes(this.args.playerId));
     }
 }

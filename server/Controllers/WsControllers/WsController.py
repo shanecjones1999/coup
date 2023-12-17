@@ -1,6 +1,7 @@
 from flask import request
 from flask_socketio import emit, join_room, leave_room
 from server.Globals import *
+from server.Game.LoseInfluenceState import LoseInfluenceState
 
 @socketio.on('connect')
 def handle_connect():
@@ -60,18 +61,20 @@ def handle_invalidate_session(token):
 def handle_join_game(data):
     token = data.get('token')
     game_id = data.get('id')
-    if games.has_game(game_id):
-        if lobby.has_player(token):
-            game = games.get_game(game_id)
-            game_state = game.get_game_state()
-            emit('game_state_update', game_state, room=game.id)
-            join_room(game.id)
-            join_room(token)
-            lobby.remove_player(token)
-            lobby_players = lobby.get_players()
-            ret = [player.to_dict() for player in lobby_players]
-            leave_room('lobby')
-            emit('lobby_update', ret, room='lobby')
+    if not games.has_game(game_id):
+        raise Exception('Missing game')
+    if not lobby.has_player(token):
+        raise Exception('Missing player')
+    game = games.get_game(game_id)
+    game_state = game.get_game_state()
+    emit('game_state_update', game_state, room=game.id)
+    join_room(game.id)
+    join_room(token)
+    lobby.remove_player(token)
+    lobby_players = lobby.get_players()
+    ret = [player.to_dict() for player in lobby_players]
+    leave_room('lobby')
+    emit('lobby_update', ret, room='lobby')
 
 @socketio.on('start_game')
 def handle_start_game(id):
@@ -165,7 +168,7 @@ def handle_lose_influence(data):
     cards = [card.to_dict(False) for card in player.cards]
     emit('set_cards', cards, room=player.token)
 
-    game.lose_influence_state.reset()
+    game.lose_influence_state = LoseInfluenceState()
 
     game_state = game.get_game_state()
     emit('game_state_update', game_state, room=game.id)

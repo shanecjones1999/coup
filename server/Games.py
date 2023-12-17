@@ -50,3 +50,8 @@ class Games:
             if game.name.upper() == name.upper():
                 return False
         return True
+    
+    def remove_player(self, player_id):
+        for game in self.games.values():
+            if game.players.has_player(player_id):
+                game.players.remove_player(player_id)

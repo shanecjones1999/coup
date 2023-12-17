@@ -12,6 +12,13 @@ def catch_all(path):
     return app.send_static_file("index.html")
 
 @app.route('/games')
-def catch_all2():
-    print('catch_all2')
+def games_route():
     return app.send_static_file("index.html")
+
+@app.route('/game/<game_id>')
+def game_route(game_id):
+    print(f'id: {game_id}')
+    return app.send_static_file("index.html")
+
+# TODO
+# Need a route for /game/id

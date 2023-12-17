@@ -8,5 +8,10 @@ socketio = SocketIO(app, cors_allowed_origins="*")
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def catch_all(path):
-    print("Reached this point")
+    print(f'path: {path}')
+    return app.send_static_file("index.html")
+
+@app.route('/games')
+def catch_all2():
+    print('catch_all2')
     return app.send_static_file("index.html")

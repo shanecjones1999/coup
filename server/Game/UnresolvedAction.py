@@ -12,13 +12,6 @@ class UnresolvedAction:
         self.target_id = target_id
         self.resolved = False
 
-    def reset(self):
-        self.action_id = None
-        self.source_id = None
-        self.target_id = None
-        self.resolved = True
-        self.successfully_blocked = False
-
     def to_dict(self):
         return {
             'actionId': self.action_id,

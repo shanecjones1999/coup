@@ -1,6 +1,7 @@
 from flask import request
 from flask_socketio import emit, join_room, leave_room
 from server.Globals import *
+from server.Game.LoseInfluenceState import LoseInfluenceState
 
 @socketio.on('connect')
 def handle_connect():
@@ -165,7 +166,7 @@ def handle_lose_influence(data):
     cards = [card.to_dict(False) for card in player.cards]
     emit('set_cards', cards, room=player.token)
 
-    game.lose_influence_state.reset()
+    game.lose_influence_state = LoseInfluenceState()
 
     game_state = game.get_game_state()
     emit('game_state_update', game_state, room=game.id)

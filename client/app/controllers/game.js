@@ -16,6 +16,11 @@ export default class GameController extends Controller {
             this.handleGameStateUpdate.bind(this)
         );
         this.websocket.socket.on('message_update', this.handleMessageUpdate.bind(this));
+        this.websocket.socket.on('set_cards', this.handleSetCards.bind(this));
+        this.websocket.socket.on(
+            'update_exchange_cards',
+            this.handleUpdateExchangeCards.bind(this)
+        );
     }
 
     handleMessageUpdate(message) {
@@ -25,5 +30,13 @@ export default class GameController extends Controller {
 
     handleGameStateUpdate(gameState) {
         set(this.model, 'gameState', gameState);
+    }
+
+    handleSetCards(cards) {
+        set(this.model, 'cards', cards);
+    }
+
+    handleUpdateExchangeCards(cards) {
+        set(this.model, 'exchangeCards', cards);
     }
 }

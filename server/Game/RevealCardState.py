@@ -1,4 +1,6 @@
-class RevealCardState:
+from server.Game.BaseState import BaseState
+
+class RevealCardState(BaseState):
     def __init__(self):
         self.active = False
         self.revealer_id = None
@@ -8,11 +10,6 @@ class RevealCardState:
         self.active = True
         self.revealer_id = revealer_id
         self.challenger_id = challenger_id
-
-    def reset(self):
-        self.active = False
-        self.revealer_id = None
-        self.challenger_id = None
 
     def to_dict(self):
         return {

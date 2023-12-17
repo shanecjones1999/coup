@@ -6,6 +6,10 @@ lobby_blueprint = Blueprint('lobby', __name__)
 
 @lobby_blueprint.route('/api/enterLobby', methods=['GET'])
 def enter_lobby():
+    token = request.headers.get('Authorization')
+    player = players.get_player(token)
+    if player:
+        games.remove_player(player.id)
     game_list = games.get_games_json()
     current_lobby = lobby.get_current_lobby_json()
     data = {'games': game_list, 'lobby': current_lobby}

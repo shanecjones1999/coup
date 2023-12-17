@@ -1,4 +1,6 @@
-class LoseInfluenceState:
+from server.Game.BaseState import BaseState
+
+class LoseInfluenceState(BaseState):
     def __init__(self):
         self.active = False
         self.player_id = None
@@ -13,12 +15,6 @@ class LoseInfluenceState:
         self.player_id = player_id
         self.from_reveal_state = from_reveal_state
     
-    def reset(self):
-        self.active = False
-        self.player_id = None
-        self.from_reveal_state = None
-
-
     def to_dict(self):
         return {
             'active': self.active,

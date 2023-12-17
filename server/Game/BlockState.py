@@ -1,7 +1,8 @@
 from server.Game.Deck import influences_dict
 from server.Players import Players
+from server.Game.BaseState import BaseState
 
-class BlockState:
+class BlockState(BaseState):
     def __init__(self):
         self.active = False
         self.action_id = None
@@ -10,8 +11,8 @@ class BlockState:
         self.block_cards = []
         self.pending_player_ids = []
         self.player_ids = []
-        self.default_message = 'Waiting for PLAYER_NAME to block or pass '
-        self.blocked_player_message = 'PLAYER_NAME is attempting to X'
+        self.default_message = ''
+        self.blocked_player_message = ''
 
     def activate(self, action_id, source_id, players: Players, target_id = None):
         self.active = True
@@ -34,14 +35,6 @@ class BlockState:
                 raise Exception('Blocked player has already lost')
             self.pending_player_ids = [target_id]
 
-    def reset(self):
-        self.active = False
-        self.action_id = None
-        self.source_id = None
-        self.target_id = None
-        self.block_cards = []
-        self.pending_player_ids = []
-
     def to_dict(self):
         return { 
                 'active': self.active, 
@@ -51,4 +44,3 @@ class BlockState:
                 'blockCards': self.block_cards,
                 'pendingPlayerIds': self.pending_player_ids,
             }
-    

@@ -276,7 +276,8 @@ export default class Game extends Component {
     selectCardToExchange(card) {
         const exchangeCount = this.exchangeState.expectedExchangeCount;
 
-        if (this.selectedCardIds.find(c => c.id == card.id)) {
+        // If we already selected the card, do not add it.
+        if (this.selectedCardIds.find(c => c == card.id)) {
             return;
         }
 

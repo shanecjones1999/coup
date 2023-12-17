@@ -8,7 +8,7 @@ from server.Game.ExchangeState import ExchangeState
 from server.Game.UnresolvedAction import UnresolvedAction
 from server.Game.Player import Player
 from server.ChatLog import ChatLog
-from server.Game.Log import Log
+from server.Game.Audit import Audit
 from server.Players import Players
 import random
 import string
@@ -44,7 +44,7 @@ class Game:
         self.exchange_state = ExchangeState()
         self.unresolved_action = UnresolvedAction()
         self.chat_log = ChatLog()
-        self.log = Log()
+        self.audit = Audit()
         self.socket = socket
 
     def start(self):
@@ -96,7 +96,7 @@ class Game:
             'revealCardState': reveal_card_state,
             'exchangeState': exchange_state,
             'over': self.over,
-            'gameLogs': self.log.get_logs(),
+            'gameLogs': self.audit.get_audits(),
             'chatLog': self.get_messages(),
         }
     
@@ -111,6 +111,7 @@ class Game:
         self.unresolved_action.set(action_id, source_id, target_id)
 
         if action.challengable:
+            self.deactivate_states()
             self.challenge_state.activate(action.card_id, action.id, source_id, False, self.players, target_id)
         else:
             self.resolve_action(action_id, source_id, target_id)
@@ -120,7 +121,7 @@ class Game:
         card = player.lose_influence(card_id)
         player_name = self.players.get_player_name(player_id)
         msg = f"{player_name} loses their {card.name} influence."
-        self.add_log(msg)
+        self.add_audit(msg)
         self.over = self.check_game_over()
 
         action_id = self.unresolved_action.action_id
@@ -142,7 +143,7 @@ class Game:
                 self.move_turn()
             else:
                 # reset challenge state as block may be challenged later in turn
-                self.challenge_state.reset()
+                self.challenge_state = ChallengeState()
 
                 # if the player lost in the challenge state, we need to take the necessary action.
                 if self.players.has_player(target_id) and self.players.get_player(target_id).lost:
@@ -170,6 +171,9 @@ class Game:
 
     # first resolution of action
     def resolve_action(self, action_id, source_id, target_id):
+        player = self.players.get_player(source_id)
+        if player.lost:
+            raise Exception('Lost player taking action')
         block_state_resolved = self.block_state.source_id is not None
         if action_id == 1:
             self.handle_income(source_id)
@@ -189,17 +193,17 @@ class Game:
             raise Exception("Invalid action taken:", action_id)
 
     def handle_pass_challenge(self, player_id):
+        self.verify_one_active_state()
         self.challenge_state.pending_player_ids.remove(player_id)
         if not self.challenge_state.pending_player_ids:
             action_id = self.challenge_state.action_id
             source_id = self.challenge_state.source_id
             target_id = self.challenge_state.target_id
-            self.challenge_state.active = False
             # Move to block state if the action is blockable
             # Do we want this?
             block_state_already = self.block_state.action_id is not None
             if not block_state_already and actions_dict[self.challenge_state.action_id].block_card_ids:
-                # self.challenge_state.active = False
+                self.deactivate_states()
                 self.block_state.activate(action_id, source_id, self.players, target_id)
             # otherwise resolve the action
             # What if you are challenging a block?
@@ -223,11 +227,11 @@ class Game:
             action_id = self.block_state.action_id
             source_id = self.block_state.source_id
             target_id = self.block_state.target_id
-            self.block_state.active = False
             self.resolve_action_from_block(action_id, source_id, target_id)
     
     # TODO FIX THIS
     def resolve_action_from_block(self, action_id, source_id, target_id):
+        self.verify_one_active_state()
         if action_id == 2:
             self.handle_foreign_aid(source_id, True)
         elif action_id == 5:
@@ -240,23 +244,23 @@ class Game:
             raise Exception("Invalid action taken:", action_id)
 
     def handle_challenge(self, player_challenging_id):
-        if self.challenge_state.active:
-                self.challenge_state.active = False
+        self.verify_one_active_state()
         player_being_challenged_id = self.challenge_state.source_id
+        self.deactivate_states()
         self.reveal_card_state.activate(player_being_challenged_id, player_challenging_id)
         player_challenging_name = self.players.get_player_name(player_challenging_id)
         player_being_challenged_name = self.players.get_player_name(player_being_challenged_id)
         msg = f"{player_challenging_name} challenges {player_being_challenged_name}."
 
     def handle_block(self, block_card_id, blocked_action_id, blocker_id, target_id):
-        # if we were in a block state, it should no longer be active
-        if self.block_state.active:
-            self.block_state.active = False
+        self.verify_one_active_state()
         # All blocks can be challenged
+        self.deactivate_states()
         self.challenge_state.activate(block_card_id, blocked_action_id, blocker_id, True, self.players, target_id)
 
     # return the player with updated cards if we find, otherwise we return None
     def handle_revealed_card(self, player_id, card_id):
+        self.verify_one_active_state()
         # We should only ever get here from a challenge state
         player = self.players.get_player(player_id)
         card = next((card for card in player.cards if card.id == card_id), None)
@@ -265,7 +269,7 @@ class Game:
             raise Exception('Player did not reveal a card they have or they revealed a previously revealed card')
         name = self.players.get_player_name(player_id)
         msg = f"{name} reveals {card.name}."
-        self.add_log(msg)
+        self.add_audit(msg)
 
         is_correct_card = card.type_id == self.challenge_state.card_claimed.type_id
         # Challenger loses card
@@ -274,7 +278,7 @@ class Game:
             self.replace_card_for_player(player, card.id)
 
             msg = f"{name} draws a new card."
-            self.add_log(msg)
+            self.add_audit(msg)
 
             update_card_player = player
 
@@ -283,10 +287,8 @@ class Game:
                 self.unresolved_action.successfully_blocked = True
             challenger_id = self.reveal_card_state.challenger_id
             # Reset reveal_card_state
-            if self.reveal_card_state.active:
-                self.reveal_card_state.active = False
             # The rest of the logic will be handled in handle_lose_influence_state from here
-            self.reveal_card_state.active = False
+            self.deactivate_states()
             self.lose_influence_state.activate(challenger_id, True)
             return update_card_player
         # Player challenged loses card
@@ -304,6 +306,12 @@ class Game:
 
             challenge_on_block = (self.block_state.source_id != None)
             if challenge_on_block:
+                target_player = self.players.get_player(self.block_state.target_id)
+                # If the below case is true, this is the case where the assassinated player
+                # challenged and lost and also claimed 
+                if self.block_state.action_id == 5 and target_player.lost:
+                    self.move_turn()
+                    return
                 # Block becomes void, original action goes through
                 self.resolve_action_from_block(self.block_state.action_id,
                                                self.unresolved_action.source_id,
@@ -313,6 +321,7 @@ class Game:
                 self.move_turn()
 
     def replace_card_for_player(self, player: Player, card_id: int):
+        self.verify_one_active_state()
         index, card = player.remove_card(card_id)
         self.deck.append(card)
         # LIST
@@ -329,7 +338,7 @@ class Game:
         self.players.get_player(source_id).coins += 1
         name = self.players.get_player_name(source_id)
         msg = f"{name} incomes."
-        self.add_log(msg)
+        self.add_audit(msg)
         self.move_turn()
 
     def handle_foreign_aid(self, source_id, block_state_resolved = False):
@@ -337,25 +346,27 @@ class Game:
         if block_state_resolved:
             self.players.get_player(source_id).coins += 2
             msg = f"{name} is attempting to foreign aid."
-            self.add_log(msg)
+            self.add_audit(msg)
             self.move_turn()
         else:
             msg = f"{name} foreign aids."
-            self.add_log(msg)
+            self.add_audit(msg)
+            self.deactivate_states()
             self.block_state.activate(2, source_id, self.players, None)
 
     def handle_coup(self, source_id, target_id):
         source_name = self.players.get_player_name(source_id)
         target_name = self.players.get_player_name(target_id)
         msg = f"{source_name} coups {target_name}."
-        self.add_log(msg)
+        self.add_audit(msg)
         target_player = self.players.get_player(target_id)
+        self.deactivate_states()
         self.lose_influence_state.activate(target_player.id, False)
     
     def handle_tax(self, source_id):
         name = self.players.get_player_name(source_id)
         msg = f"{name} taxes."
-        self.add_log(msg)
+        self.add_audit(msg)
         self.players.get_player(source_id).coins += 3
         self.move_turn()
     
@@ -364,18 +375,21 @@ class Game:
         target_name = self.players.get_player_name(target_id)
         if block_state_resolved:
             msg = f"{source_name} assassinates {target_name}."
-            self.add_log(msg)
+            self.add_audit(msg)
+            self.deactivate_states()
             self.lose_influence_state.activate(target_id, False)
         else:
             msg = f"{source_name} is attempting to assassinate {target_name}."
-            self.add_log(msg)
+            self.add_audit(msg)
+            self.deactivate_states()
             self.block_state.activate(5, source_id, self.players, target_id)
     
     def handle_exchange(self, source_id):
         name = self.players.get_player_name(source_id)
         msg = f"{name} begins their exchange with the court deck."
-        self.add_log(msg)
+        self.add_audit(msg)
         player = self.players.get_player(source_id)
+        self.deactivate_states()
         self.exchange_state.activate(player, self.deck)
         cards = [card.to_dict(False) for card in self.exchange_state.cards]
         self.socket.emit('update_exchange_cards', cards, room=player.token)
@@ -386,16 +400,18 @@ class Game:
         if block_state_resolved:
             coins_stolen = min(2, self.players.get_player(target_id).coins)
             msg = f"{source_name} steals {coins_stolen} coins from {target_name}."
-            self.add_log(msg)
+            self.add_audit(msg)
             self.players.get_player(source_id).coins += coins_stolen
             self.players.get_player(target_id).coins -= coins_stolen
             self.move_turn()
         else:
             msg = f"{source_name} is attempting to steal from {target_name}."
-            self.add_log(msg)
+            self.add_audit(msg)
+            self.deactivate_states()
             self.block_state.activate(7, source_id, self.players, target_id)
     
     def handle_resolve_exchange(self, player_id, selected_card_ids: list[int]):
+        self.verify_one_active_state()
         player = self.players.get_player(player_id)
         selection_count = self.exchange_state.expected_exchange_count
         if selection_count != len(selected_card_ids):
@@ -420,13 +436,13 @@ class Game:
 
         name = self.players.get_player_name(player_id)
         msg = f"{name} completed their exchange with the court deck."
-        self.add_log(msg)
+        self.add_audit(msg)
 
         # can't move turn here, need to move turn in app.py after emit
         #self.move_turn()
 
     def move_turn(self):
-        # TODO: MOVE TO next player that IS NOT LOST
+        self.verify_one_active_state()
         active_id = None
         for player in self.players.get_players():
             if player.is_turn:
@@ -458,15 +474,9 @@ class Game:
         
         next_player_name = self.players.get_player_name(next_player.id)
         msg = f"Moving to {next_player_name}'s turn."
-        self.add_log(msg)
+        self.add_audit(msg)
 
         self.reset_states()
-
-    def get_player_turn(self):
-        players = self.players.get_players()
-        for player in players:
-            if player.is_turn:
-                return player.id
 
     def reset_states(self):
         self.block_state = BlockState()
@@ -476,12 +486,30 @@ class Game:
         self.exchange_state = ExchangeState()
         self.unresolved_action = UnresolvedAction()
 
+    # There should only be one active state at a time.
+    def verify_one_active_state(self):
+        active_state_count = 0
+        active_state_count += 1 if self.block_state.active else 0
+        active_state_count += 1 if self.challenge_state.active else 0
+        active_state_count += 1 if self.lose_influence_state.active else 0
+        active_state_count += 1 if self.reveal_card_state.active else 0
+        active_state_count += 1 if self.exchange_state.active else 0
+        if active_state_count > 1:
+            raise Exception(f'Too many active states. Counted {active_state_count}.')
+
     def add_message(self, player_id, message):
         player_name = self.players.get_player_name(player_id)
         return self.chat_log.add_message(player_name, message)
     
     def get_messages(self):
         return self.chat_log.get_messages()
-    
-    def add_log(self, msg):
-        self.log.add_log(msg)
+
+    def add_audit(self, audit):
+        self.audit.add_audit(audit)
+
+    def deactivate_states(self):
+        self.challenge_state.deactivate()
+        self.block_state.deactivate()
+        self.exchange_state.deactivate()
+        self.lose_influence_state.deactivate()
+        self.reveal_card_state.deactivate()

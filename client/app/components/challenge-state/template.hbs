@@ -1,5 +1,5 @@
 <div class="challenge-state">
-    {{#if this.isSource}}
+    {{#if (or this.isSource (not this.canChallenge))}}
         <p>Waiting for other players.</p>
     {{else}}
         {{#if (eq @challengeState.actionId 2)}}

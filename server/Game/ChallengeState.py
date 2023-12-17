@@ -1,7 +1,9 @@
 from server.Game.Deck import influences_dict
 from server.Players import Players
+from server.Log import Log
+from server.Game.BaseState import BaseState
 
-class ChallengeState:
+class ChallengeState(BaseState):
     def __init__(self):
         self.active = False
         self.card_claimed = None
@@ -14,6 +16,7 @@ class ChallengeState:
         self.pending_player_ids = []
 
     def activate(self, card_claimed_id, action_id, source_id, from_block, players: Players, target_id = None):
+        self.validate_active_state(source_id, target_id, players)
         self.active = True
         self.card_claimed = influences_dict[card_claimed_id]
         self.action_id = action_id
@@ -28,14 +31,18 @@ class ChallengeState:
                 pending_player_ids.append(player.id)
         self.pending_player_ids = pending_player_ids
 
-    def reset(self):
-        self.active = False
-        self.card_claimed = None
-        self.action_id = None
-        self.source_id= None
-        self.target_id = None
-        self.from_block = False
-        self.pending_player_ids = []
+    def validate_active_state(self, source_id, target_id, players: Players):
+        source_player = players.get_player(source_id)
+        target_player = players.get_player(target_id)
+        log = ''
+        if not source_player or source_player.lost:
+            log = 'Lost source player in active challenge state'
+            Log.add_log(log)
+            raise Exception(log)
+        if target_id and (not target_player or target_player.lost):
+            log = 'Lost target player in active challenge state'
+            Log.add_log(log)
+            raise Exception(log)
 
     def to_dict(self):
         return { 

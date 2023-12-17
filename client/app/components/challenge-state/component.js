@@ -11,4 +11,9 @@ export default class ChallengeState extends Component {
     get isSource() {
         return this.args.challengeState.sourceId == this.args.playerId;
     }
+
+    @computed('args.{challengeState,playerId}')
+    get canChallenge() {
+        return this.args.challengeState.pendingPlayerIds.includes(this.args.playerId);
+    }
 }

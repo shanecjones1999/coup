@@ -56,3 +56,9 @@ class Player:
                 'isTurn': self.is_turn,
                 'lost': self.lost,
             }
+    
+    def reset(self):
+        self.coins = 2
+        self.cards = []
+        self.is_turn = False
+        self.lost = False

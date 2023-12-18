@@ -17,6 +17,5 @@ def handle_signin(username: str) -> str:
         token = generate_token(cleaned_name)
         player = Player(cleaned_name, token)
         players.add_player(player)
-        lobby.add_player(player)
         return token
     return None

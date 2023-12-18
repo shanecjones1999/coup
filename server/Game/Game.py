@@ -217,7 +217,6 @@ class Game:
                     self.move_turn()
                     return
 
-                # TODO WEBSOCKET EXCHANGE
                 self.resolve_action(action_id, source_id, target_id)
 
     def handle_pass_block(self, player_id):
@@ -229,7 +228,6 @@ class Game:
             target_id = self.block_state.target_id
             self.resolve_action_from_block(action_id, source_id, target_id)
     
-    # TODO FIX THIS
     def resolve_action_from_block(self, action_id, source_id, target_id):
         self.verify_one_active_state()
         if action_id == 2:
@@ -513,3 +511,6 @@ class Game:
         self.exchange_state.deactivate()
         self.lose_influence_state.deactivate()
         self.reveal_card_state.deactivate()
+
+    def get_player(self, player_id):
+        return self.players.get_player(player_id)

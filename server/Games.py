@@ -55,3 +55,12 @@ class Games:
         for game in self.games.values():
             if game.players.has_player(player_id):
                 game.players.remove_player(player_id)
+
+    def get_validated_game(self, game_id, player_ids):
+        game = self.get_game(game_id)
+        for player_id in player_ids:
+            if player_id:
+                player = game.get_player(player_id)
+                if player.lost:
+                    raise Exception('Lost player involved in action')
+        return game

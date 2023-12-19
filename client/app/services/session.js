@@ -7,7 +7,7 @@ export default class Session extends SessionService {
   @service router;
   
   handleAuthentication() {
-    this.router.transitionTo('games');
+    this.router.transitionTo('lobby');
   }
 
   // Make this async for websocket.

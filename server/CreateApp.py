@@ -11,7 +11,7 @@ def index(path):
     print(f'path: {path}')
     return app.send_static_file("index.html")
 
-@app.route('/games')
+@app.route('/lobby')
 def lobby_route():
     return app.send_static_file("index.html")
 

@@ -9,7 +9,7 @@ export default class IndexRoute extends Route {
   beforeModel() {
     console.log('ENV.API_HOST value:', ENV.API_HOST);
     if (this.session.isAuthenticated) {
-      this.router.transitionTo('games');
+      this.router.transitionTo('lobby');
     }
   }
 }

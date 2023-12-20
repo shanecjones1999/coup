@@ -2,6 +2,7 @@ from server.Game.Deck import influences_dict
 from server.Players import Players
 from server.Log import Log
 from server.Game.BaseState import BaseState
+from server.Game.Action import actions_dict
 
 class ChallengeState(BaseState):
     def __init__(self):
@@ -30,6 +31,19 @@ class ChallengeState(BaseState):
             if player.id != source_id and not player.lost:
                 pending_player_ids.append(player.id)
         self.pending_player_ids = pending_player_ids
+
+        pending_player_names = []
+        for player_id in self.pending_player_ids:
+            player_name = players.get_player(player_id).name
+            pending_player_names.append(player_name)
+
+        action_name = actions_dict[action_id].name
+        source_player_name = players.get_player(source_id).name
+        base_message = f'{source_player_name} is attempting to {action_name}.'
+        add_message = f'Waiting for {" ".join(pending_player_names)} to block or pass.'
+
+        self.default_message = base_message + ' ' + add_message
+        self.decision_message = base_message
 
     def validate_active_state(self, source_id, target_id, players: Players):
         source_player = players.get_player(source_id)

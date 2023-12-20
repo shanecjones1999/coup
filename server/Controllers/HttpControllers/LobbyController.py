@@ -8,9 +8,10 @@ lobby_blueprint = Blueprint('lobby', __name__)
 def enter_lobby():
     token = request.headers.get('Authorization')
     player = players.get_player(token)
-    if player:
-        lobby.add_player(player)
-        games.remove_player(player.id)
+    if not player:
+        return jsonify('Player not found'), 401
+    lobby.add_player(player)
+    games.remove_player(player.id)
     game_list = games.get_games_json()
     current_lobby = lobby.get_current_lobby_json()
     data = {'games': game_list, 'lobby': current_lobby}

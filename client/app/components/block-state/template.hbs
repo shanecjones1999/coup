@@ -1,19 +1,11 @@
 <div class="block-state">
     {{#if this.isTarget}}
-        {{#if (eq @blockState.actionId 2)}}
-            <p>Player is attemping to foreign aid.</p>
-        {{else if (eq @blockState.actionId 5)}}
-            <p>Player is attempting to assassinate you.</p>
-        {{else if (eq @blockState.actionId 7)}}
-            <p>Player is attempting to steal from you.</p>
-        {{else}}
-            <p>Unknown action id: {{@blockState.actionId}}</p>
-        {{/if}}
+        <p>{{@blockState.decisionMessage}}</p>
         {{#each @blockState.blockCards as |blockCard|}}
                 <BsButton {{on 'click' (fn @blockAction blockCard.typeId)}}>Block as {{blockCard.name}}</BsButton>
         {{/each}}
             <BsButton {{on 'click' @pass}}>Pass</BsButton>
     {{else}}
-        Waiting for other players.
+        <p>{{@blockState.defaultMessage}}</p>
     {{/if}}
 </div>

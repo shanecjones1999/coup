@@ -1,19 +1,30 @@
 {{page-title "Home"}}
-<div class="content animate__animated animate__fadeIn">
-    <div>
-        <div>
-            <BsForm
-                @formLayout="vertical"
-                @model={{this.user}}
-                @onSubmit={{this.enterLobby}}
-                as |form|
-                >
-                <form.element @property="username" as |el|>
-                    <el.control placeholder="Enter your username"/>
-                </form.element>
-                <form.submitButton>Submit</form.submitButton>
-            </BsForm>
-        </div>
-    </div>
+<div>
+    <BsForm
+        @formLayout="vertical"
+        @model={{this.user}}
+        @onSubmit={{this.enterLobby}}
+        as |form|
+        >
+        <form.element @property="username" as |el|>
+            <el.control placeholder="Enter your username"/>
+        </form.element>
+        <form.submitButton>Submit</form.submitButton>
+    </BsForm>
 </div>
+{{!-- <div>
+    <p>This is the home route.</p>
+
+</div>
+<div>
+    <div>
+        <label for="username">Enter your name</label>
+        <Input
+            id="username"
+            @type="text"
+            @value={{this.username}}
+        />
+        <button type="button" {{on "click" this.enterLobby}}>Enter your name</button>
+    </div>
+</div> --}}
 {{outlet}}

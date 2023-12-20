@@ -11,7 +11,6 @@ def join_game():
     token = request.headers.get('Authorization')
     game_id = request.json.get('id')
     player = players.get_player(token)
-
     if not player:
         raise Exception('No player found')
     game = games.get_game(game_id)

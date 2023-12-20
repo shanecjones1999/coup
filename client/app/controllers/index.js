@@ -15,12 +15,17 @@ export default class IndexController extends Controller {
     @action
     async enterLobby() {
         try {
-            await this.session.authenticate(
+            const response = await this.session.authenticate(
                 'authenticator:custom-token',
-                this.user
+                this.user,
             );
+            if (!response.ok) {
+                console.log('Error authenticating user.');
+                return;
+            }
             this.websocket.socket.emit('lobby_update');
             this.router.transitionTo('lobby');
+
         } catch (error) {
             console.error('Error adding user to lobby catch:', error);
         }

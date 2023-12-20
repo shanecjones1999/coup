@@ -51,6 +51,7 @@ class Game:
         self.block_state.player_ids = list(self.players.get_players())
         self.challenge_state.player_ids = list(self.players.get_players())
         self.started = True
+        self.over = False
 
     def add_player(self, player):
         self.players.add_player(player)
@@ -279,7 +280,7 @@ class Game:
             # Reset reveal_card_state
             # The rest of the logic will be handled in handle_lose_influence_state from here
             self.deactivate_states()
-            self.lose_influence_state.activate(challenger_id, True)
+            self.lose_influence_state.activate(self.players.get_player(challenger_id), True)
             return update_card_player
         # Player challenged loses card
         else:
@@ -351,7 +352,7 @@ class Game:
         self.add_audit(msg)
         target_player = self.players.get_player(target_id)
         self.deactivate_states()
-        self.lose_influence_state.activate(target_player.id, False)
+        self.lose_influence_state.activate(target_player, False)
     
     def handle_tax(self, source_id):
         name = self.players.get_player_name(source_id)
@@ -362,14 +363,14 @@ class Game:
     
     def handle_assassinate(self, source_id, target_id, block_state_resolved = False):
         source_name = self.players.get_player_name(source_id)
-        target_name = self.players.get_player_name(target_id)
+        target= self.players.get_player(target_id)
         if block_state_resolved:
-            msg = f"{source_name} assassinates {target_name}."
+            msg = f"{source_name} assassinates {target.name}."
             self.add_audit(msg)
             self.deactivate_states()
-            self.lose_influence_state.activate(target_id, False)
+            self.lose_influence_state.activate(target, False)
         else:
-            msg = f"{source_name} is attempting to assassinate {target_name}."
+            msg = f"{source_name} is attempting to assassinate {target.name}."
             self.add_audit(msg)
             self.deactivate_states()
             self.block_state.activate(5, source_id, self.players, target_id)

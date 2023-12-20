@@ -5,12 +5,15 @@ from server.Game.Action import actions_dict
 
 class BlockState(BaseState):
     def __init__(self):
+        self.active = False
         self.action_id = None
         self.source_id = None
         self.target_id = None
         self.block_cards = []
         self.pending_player_ids = []
         self.player_ids = []
+        self.default_message = ''
+        self.decision_message = ''
 
     def activate(self, action_id, source_id, players: Players, target_id = None):
         self.active = True
@@ -33,18 +36,7 @@ class BlockState(BaseState):
                 raise Exception('Blocked player has already lost')
             self.pending_player_ids = [target_id]
         
-        pending_player_names = []
-        for player_id in self.pending_player_ids:
-            player_name = players.get_player(player_id).name
-            pending_player_names.append(player_name)
-
-        action_name = actions_dict[action_id].name
-        source_player_name = players.get_player(source_id).name
-        base_message = f'{source_player_name} is attempting to {action_name}.'
-        add_message = f'Waiting for {" ".join(pending_player_names)} to block or pass.'
-
-        self.default_message = base_message + ' ' + add_message
-        self.decision_message = base_message
+        self.set_messages(players, source_id, target_id, action_id, self.pending_player_ids)
 
     def to_dict(self):
         return { 
@@ -57,3 +49,29 @@ class BlockState(BaseState):
                 'defaultMessage': self.default_message,
                 'decisionMessage': self.decision_message,
             }
+    
+    def set_messages(self, players: Players, source_id, target_id, action_id, pending_player_ids):
+        source_name = players.get_player(source_id).name
+        target_name = players.get_player(target_id).name if target_id else ''
+        action_name = action_name = actions_dict[action_id].name
+
+        base_message = f'{source_name} is attempting to {action_name.lower()}'
+        if action_id == 2 or action_id == 4 or action_id == 6:
+            base_message += '.'
+        elif action_id == 5:
+            base_message += f' {target_name}.'
+        elif action_id == 7:
+            base_message += f' from {target_name}.'
+        else:
+            raise Exception('Invalid action Id')
+        
+        pending_player_names = []
+        for player_id in pending_player_ids:
+            player_name = players.get_player(player_id).name
+            pending_player_names.append(player_name)
+
+        add_message = f'Waiting for {" ".join(pending_player_names)} to block or pass.'
+
+        self.decision_message = base_message
+        self.default_message = base_message + ' ' + add_message
+        

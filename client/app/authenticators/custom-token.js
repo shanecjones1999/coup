@@ -19,6 +19,10 @@ export default class CustomTokenAuthenticator extends BaseAuthenticator {
                 },
             });
 
+            if (!response.ok) {
+                console.error('Unable to authenticate user.');
+            }
+
             const data = await response.json();
             return { token: data.token };
         } catch (error) {

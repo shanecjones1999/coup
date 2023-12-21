@@ -3,7 +3,6 @@ from server.Game.BlockState import BlockState
 from server.Game.ChallengeState import ChallengeState
 from server.Game.LoseInfluenceState import LoseInfluenceState
 from server.Game.RevealCardState import RevealCardState
-from server.Game.Action import Action
 from server.Game.ExchangeState import ExchangeState
 from server.Game.UnresolvedAction import UnresolvedAction
 from server.Game.Player import Player
@@ -13,6 +12,7 @@ from server.Players import Players
 import random
 import string
 from server.Game.Action import actions_dict
+from server.CoupException import CoupException
 
 # Action attributes: (name, ID, card claimed, cards blocking, cost)
 
@@ -41,7 +41,7 @@ class Game:
 
     def start(self):
         if not self.players:
-            raise Exception('Trying to start game without any players')
+            raise CoupException('Trying to start game without any players')
         self.deck = Deck()
         self.reset_states()
         self.initialize_players()
@@ -100,6 +100,10 @@ class Game:
             return 'You need more coins to take this action.'
         else:
             player.coins -= action.cost
+
+        # If a player has >= 10 coins, they must Coup
+        if action_id == 3 and player.coins >= 10:
+            return 'You must Coup with 10 or more coins.'
         
         self.unresolved_action.set(action_id, source_id, target_id)
 
@@ -160,13 +164,13 @@ class Game:
             self.over = True
             return True
         else:
-            raise Exception("No players left")
+            raise CoupException("No players left")
 
     # first resolution of action
     def resolve_action(self, action_id, source_id, target_id):
         player = self.players.get_player(source_id)
         if player.lost:
-            raise Exception('Lost player taking action')
+            raise CoupException('Lost player taking action')
         block_state_resolved = self.block_state.source_id is not None
         if action_id == 1:
             self.handle_income(source_id)
@@ -183,7 +187,7 @@ class Game:
         elif action_id == 7:
             self.handle_steal(source_id, target_id, block_state_resolved)
         else:
-            raise Exception("Invalid action taken:", action_id)
+            raise CoupException("Invalid action taken:", action_id)
 
     def handle_pass_challenge(self, player_id):
         self.verify_one_active_state()
@@ -230,9 +234,9 @@ class Game:
         elif action_id == 7:
             self.handle_steal(source_id, target_id, True)
         elif action_id in [1, 3, 4, 6]:
-            raise Exception("Should not reach resolve_action_from_block for action that cannot be blocked")
+            raise CoupException("Should not reach resolve_action_from_block for action that cannot be blocked")
         else:
-            raise Exception("Invalid action taken:", action_id)
+            raise CoupException("Invalid action taken:", action_id)
 
     def handle_challenge(self, player_challenging_id):
         self.verify_one_active_state()
@@ -257,7 +261,7 @@ class Game:
         card = next((card for card in player.cards if card.id == card_id), None)
 
         if not card or card.revealed:
-            raise Exception('Player did not reveal a card they have or they revealed a previously revealed card')
+            raise CoupException('Player did not reveal a card they have or they revealed a previously revealed card')
         name = self.players.get_player_name(player_id)
         msg = f"{name} reveals {card.name}."
         self.add_audit(msg)
@@ -323,7 +327,7 @@ class Game:
         elif index == 1:
             player.cards = player.cards + new_card_list
         else:
-            raise Exception('Invalid card index')
+            raise CoupException('Invalid card index')
 
     def handle_income(self, source_id):
         self.players.get_player(source_id).coins += 1
@@ -406,7 +410,7 @@ class Game:
         player = self.players.get_player(player_id)
         selection_count = self.exchange_state.expected_exchange_count
         if selection_count != len(selected_card_ids):
-            raise Exception('Player selected wrong number of cards in Exchange')
+            raise CoupException('Player selected wrong number of cards in Exchange')
         
         active_player_card_ids = [card.id for card in player.cards if not card.revealed]
         total_ids = selected_card_ids + active_player_card_ids
@@ -438,11 +442,11 @@ class Game:
         for player in self.players.get_players():
             if player.is_turn:
                 if active_id:
-                    raise Exception("More than 1 player's turn at a time")
+                    raise CoupException("More than 1 player's turn at a time")
                 active_id = player.id
                 player.is_turn = False
         if not active_id:
-            raise Exception("No active player")
+            raise CoupException("No active player")
         current_player_index = self.turn_order_ids.index(active_id)
 
         # Make sure the next player set is not lost
@@ -453,7 +457,7 @@ class Game:
         while looked_at < len(self.players.get_players()) and not next_player_set:
             next_player_id = self.turn_order_ids[look_index]
             if not self.players.has_player(next_player_id):
-                raise Exception("Next player Id not found")
+                raise CoupException("Next player Id not found")
             if not self.players.get_player(next_player_id).lost:
                 next_player_set = True
                 next_player = self.players.get_player(next_player_id)
@@ -461,7 +465,7 @@ class Game:
             look_index = (look_index + 1) % len(self.turn_order_ids)
             looked_at += 1
         if not next_player_set:
-            raise Exception("Next player Id not found")
+            raise CoupException("Next player Id not found")
         
         next_player_name = self.players.get_player_name(next_player.id)
         msg = f"Moving to {next_player_name}'s turn."
@@ -486,7 +490,7 @@ class Game:
         active_state_count += 1 if self.reveal_card_state.active else 0
         active_state_count += 1 if self.exchange_state.active else 0
         if active_state_count > 1:
-            raise Exception(f'Too many active states. Counted {active_state_count}.')
+            raise CoupException(f'Too many active states. Counted {active_state_count}.')
 
     def add_message(self, player_id, message):
         player_name = self.players.get_player_name(player_id)

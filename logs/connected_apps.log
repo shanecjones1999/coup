@@ -1,0 +1,88 @@
+2023-12-20:18:41:17,675 WARNING  [_internal.py:224] WebSocket transport not available. Install simple-websocket for improved performance.
+2023-12-20:18:41:17,677 INFO     [_internal.py:224] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2023-12-20:18:41:17,677 INFO     [_internal.py:224] [33mPress CTRL+C to quit[0m
+2023-12-20:18:41:17,677 INFO     [_internal.py:224]  * Restarting with stat
+2023-12-20:18:41:18,162 WARNING  [_internal.py:224] WebSocket transport not available. Install simple-websocket for improved performance.
+2023-12-20:18:41:18,163 WARNING  [_internal.py:224]  * Debugger is active!
+2023-12-20:18:41:18,174 INFO     [_internal.py:224]  * Debugger PIN: 109-735-202
+2023-12-20:18:42:23,224 WARNING  [_internal.py:224] WebSocket transport not available. Install simple-websocket for improved performance.
+2023-12-20:18:42:23,226 INFO     [_internal.py:224] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2023-12-20:18:42:23,226 INFO     [_internal.py:224] [33mPress CTRL+C to quit[0m
+2023-12-20:18:42:23,226 INFO     [_internal.py:224]  * Restarting with stat
+2023-12-20:18:42:23,658 WARNING  [_internal.py:224] WebSocket transport not available. Install simple-websocket for improved performance.
+2023-12-20:18:42:23,658 WARNING  [_internal.py:224]  * Debugger is active!
+2023-12-20:18:42:23,664 INFO     [_internal.py:224]  * Debugger PIN: 109-735-202
+2023-12-20:18:42:34,917 INFO     [_internal.py:224] 127.0.0.1 - - [20/Dec/2023 18:42:34] "OPTIONS /api/enterLobby HTTP/1.1" 200 -
+2023-12-20:18:42:34,920 ERROR    [server.py:743] The WebSocket transport is not available, you must install a WebSocket server that is compatible with your async mode to enable it. See the documentation for details. (further occurrences of this error will be logged with level INFO)
+2023-12-20:18:42:34,924 INFO     [_internal.py:224] 127.0.0.1 - - [20/Dec/2023 18:42:34] "[31m[1mGET /api/enterLobby HTTP/1.1[0m" 401 -
+2023-12-20:18:42:34,925 INFO     [_internal.py:224] 127.0.0.1 - - [20/Dec/2023 18:42:34] "GET /socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InAxIn0.QcEoLW2mOuJZYLmQ_TluUD2LnG4VyJHK3twM73W--zE&EIO=4&transport=polling&t=Oo9d0sL HTTP/1.1" 200 -
+2023-12-20:18:42:34,938 INFO     [_internal.py:224] 127.0.0.1 - - [20/Dec/2023 18:42:34] "POST /socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InAxIn0.QcEoLW2mOuJZYLmQ_TluUD2LnG4VyJHK3twM73W--zE&EIO=4&transport=polling&t=Oo9d0so&sid=zAkMvAis-i52BhLRAAAA HTTP/1.1" 200 -
+2023-12-20:18:42:34,940 INFO     [_internal.py:224] 127.0.0.1 - - [20/Dec/2023 18:42:34] "GET /socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InAxIn0.QcEoLW2mOuJZYLmQ_TluUD2LnG4VyJHK3twM73W--zE&EIO=4&transport=polling&t=Oo9d0so.0&sid=zAkMvAis-i52BhLRAAAA HTTP/1.1" 200 -
+2023-12-20:18:42:34,943 INFO     [_internal.py:224] 127.0.0.1 - - [20/Dec/2023 18:42:34] "OPTIONS /api/invalidateSession HTTP/1.1" 200 -
+2023-12-20:18:42:34,947 INFO     [_internal.py:224] 127.0.0.1 - - [20/Dec/2023 18:42:34] "POST /api/invalidateSession HTTP/1.1" 200 -
+2023-12-20:18:42:34,960 INFO     [_internal.py:224] 127.0.0.1 - - [20/Dec/2023 18:42:34] "POST /socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InAxIn0.QcEoLW2mOuJZYLmQ_TluUD2LnG4VyJHK3twM73W--zE&EIO=4&transport=polling&t=Oo9d0t8&sid=zAkMvAis-i52BhLRAAAA HTTP/1.1" 200 -
+2023-12-20:18:42:34,961 INFO     [_internal.py:224] 127.0.0.1 - - [20/Dec/2023 18:42:34] "GET /socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InAxIn0.QcEoLW2mOuJZYLmQ_TluUD2LnG4VyJHK3twM73W--zE&EIO=4&transport=polling&t=Oo9d0s-&sid=zAkMvAis-i52BhLRAAAA HTTP/1.1" 200 -
+2023-12-20:18:42:36,893 INFO     [_internal.py:224] 127.0.0.1 - - [20/Dec/2023 18:42:36] "OPTIONS /api/signin HTTP/1.1" 200 -
+2023-12-20:18:42:36,899 INFO     [_internal.py:224] 127.0.0.1 - - [20/Dec/2023 18:42:36] "POST /api/signin HTTP/1.1" 200 -
+2023-12-20:18:42:36,908 INFO     [_internal.py:224] 127.0.0.1 - - [20/Dec/2023 18:42:36] "GET /socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InAxIn0.QcEoLW2mOuJZYLmQ_TluUD2LnG4VyJHK3twM73W--zE&EIO=4&transport=polling&t=Oo9d1Lc HTTP/1.1" 200 -
+2023-12-20:18:42:36,913 INFO     [_internal.py:224] 127.0.0.1 - - [20/Dec/2023 18:42:36] "GET /api/enterLobby HTTP/1.1" 200 -
+2023-12-20:18:42:36,923 INFO     [_internal.py:224] 127.0.0.1 - - [20/Dec/2023 18:42:36] "POST /socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InAxIn0.QcEoLW2mOuJZYLmQ_TluUD2LnG4VyJHK3twM73W--zE&EIO=4&transport=polling&t=Oo9d1Lp&sid=e7kMwUiB43OU7v9TAAAC HTTP/1.1" 200 -
+2023-12-20:18:42:36,926 INFO     [_internal.py:224] 127.0.0.1 - - [20/Dec/2023 18:42:36] "GET /socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InAxIn0.QcEoLW2mOuJZYLmQ_TluUD2LnG4VyJHK3twM73W--zE&EIO=4&transport=polling&t=Oo9d1Lp.0&sid=e7kMwUiB43OU7v9TAAAC HTTP/1.1" 200 -
+2023-12-20:18:42:37,614 INFO     [_internal.py:224] 127.0.0.1 - - [20/Dec/2023 18:42:37] "OPTIONS /api/joinGame HTTP/1.1" 200 -
+2023-12-20:18:42:37,624 INFO     [_internal.py:224] 127.0.0.1 - - [20/Dec/2023 18:42:37] "POST /api/joinGame HTTP/1.1" 200 -
+2023-12-20:18:42:37,635 INFO     [_internal.py:224] 127.0.0.1 - - [20/Dec/2023 18:42:37] "POST /socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InAxIn0.QcEoLW2mOuJZYLmQ_TluUD2LnG4VyJHK3twM73W--zE&EIO=4&transport=polling&t=Oo9d1Ww&sid=e7kMwUiB43OU7v9TAAAC HTTP/1.1" 200 -
+2023-12-20:18:42:38,948 INFO     [_internal.py:224] 127.0.0.1 - - [20/Dec/2023 18:42:38] "POST /socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InAxIn0.QcEoLW2mOuJZYLmQ_TluUD2LnG4VyJHK3twM73W--zE&EIO=4&transport=polling&t=Oo9d1rQ&sid=e7kMwUiB43OU7v9TAAAC HTTP/1.1" 200 -
+2023-12-20:18:43:01,915 INFO     [_internal.py:224] 127.0.0.1 - - [20/Dec/2023 18:43:01] "GET /socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InAxIn0.QcEoLW2mOuJZYLmQ_TluUD2LnG4VyJHK3twM73W--zE&EIO=4&transport=polling&t=Oo9d1MC&sid=e7kMwUiB43OU7v9TAAAC HTTP/1.1" 200 -
+2023-12-20:18:43:01,930 INFO     [_internal.py:224] 127.0.0.1 - - [20/Dec/2023 18:43:01] "POST /socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InAxIn0.QcEoLW2mOuJZYLmQ_TluUD2LnG4VyJHK3twM73W--zE&EIO=4&transport=polling&t=Oo9d7SU&sid=e7kMwUiB43OU7v9TAAAC HTTP/1.1" 200 -
+2023-12-20:18:43:24,812 INFO     [_internal.py:224] 127.0.0.1 - - [20/Dec/2023 18:43:24] "POST /socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InAxIn0.QcEoLW2mOuJZYLmQ_TluUD2LnG4VyJHK3twM73W--zE&EIO=4&transport=polling&t=Oo9dD21&sid=e7kMwUiB43OU7v9TAAAC HTTP/1.1" 200 -
+2023-12-20:18:43:26,938 INFO     [_internal.py:224] 127.0.0.1 - - [20/Dec/2023 18:43:26] "GET /socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InAxIn0.QcEoLW2mOuJZYLmQ_TluUD2LnG4VyJHK3twM73W--zE&EIO=4&transport=polling&t=Oo9d7SV&sid=e7kMwUiB43OU7v9TAAAC HTTP/1.1" 200 -
+2023-12-20:18:43:26,944 INFO     [_internal.py:224] 127.0.0.1 - - [20/Dec/2023 18:43:26] "POST /socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InAxIn0.QcEoLW2mOuJZYLmQ_TluUD2LnG4VyJHK3twM73W--zE&EIO=4&transport=polling&t=Oo9dDZS&sid=e7kMwUiB43OU7v9TAAAC HTTP/1.1" 200 -
+2023-12-20:18:43:51,950 INFO     [_internal.py:224] 127.0.0.1 - - [20/Dec/2023 18:43:51] "GET /socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InAxIn0.QcEoLW2mOuJZYLmQ_TluUD2LnG4VyJHK3twM73W--zE&EIO=4&transport=polling&t=Oo9dDZS.0&sid=e7kMwUiB43OU7v9TAAAC HTTP/1.1" 200 -
+2023-12-20:18:43:51,966 INFO     [_internal.py:224] 127.0.0.1 - - [20/Dec/2023 18:43:51] "POST /socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InAxIn0.QcEoLW2mOuJZYLmQ_TluUD2LnG4VyJHK3twM73W--zE&EIO=4&transport=polling&t=Oo9dJgH&sid=e7kMwUiB43OU7v9TAAAC HTTP/1.1" 200 -
+2023-12-20:18:44:13,946 WARNING  [_internal.py:224] WebSocket transport not available. Install simple-websocket for improved performance.
+2023-12-20:18:44:13,949 INFO     [_internal.py:224] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2023-12-20:18:44:13,949 INFO     [_internal.py:224] [33mPress CTRL+C to quit[0m
+2023-12-20:18:44:13,949 INFO     [_internal.py:224]  * Restarting with stat
+2023-12-20:18:44:14,407 WARNING  [_internal.py:224] WebSocket transport not available. Install simple-websocket for improved performance.
+2023-12-20:18:44:14,408 WARNING  [_internal.py:224]  * Debugger is active!
+2023-12-20:18:44:14,414 INFO     [_internal.py:224]  * Debugger PIN: 109-735-202
+2023-12-20:18:44:18,336 INFO     [_internal.py:224] 127.0.0.1 - - [20/Dec/2023 18:44:18] "OPTIONS /api/enterLobby HTTP/1.1" 200 -
+2023-12-20:18:44:18,343 INFO     [_internal.py:224] 127.0.0.1 - - [20/Dec/2023 18:44:18] "[31m[1mGET /api/enterLobby HTTP/1.1[0m" 401 -
+2023-12-20:18:44:22,836 INFO     [_internal.py:224] 127.0.0.1 - - [20/Dec/2023 18:44:22] "[31m[1mGET /api/enterLobby HTTP/1.1[0m" 401 -
+2023-12-20:18:44:23,477 INFO     [_internal.py:224] 127.0.0.1 - - [20/Dec/2023 18:44:23] "OPTIONS /api/enterLobby HTTP/1.1" 200 -
+2023-12-20:18:44:23,484 INFO     [_internal.py:224] 127.0.0.1 - - [20/Dec/2023 18:44:23] "[31m[1mGET /api/enterLobby HTTP/1.1[0m" 401 -
+2023-12-20:18:45:14,777 WARNING  [_internal.py:224] WebSocket transport not available. Install simple-websocket for improved performance.
+2023-12-20:18:45:14,779 INFO     [_internal.py:224] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2023-12-20:18:45:14,780 INFO     [_internal.py:224] [33mPress CTRL+C to quit[0m
+2023-12-20:18:45:14,780 INFO     [_internal.py:224]  * Restarting with stat
+2023-12-20:18:45:15,227 WARNING  [_internal.py:224] WebSocket transport not available. Install simple-websocket for improved performance.
+2023-12-20:18:45:15,228 WARNING  [_internal.py:224]  * Debugger is active!
+2023-12-20:18:45:15,233 INFO     [_internal.py:224]  * Debugger PIN: 109-735-202
+2023-12-20:18:45:21,435 INFO     [_internal.py:224] 127.0.0.1 - - [20/Dec/2023 18:45:21] "OPTIONS /api/signin HTTP/1.1" 200 -
+2023-12-20:18:45:21,443 INFO     [_internal.py:224] 127.0.0.1 - - [20/Dec/2023 18:45:21] "POST /api/signin HTTP/1.1" 200 -
+2023-12-20:18:45:21,453 INFO     [_internal.py:224] 127.0.0.1 - - [20/Dec/2023 18:45:21] "OPTIONS /api/enterLobby HTTP/1.1" 200 -
+2023-12-20:18:45:21,455 ERROR    [server.py:743] The WebSocket transport is not available, you must install a WebSocket server that is compatible with your async mode to enable it. See the documentation for details. (further occurrences of this error will be logged with level INFO)
+2023-12-20:18:45:21,456 INFO     [_internal.py:224] 127.0.0.1 - - [20/Dec/2023 18:45:21] "GET /socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InAxIn0.QcEoLW2mOuJZYLmQ_TluUD2LnG4VyJHK3twM73W--zE&EIO=4&transport=polling&t=Oo9dfWf HTTP/1.1" 200 -
+2023-12-20:18:45:21,458 INFO     [_internal.py:224] 127.0.0.1 - - [20/Dec/2023 18:45:21] "GET /api/enterLobby HTTP/1.1" 200 -
+2023-12-20:18:45:21,471 INFO     [_internal.py:224] 127.0.0.1 - - [20/Dec/2023 18:45:21] "POST /socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InAxIn0.QcEoLW2mOuJZYLmQ_TluUD2LnG4VyJHK3twM73W--zE&EIO=4&transport=polling&t=Oo9dfWq&sid=fJAkT9AYopSXp-q9AAAA HTTP/1.1" 200 -
+2023-12-20:18:45:21,479 INFO     [_internal.py:224] 127.0.0.1 - - [20/Dec/2023 18:45:21] "GET /socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InAxIn0.QcEoLW2mOuJZYLmQ_TluUD2LnG4VyJHK3twM73W--zE&EIO=4&transport=polling&t=Oo9dfWq.0&sid=fJAkT9AYopSXp-q9AAAA HTTP/1.1" 200 -
+2023-12-20:18:45:23,428 INFO     [_internal.py:224] 127.0.0.1 - - [20/Dec/2023 18:45:23] "OPTIONS /api/joinGame HTTP/1.1" 200 -
+2023-12-20:18:45:23,438 INFO     [_internal.py:224] 127.0.0.1 - - [20/Dec/2023 18:45:23] "POST /api/joinGame HTTP/1.1" 200 -
+2023-12-20:18:45:23,455 INFO     [_internal.py:224] 127.0.0.1 - - [20/Dec/2023 18:45:23] "POST /socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InAxIn0.QcEoLW2mOuJZYLmQ_TluUD2LnG4VyJHK3twM73W--zE&EIO=4&transport=polling&t=Oo9df_o&sid=fJAkT9AYopSXp-q9AAAA HTTP/1.1" 200 -
+2023-12-20:18:45:24,574 INFO     [_internal.py:224] 127.0.0.1 - - [20/Dec/2023 18:45:24] "POST /socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InAxIn0.QcEoLW2mOuJZYLmQ_TluUD2LnG4VyJHK3twM73W--zE&EIO=4&transport=polling&t=Oo9dgHO&sid=fJAkT9AYopSXp-q9AAAA HTTP/1.1" 200 -
+2023-12-20:18:45:46,463 INFO     [_internal.py:224] 127.0.0.1 - - [20/Dec/2023 18:45:46] "GET /socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InAxIn0.QcEoLW2mOuJZYLmQ_TluUD2LnG4VyJHK3twM73W--zE&EIO=4&transport=polling&t=Oo9dfXG&sid=fJAkT9AYopSXp-q9AAAA HTTP/1.1" 200 -
+2023-12-20:18:45:46,471 INFO     [_internal.py:224] 127.0.0.1 - - [20/Dec/2023 18:45:46] "POST /socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InAxIn0.QcEoLW2mOuJZYLmQ_TluUD2LnG4VyJHK3twM73W--zE&EIO=4&transport=polling&t=Oo9dldY&sid=fJAkT9AYopSXp-q9AAAA HTTP/1.1" 200 -
+2023-12-20:18:45:46,720 INFO     [_internal.py:224] 127.0.0.1 - - [20/Dec/2023 18:45:46] "POST /socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InAxIn0.QcEoLW2mOuJZYLmQ_TluUD2LnG4VyJHK3twM73W--zE&EIO=4&transport=polling&t=Oo9dlgi&sid=fJAkT9AYopSXp-q9AAAA HTTP/1.1" 200 -
+2023-12-20:18:45:46,720 INFO     [_internal.py:224] 127.0.0.1 - - [20/Dec/2023 18:45:46] "GET /socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InAxIn0.QcEoLW2mOuJZYLmQ_TluUD2LnG4VyJHK3twM73W--zE&EIO=4&transport=polling&t=Oo9dldY.0&sid=fJAkT9AYopSXp-q9AAAA HTTP/1.1" 200 -
+2023-12-20:18:51:02,487 WARNING  [_internal.py:224] WebSocket transport not available. Install simple-websocket for improved performance.
+2023-12-20:18:51:02,490 INFO     [_internal.py:224] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2023-12-20:18:51:02,491 INFO     [_internal.py:224] [33mPress CTRL+C to quit[0m
+2023-12-20:18:51:02,491 INFO     [_internal.py:224]  * Restarting with stat
+2023-12-20:18:51:02,956 WARNING  [_internal.py:224] WebSocket transport not available. Install simple-websocket for improved performance.
+2023-12-20:18:51:02,957 WARNING  [_internal.py:224]  * Debugger is active!
+2023-12-20:18:51:02,964 INFO     [_internal.py:224]  * Debugger PIN: 109-735-202

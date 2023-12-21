@@ -2,6 +2,7 @@ from server.Game.Deck import influences_dict
 from server.Players import Players
 from server.Log import Log
 from server.Game.BaseState import BaseState
+from server.CoupException import CoupException
 from server.Game.Action import actions_dict
 
 class ChallengeState(BaseState):
@@ -43,11 +44,11 @@ class ChallengeState(BaseState):
         if not source_player or source_player.lost:
             log = 'Lost source player in active challenge state'
             Log.add_log(log)
-            raise Exception(log)
+            raise CoupException(log)
         if target_id and (not target_player or target_player.lost):
             log = 'Lost target player in active challenge state'
             Log.add_log(log)
-            raise Exception(log)
+            raise CoupException(log)
 
     def to_dict(self):
         return { 
@@ -94,7 +95,7 @@ class ChallengeState(BaseState):
             elif action_id == 7:
                 base_message += f' from {target_name}.'
             else:
-                raise Exception('Invalid action Id')
+                raise CoupException('Invalid action Id')
             
             pending_player_names = []
             for player_id in pending_player_ids:

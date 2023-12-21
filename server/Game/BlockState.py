@@ -2,6 +2,7 @@ from server.Game.Deck import influences_dict
 from server.Players import Players
 from server.Game.BaseState import BaseState
 from server.Game.Action import actions_dict
+from server.CoupException import CoupException
 
 class BlockState(BaseState):
     def __init__(self):
@@ -33,7 +34,7 @@ class BlockState(BaseState):
         # Only the target player can block (will be assassinate or steal)
         else:
             if players.get_player(target_id).lost:
-                raise Exception('Blocked player has already lost')
+                raise CoupException('Blocked player has already lost')
             self.pending_player_ids = [target_id]
         
         self.set_messages(players, source_id, target_id, action_id, self.pending_player_ids)
@@ -63,7 +64,7 @@ class BlockState(BaseState):
         elif action_id == 7:
             base_message += f' from {target_name}.'
         else:
-            raise Exception('Invalid action Id')
+            raise CoupException('Invalid action Id')
         
         pending_player_names = []
         for player_id in pending_player_ids:

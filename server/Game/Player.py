@@ -1,5 +1,6 @@
 import random
 import string
+from server.CoupException import CoupException
 
 class Player:
     def __init__(self, name: string, token: string):
@@ -20,7 +21,7 @@ class Player:
                 card_lost = True
                 lost_card = card
         if not card_lost:
-            raise Exception("Card not lost")
+            raise CoupException("Card not lost")
         self.update_lost()
         return lost_card
 
@@ -40,11 +41,11 @@ class Player:
                 new_cards.append(card)
             else:
                 if card.revealed:
-                    raise Exception('Replacing revealed card back into deck!')
+                    raise CoupException('Replacing revealed card back into deck!')
                 removed_card = card
                 removed_index = i
         if removed_index == -1:
-            raise Exception("Failed to remove card")
+            raise CoupException("Failed to remove card")
         self.cards = new_cards
         return removed_index, removed_card
 

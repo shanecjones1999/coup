@@ -66,6 +66,9 @@
                 @selectedCardIds={{this.selectedCardIds}}
             />
         {{/if}}
+        {{#unless this.inActiveState}}
+            <p>Waiting for player to take a turn.</p>
+        {{/unless}}
     </div>
     <div>
         <h2>You</h2>

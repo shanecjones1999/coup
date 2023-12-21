@@ -13,14 +13,20 @@ export default class GamesRoute extends ProtectedRoute {
             'Content-Type': 'application/json',
         };
 
-        const lobbyData = await fetch(`${ENV.API_HOST}/api/enterLobby`,
+        const response = await fetch(`${ENV.API_HOST}/api/enterLobby`,
             {
                 headers: headers,
                 method: 'GET',
                 credentials: 'include',
             }
         );
-        const data = await lobbyData.json();
+
+        if (!response.ok) {
+            await this.session.invalidate();
+            return
+        }
+
+        const data = await response.json();
         return { games: data.games, lobby: data.lobby };
     }
 }

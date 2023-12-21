@@ -8,6 +8,7 @@ class Lobby:
         self.games: Games = Games()
 
     def add_player(self, player: Player):
+        player.reset()
         self.players.add_player(player)
 
     def remove_player(self, token):

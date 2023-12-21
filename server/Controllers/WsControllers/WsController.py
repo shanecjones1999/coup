@@ -63,14 +63,23 @@ def handle_join_game(data):
     game_id = data.get('id')
     if not games.has_game(game_id):
         raise Exception('Missing game')
+<<<<<<< HEAD
     if not lobby.has_player(token):
         raise Exception('Missing player')
+=======
+    if lobby.has_player(token):
+        lobby.remove_player(token)
+>>>>>>> 38b132eecafae25421e42e2e6c2d2af040097e62
     game = games.get_game(game_id)
     game_state = game.get_game_state()
     emit('game_state_update', game_state, room=game.id)
     join_room(game.id)
     join_room(token)
+<<<<<<< HEAD
     lobby.remove_player(token)
+=======
+    
+>>>>>>> 38b132eecafae25421e42e2e6c2d2af040097e62
     lobby_players = lobby.get_players()
     ret = [player.to_dict() for player in lobby_players]
     leave_room('lobby')

@@ -309,6 +309,6 @@ export default class Game extends Component {
 
     @action
     leaveGame() {
-        this.router.transitionTo('games');
+        this.router.transitionTo('lobby');
     }
 }

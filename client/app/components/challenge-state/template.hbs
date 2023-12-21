@@ -1,18 +1,8 @@
 <div class="challenge-state">
     {{#if (or this.isSource (not this.canChallenge))}}
-        <p>Waiting for other players.</p>
+        <p>{{@challengeState.defaultMessage}}</p>
     {{else}}
-        {{#if (eq @challengeState.actionId 2)}}
-            <p>{{@challengeState.sourceName}} is attemping to block foreign aid {{@challengeState.targetName}}.</p>
-        {{else if (eq @challengeState.actionId 4)}}
-            <p>{{@challengeState.sourceName}} is attemping to tax.</p>
-        {{else if (eq @challengeState.actionId 5)}}
-            <p>{{@challengeState.sourceName}} is attemping to assassinate {{@challengeState.targetName}}.</p>
-        {{else if (eq @challengeState.actionId 6)}}
-            <p>{{@challengeState.sourceName}} is attemping to exchange.</p>
-        {{else if (eq @challengeState.actionId 7)}}
-            <p>{{@challengeState.sourceName}} is attemping to steal from {{@challengeState.targetName}}.</p>
-        {{/if}}
+        <p>{{@challengeState.decisionMessage}}</p>
         <BsButton {{on 'click' @challenge}}>Challenge</BsButton>
         <BsButton {{on 'click' @pass}}>Pass</BsButton>
     {{/if}}

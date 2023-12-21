@@ -1,5 +1,6 @@
 from server.Game.Game import Game
 from server.CreateApp import socketio
+from server.CoupException import CoupException
 
 class Games:
     def __init__(self):
@@ -11,12 +12,12 @@ class Games:
     
     def add_game(self, game: Game):
         if game.id in self.games:
-            raise Exception('Trying to add game with duplicate id')
+            raise CoupException('Trying to add game with duplicate id')
         self.games[game.id] = game
 
     def remove_game(self, game_id: str):
         if game_id not in self.games:
-            raise Exception('Trying to remove game_id that does not exist')
+            raise CoupException('Trying to remove game_id that does not exist')
         self.games.pop(game_id)
 
     def get_games(self):
@@ -40,7 +41,7 @@ class Games:
     
     def get_game(self, game_id):
         if game_id not in self.games:
-            raise Exception('Trying to find game with game_id that does not exist')
+            raise CoupException('Trying to find game with game_id that does not exist')
         return self.games[game_id]
     
     def is_valid_game_name(self, name: str) -> bool:
@@ -55,3 +56,12 @@ class Games:
         for game in self.games.values():
             if game.players.has_player(player_id):
                 game.players.remove_player(player_id)
+
+    def get_validated_game(self, game_id, player_ids):
+        game = self.get_game(game_id)
+        for player_id in player_ids:
+            if player_id:
+                player = game.get_player(player_id)
+                if player.lost:
+                    raise CoupException('Lost player involved in action')
+        return game

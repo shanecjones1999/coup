@@ -11,25 +11,26 @@ def join_game():
     token = request.headers.get('Authorization')
     game_id = request.json.get('id')
     player = players.get_player(token)
-    if (player):
-        game = games.get_game(game_id)
-        if (game):
-            # TODO: ADD Game.add_player() method
-            game.add_player(player)
-            # WIP
-            game_state = game.get_game_state()
-            cards = [card.to_dict(False) for card in player.cards]
-            exchange_cards = []
-            if game.exchange_state and game.exchange_state.player_id == player.id and game.exchange_state.cards:
-                exchange_cards = [card.to_dict(False) for card in game.exchange_state.cards]
-            data = {
-                'gameState': game_state,
-                'playerId': player.id,
-                'cards': cards,
-                'exchangeCards': exchange_cards
-                }
-            return jsonify(data), 200
-    return jsonify(f'Invalid token or game Id: {token}, {game_id}')
+    if not player:
+        raise Exception('No player found')
+    game = games.get_game(game_id)
+    if not game:
+        raise Exception('No player found')
+    
+    # TODO Clean this up
+    game.add_player(player)
+    game_state = game.get_game_state()
+    cards = [card.to_dict(False) for card in player.cards]
+    exchange_cards = []
+    if game.exchange_state and game.exchange_state.player_id == player.id and game.exchange_state.cards:
+        exchange_cards = [card.to_dict(False) for card in game.exchange_state.cards]
+    data = {
+        'gameState': game_state,
+        'playerId': player.id,
+        'cards': cards,
+        'exchangeCards': exchange_cards
+        }
+    return jsonify(data), 200
 
 # Make sure we remove the player from correct rooms
 @game_blueprint.route('/api/invalidateSession', methods=['POST'])

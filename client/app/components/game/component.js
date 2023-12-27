@@ -124,19 +124,33 @@ export default class Game extends Component {
         { name: 'Steal', id: 7, cost: 0, requiresTarget: true },
     ];
 
-    init() {
-        super.init(...arguments);
-        this.websocket.socket.on('leave_game', this.handleLeaveGame.bind(this));
-        this.websocket.socket.on(
-            'game_state_update',
-            this.handleGameStateUpdate.bind(this)
-        );
-        this.websocket.socket.on('set_cards', this.handleSetCards.bind(this));
-        this.websocket.socket.on(
-            'update_exchange_cards',
-            this.handleUpdateExchangeCards.bind(this)
-        );
-        this.websocket.socket.on('message_update', this.handleMessageUpdate.bind(this));
+    // init() {
+    //     // super.init(...arguments);
+    //     // this.websocket.socket.on('leave_game', this.handleLeaveGame.bind(this));
+    //     // this.websocket.socket.on(
+    //     //     'game_state_update',
+    //     //     this.handleGameStateUpdate.bind(this)
+    //     // );
+    //     // this.websocket.socket.on('set_cards', this.handleSetCards.bind(this));
+    //     // this.websocket.socket.on(
+    //     //     'update_exchange_cards',
+    //     //     this.handleUpdateExchangeCards.bind(this)
+    //     // );
+    //     // this.websocket.socket.on('message_update', this.handleMessageUpdate.bind(this));
+    // }
+
+    // constructor() {
+    //     super(...arguments);
+    //     this.startTimer();
+    // }
+
+    startTimer() {
+        setInterval(() => {
+            if (this.model.gameState.timeLeft && this.model.gameState.timeLeft > 0) {
+                const value = this.model.gameState.timeLeft;
+                set(this, 'model.gameState.timeLeft', value-1);
+            }
+        }, 1000);
     }
 
     handleMessageUpdate(message) {

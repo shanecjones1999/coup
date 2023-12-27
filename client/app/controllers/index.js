@@ -19,10 +19,7 @@ export default class IndexController extends Controller {
                 'authenticator:custom-token',
                 this.user,
             );
-            if (!response.ok) {
-                console.log('Error authenticating user.');
-                return;
-            }
+            
             this.websocket.socket.emit('lobby_update');
             this.router.transitionTo('lobby');
 

@@ -15,6 +15,7 @@
     </div>
     <div>
         <h2>Game Data</h2>
+        <Timer @timeLeft={{this.model.gameState.timeLeft}} />
         <p>Name: {{this.model.gameState.gameName}}</p>
         <div class="players">
             {{#each this.otherPlayers as |player|}}

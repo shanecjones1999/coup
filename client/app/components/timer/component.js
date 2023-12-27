@@ -2,26 +2,28 @@ import Component from '@glimmer/component';
 import { inject as service } from '@ember/service';
 import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
+import { alias } from '@ember/object/computed';
+import { computed } from '@ember/object';
+import { set } from '@ember/object';
 
 export default class Timer extends Component {
-  @tracked time = this.args.timeLeft;
+    @computed('args.timeLeft')
+    get timeLeft() {
+        return this.args.timeLeft;
+    }
 
-  constructor() {
-    super(...arguments);
+    @tracked time = this.timeLeft;
 
-    this.startTimer();
-  }
+    // constructor() {
+    //     super(...arguments);
+    //     //this.startTimer();
+    // }
 
-  startTimer() {
-    setInterval(() => {
-      if (this.time && this.time > 0) {
-        this.time -= 1;
-      }
-    }, 1000);
-  }
-
-  @action
-  clt() {
-    console.log(this.time);
-  }
+    // startTimer() {
+    //     setInterval(() => {
+    //         if (this.timeLeft && this.timeLeft > 0) {
+    //             set(this, 'time', this.timeLeft-1);
+    //         }
+    //     }, 1000);
+    // }
 }

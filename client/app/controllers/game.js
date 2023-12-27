@@ -29,6 +29,10 @@ export default class GameController extends Controller {
     }
 
     handleGameStateUpdate(gameState) {
+        if (!this.timerStarted) {
+            this.startTimer();
+            this.timerStarted = true;
+        }
         set(this.model, 'gameState', gameState);
     }
 
@@ -38,5 +42,16 @@ export default class GameController extends Controller {
 
     handleUpdateExchangeCards(cards) {
         set(this.model, 'exchangeCards', cards);
+    }
+
+    @tracked timerStarted = false;
+
+    startTimer() {
+        setInterval(() => {
+            if (this.model.gameState.timeLeft && this.model.gameState.timeLeft > 0) {
+                const value = this.model.gameState.timeLeft;
+                set(this, 'model.gameState.timeLeft', value-1);
+            }
+        }, 1000);
     }
 }

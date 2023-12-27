@@ -1,13 +1,14 @@
 import random
 import string
 from server.CoupException import CoupException
+from server.Game.Card import Card
 
 class Player:
     def __init__(self, name: string, token: string):
         self.name = name
         self.id = ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(8))
         self.coins = 2
-        self.cards = []
+        self.cards: list[Card] = []
         self.token = token
         self.is_turn = False
         self.lost = False

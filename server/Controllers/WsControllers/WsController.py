@@ -164,10 +164,11 @@ def handle_lose_influence(data):
     card_id = data.get('cardId')
 
     game.handle_lose_influence(player_id, card_id)
-    player = game.players.get_player(player_id)
-    cards = [card.to_dict(False) for card in player.cards]
-    emit('set_cards', cards, room=player.token)
+    # player = game.players.get_player(player_id)
+    # cards = [card.to_dict(False) for card in player.cards]
+    # emit('set_cards', cards, room=player.token)
 
+    # Reset lose influence state
     game.lose_influence_state = LoseInfluenceState()
 
     game_state = game.get_game_state()

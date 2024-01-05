@@ -162,11 +162,7 @@ def handle_lose_influence(data):
     player_id = data.get('playerId')
     game = games.get_game(game_id)
     card_id = data.get('cardId')
-
     game.handle_lose_influence(player_id, card_id)
-    # player = game.players.get_player(player_id)
-    # cards = [card.to_dict(False) for card in player.cards]
-    # emit('set_cards', cards, room=player.token)
 
     # Reset lose influence state
     game.lose_influence_state = LoseInfluenceState()
@@ -181,9 +177,9 @@ def handle_resolve_exchange_state(data):
     game = games.get_game(game_id)
     selected_card_ids = data.get('selectedCardIds')
     game.handle_resolve_exchange(player_id, selected_card_ids)
-    player = game.players.get_player(player_id)
-    cards = [card.to_dict(False) for card in player.cards]
-    game.move_turn()
+    # player = game.players.get_player(player_id)
+    # cards = [card.to_dict(False) for card in player.cards]
+    # game.move_turn()
+    # emit('set_cards', cards, room=player.token)
     game_state = game.get_game_state()
-    emit('set_cards', cards, room=player.token)
     emit('game_state_update', game_state, room=game.id)

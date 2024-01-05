@@ -5,7 +5,7 @@ from server.CoupException import CoupException
 class Games:
     def __init__(self):
         self.games: dict[str, Game] = {}
-        appleGame = Game('Apple Game', 4, True, 60, socketio)
+        appleGame = Game('Apple Game', 4, True, 1, socketio)
         bananaGame = Game('Banana Game', 5, False, 40, socketio)
         self.add_game(appleGame)
         self.add_game(bananaGame)

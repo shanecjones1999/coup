@@ -53,12 +53,15 @@ class Game:
         self.challenge_state.player_ids = list(self.players.get_players())
         self.started = True
         self.over = False
-        self.timer.start_timer()
+        self.start_timer()
+
+    def start_timer(self):
+        if self.turn_timer_enabled:
+            self.timer.start_timer()
 
     # Callback method when the timer expires.
     def timer_expired(self):
-        if self.over:
-            print('Over!')
+        if self.over or not self.players.get_players():
             return
         if self.challenge_state.active:
             self.challenge_state.pending_player_ids = []
@@ -221,10 +224,10 @@ class Game:
             return False
         elif players_left == 1:
             self.over = True
-            self.timer.stop()
+            self.stop_timer()
             return True
         else:
-            self.timer.stop()
+            self.stop_timer()
             raise CoupException("No players left")
 
     # first resolution of action
@@ -480,26 +483,29 @@ class Game:
         if selection_count != len(selected_card_ids):
             raise CoupException('Player selected wrong number of cards in Exchange')
         
-        active_player_card_ids = [card.id for card in player.cards if not card.revealed]
-        total_ids = selected_card_ids + active_player_card_ids
-        for id in selected_card_ids:
-            total_ids.remove(id)
-
         active_player_cards = [card for card in player.cards if not card.revealed]
         exchange_cards = self.exchange_state.cards
         total_cards = active_player_cards + exchange_cards
-        for id in total_ids:
-            for card in total_cards:
-                if id == card.id:
-                    self.deck.append(card)
 
-        new_cards = [card for card in total_cards if card.id in selected_card_ids]
+        selected_cards = []
+
+        # Return unselected cards back to the deck.
+        for card in total_cards:
+            if card.id in selected_card_ids:
+                selected_cards.append(card)
+            else:
+                self.deck.append(card)
+
         old_revealed_cards = [card for card in player.cards if card.revealed]
-        player.cards = new_cards + old_revealed_cards
+        player.cards = selected_cards + old_revealed_cards
 
         name = self.players.get_player_name(player_id)
         msg = f"{name} completed their exchange with the court deck."
         self.add_audit(msg)
+
+        cards = [card.to_dict(False) for card in player.cards]
+        self.move_turn()
+        self.socket.emit('set_cards', cards, room=player.token)
 
     def move_turn(self):
         self.verify_one_active_state()
@@ -536,7 +542,7 @@ class Game:
         msg = f"Moving to {next_player_name}'s turn."
         self.add_audit(msg)
         self.reset_states()
-        self.timer.reset()
+        self.reset_timer()
 
     def reset_states(self):
         self.block_state = BlockState()
@@ -577,29 +583,32 @@ class Game:
     def get_player(self, player_id):
         return self.players.get_player(player_id)
     
+    def get_players(self):
+        return self.players.get_players()
+    
     def activate_challenge_state(self, card_claimed_id, action_id, source_id, from_block, target_id):
         self.deactivate_states()
-        self.timer.reset()
+        self.reset_timer()
         self.challenge_state.activate(card_claimed_id, action_id, source_id, from_block, self.players, target_id)
 
     def activate_block_state(self, action_id, source_id, target_id):
         self.deactivate_states()
-        self.timer.reset()
+        self.reset_timer()
         self.block_state.activate(action_id, source_id, self.players, target_id)
 
     def activate_lose_influence_state(self, player, from_reveal_state):
         self.deactivate_states()
-        self.timer.reset()
+        self.reset_timer()
         self.lose_influence_state.activate(player, from_reveal_state)
 
     def activate_reveal_card_state(self, revealer_id, challenger_id):
         self.deactivate_states()
-        self.timer.reset()
+        self.reset_timer()
         self.reveal_card_state.activate(revealer_id, challenger_id)
     
     def activate_exchange_state(self, player):
         self.deactivate_states()
-        self.timer.reset()
+        self.reset_timer()
         self.exchange_state.activate(player, self.deck)
 
     def current_player_turn(self) -> Player:
@@ -607,3 +616,15 @@ class Game:
             if player.is_turn:
                 return player
         raise CoupException(f'No players turn for {self.name} game')
+    
+    def reset_timer(self):
+        if self.turn_timer_enabled:
+            self.timer.reset()
+
+    def stop_timer(self):
+        if self.turn_timer_enabled:
+            self.timer.stop()
+
+    def emit_game_state(self):
+        game_state = self.get_game_state()
+        self.socket.emit('game_state_update', game_state, room=self.id)

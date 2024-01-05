@@ -16,6 +16,8 @@ def join_game():
     game = games.get_game(game_id)
     if not game:
         raise Exception('No player found')
+    if len(game.get_players()) >=  game.num_players:
+        return jsonify('The selected game is full.'), 401
     
     # TODO Clean this up
     game.add_player(player)

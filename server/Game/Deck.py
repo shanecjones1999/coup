@@ -1,6 +1,7 @@
 import random
 from server.Game.Card import Card
 from server.Game.Card import Influence
+from server.CoupException import CoupException
 
 influences_dict = {
             1: Influence(1, 'Duke', 4, 2),
@@ -35,3 +36,12 @@ class Deck:
         drawn_cards = self.cards[-num_cards:]  # Use list slicing to draw cards
         self.cards = self.cards[:-num_cards]  # Update the remaining cards
         return drawn_cards
+    
+    def exchange(self):
+        pass
+
+    def validate(self, num_players: int, exchange_state_active: bool):
+        expected_card_count = total_cards - 2 * num_players
+        expected_card_count += 2 if exchange_state_active else 0
+        if expected_card_count != len(self.cards):
+            raise CoupException('Incorrect number of cards in deck')

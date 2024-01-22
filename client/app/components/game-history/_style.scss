@@ -1,0 +1,12 @@
+.game-history {
+    margin: $base-unit-2x;
+
+    .game-history-title {
+        display: flex;
+        justify-content: center;
+
+        .title {
+            font-size: $label-font-size;
+        }
+    }
+}

@@ -34,8 +34,8 @@ export default class GamesController extends Controller {
         this.websocket.socket.on('lobby_update', this.handleLobbyUpdate.bind(this));
         this.websocket.socket.on('game_start', this.handleGameStart.bind(this));
         this.websocket.socket.on(
-        'handle_update_games',
-        this.handleUpdateGames.bind(this)
+            'handle_update_games',
+            this.handleUpdateGames.bind(this)
         );
     }
 

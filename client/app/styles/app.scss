@@ -1,12 +1,12 @@
-
-// @import './globals.scss';
 @import 'app/components/player/_style.scss';
 @import 'app/components/nav-bar/_style.scss';
 @import 'app/components/inline-alert/_style.scss';
 @import 'app/components/enter-game/_style.scss';
 @import 'app/components/create-game/_style.scss';
+@import 'app/components/game/_style.scss';
 @import 'app/components/challenge-state/_style.scss';
 @import 'app/components/exchange-state/_style.scss';
+@import 'app/components/join-create-game/_style.scss';
 @import 'app/components/chat/_style.scss';
 @import 'app/components/log/_style.scss';
 @import 'app/components/game-history/_style.scss';
@@ -15,15 +15,16 @@
 @import 'app/styles/application.scss';
 @import 'app/styles/index.scss';
 @import 'app/styles/globals.scss';
+@import 'app/styles/lobby.scss';
 // @import 'animate.css';
 
 body {
-  font-family: Verdana, sans-serif;
-  font-size: 20px;
-  margin: 0px;
+    font-family: Verdana, sans-serif;
+    font-size: 20px;
+    margin: 0px;
 }
 
 .content {
-  margin: 5%;
+    margin: 5%;
 }
 @import "ember-bootstrap/bootstrap";

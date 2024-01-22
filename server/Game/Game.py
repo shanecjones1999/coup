@@ -143,6 +143,7 @@ class Game:
             'playerData': player_data, 
             'started': self.started,
             'timeLeft': self.timer.get_time_left(),
+            'timerEnabled': self.turn_timer_enabled,
             'blockState': block_state,
             'challengeState': challenge_state,
             'loseInfluenceState': lose_influence_state,
@@ -255,7 +256,7 @@ class Game:
 
     def handle_pass_challenge(self, player_id):
         self.verify_one_active_state()
-        self.challenge_state.pending_player_ids.remove(player_id)
+        self.challenge_state.remove_pending_player(player_id, self.players) #.pending_player_ids.remove(player_id)
         if not self.challenge_state.pending_player_ids:
             self.pass_challenge()
 
@@ -283,9 +284,8 @@ class Game:
 
             self.resolve_action(action_id, source_id, target_id)
         
-
     def handle_pass_block(self, player_id):
-        self.block_state.pending_player_ids.remove(player_id)
+        self.block_state.remove_pending_player(player_id, self.players)
         if not self.block_state.pending_player_ids:
             self.pass_block()
 

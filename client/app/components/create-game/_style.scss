@@ -1,3 +1,12 @@
 .create-game {
-    margin-top: 5px;
+    margin: $base-unit;
+
+    .create-game-title {
+        display: flex;
+        justify-content: center;
+
+        .title {
+            margin-left: $base-unit;
+        }
+    }
 }

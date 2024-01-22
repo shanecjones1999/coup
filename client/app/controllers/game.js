@@ -21,6 +21,10 @@ export default class GameController extends Controller {
             'update_exchange_cards',
             this.handleUpdateExchangeCards.bind(this)
         );
+
+        // window.onbeforeunload = function() {
+        //     return '';
+        // }
     }
 
     handleMessageUpdate(message) {

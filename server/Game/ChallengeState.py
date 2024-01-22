@@ -35,7 +35,7 @@ class ChallengeState(BaseState):
                 pending_player_ids.append(player.id)
         self.pending_player_ids = pending_player_ids
 
-        self.set_messages(players, card_claimed_id, source_id, target_id, action_id, pending_player_ids, from_block)
+        self.set_messages(players)
 
     def validate_active_state(self, source_id, target_id, players: Players):
         source_player = players.get_player(source_id)
@@ -65,16 +65,16 @@ class ChallengeState(BaseState):
                 'decisionMessage': self.decision_message,
             }
     
-    def set_messages(self, players: Players, card_claimed_id, source_id, target_id, action_id, pending_player_ids, from_block):
-        if from_block:
-            source_name = players.get_player(source_id).name
-            target_name = players.get_player(target_id).name if target_id else ''
-            action_name = action_name = actions_dict[action_id].name
+    def set_messages(self, players: Players):
+        if self.from_block:
+            source_name = players.get_player(self.source_id).name
+            target_name = players.get_player(self.target_id).name if self.target_id else ''
+            action_name = action_name = actions_dict[self.action_id].name
 
-            base_message = f'{source_name} is attempting to block {action_name.lower()} as {influences_dict[card_claimed_id].name}.'
+            base_message = f'{source_name} is attempting to block {action_name.lower()} as {influences_dict[self.card_claimed.type_id].name}.'
 
             pending_player_names = []
-            for player_id in pending_player_ids:
+            for player_id in self.pending_player_ids:
                 player_name = players.get_player(player_id).name
                 pending_player_names.append(player_name)
 
@@ -83,11 +83,13 @@ class ChallengeState(BaseState):
             self.decision_message = base_message
             self.default_message = base_message + ' ' + add_message
         else:
-            source_name = players.get_player(source_id).name
-            target_name = players.get_player(target_id).name if target_id else ''
-            action_name = action_name = actions_dict[action_id].name
+            source_name = players.get_player(self.source_id).name
+            target_name = players.get_player(self.target_id).name if self.target_id else ''
+            action_name = action_name = actions_dict[self.action_id].name
 
             base_message = f'{source_name} is attempting to {action_name.lower()}'
+
+            action_id = self.action_id
             if action_id == 2 or action_id == 4 or action_id == 6:
                 base_message += '.'
             elif action_id == 5:
@@ -98,7 +100,7 @@ class ChallengeState(BaseState):
                 raise CoupException('Invalid action Id')
             
             pending_player_names = []
-            for player_id in pending_player_ids:
+            for player_id in self.pending_player_ids:
                 player_name = players.get_player(player_id).name
                 pending_player_names.append(player_name)
 
@@ -106,3 +108,9 @@ class ChallengeState(BaseState):
 
             self.decision_message = base_message
             self.default_message = base_message + ' ' + add_message
+
+    def remove_pending_player(self, player_id: int, players: Players):
+        if player_id not in self.pending_player_ids:
+            raise CoupException('Attempting to remove player from pending block players that does not exist')
+        self.pending_player_ids.remove(player_id)
+        self.set_messages(players)

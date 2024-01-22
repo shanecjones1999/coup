@@ -1,7 +1,24 @@
-<Log @messages={{@messages}} @isChat={{true}}/>
-<BsForm @model={{this}} @onSubmit={{this.submit}} as |form|>
-    <form.element @label="Chat" @property="message" as |el|>
-        <el.control placeholder="Message" class="border-info" />
-    </form.element>
-    <form.submitButton>Submit</form.submitButton>
-</BsForm>
+<div class="chat">
+    <BsCollapse @collapsed={{this.collapsed}}>
+        <Log @messages={{@messages}} @isChat={{true}}/>
+        <div class="send-chat">
+            <BsForm @model={{this}} @onSubmit={{this.submit}} as |form|>
+                <div class="row">
+                    <div class="col">
+                    <form.element @property="message" as |el|>
+                        <el.control placeholder="Message" class="border-info" />
+                    </form.element>
+                    </div>
+                    <div class="col-auto">
+                    <form.submitButton>
+                        <FaIcon @icon="paper-plane"/>
+                    </form.submitButton>
+                    </div>
+                </div>
+            </BsForm>
+        </div>
+    </BsCollapse>
+    <BsButton type="button" @type="primary" {{on 'click' this.toggleCollapsed}}>
+        <FaIcon @icon="{{if this.collapsed 'comment' 'comment-slash'}}"/>
+    </BsButton>
+</div>

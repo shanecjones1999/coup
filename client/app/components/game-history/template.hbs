@@ -1,4 +1,11 @@
 <div class="game-history">
-    <Log @messages={{@messages}} @isChat={{false}}/>
-    <div>Game History</div>
+    <BsCollapse @collapsed={{this.collapsed}}>
+        <Log @messages={{@messages}} @isChat={{false}}/>
+        <div class="game-history-title">
+            <label class="title">Game history</label>
+        </div>
+    </BsCollapse>
+    <BsButton type="button" @type="primary" {{on 'click' this.toggleCollapsed}}>
+        <FaIcon @icon="scroll" />
+    </BsButton>
 </div>

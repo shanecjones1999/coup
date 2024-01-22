@@ -1,0 +1,8 @@
+.game-container {
+    margin: $base-unit-2x;
+
+    .players {
+        display: flex;
+        flex-wrap: wrap;
+    }
+}

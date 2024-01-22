@@ -7,11 +7,17 @@ import { set } from '@ember/object';
 import { computed } from '@ember/object';
 
 export default class Chat extends Component {
-    @tracked message = ''
+    @tracked message = '';
+    @tracked collapsed = false;
 
     @action
     submit() {
         this.args.sendMessage(this.message);
         set(this, 'message', '');
+    }
+
+    @action
+    toggleCollapsed() {
+        this.collapsed = !this.collapsed;
     }
 }

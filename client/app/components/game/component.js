@@ -53,7 +53,7 @@ export default class Game extends Component {
 
   @computed('model.gameState.playerData', 'model.playerId')
   get otherPlayers() {
-    return this.model.gameState.playerData.filter(
+    return this.model?.gameState?.playerData?.filter(
       (player) => player.id != this.model.playerId
     );
   }
@@ -65,7 +65,7 @@ export default class Game extends Component {
 
     @computed('model.gameState.over')
     get over() {
-        return this.model.gameState.over;
+        return this.model?.gameState?.over ?? false;
     }
 
     @alias('model.gameState.blockState') blockState;
@@ -106,6 +106,17 @@ export default class Game extends Component {
     @computed('exchangeState.active')
     get promptExchangeState() {
         return this.exchangeState.active;
+    }
+
+    @computed('model.gameState.players')
+    get activePlayerName() {
+        const players = this.model.gameState.playerData;
+        for (let i = 0; i < players.length; i++) {
+            if (players[i].isTurn) {
+                return players[i].name;
+            }
+        }
+        return 'No active player';
     }
 
     @alias('model.gameState.chatLog') chatLog;

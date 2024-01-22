@@ -1,4 +1,8 @@
 <div class="create-game">
+    <div class="create-game-title">
+        <FaIcon @icon="circle-plus" @size="2x" />
+        <h2 class="title">Create a Game</h2>
+    </div>
     <InlineAlert @type="danger" @message={{this.alertMessage}} @visible={{this.showAlert}} @onDismiss={{this.onDismiss}}/>
     <BsForm
         @formLayout="vertical"
@@ -7,7 +11,7 @@
         as |form|
     >
         <form.element @label="Game name" @property="gameName" as |el|>
-            <el.control/>
+            <el.control placeholder="Game name"/>
         </form.element>
         <form.element @label="Number of players ({{this.numPlayers}})" @property="numPlayers" as |el|>
             <input class="form-control" type="range" id={{el.id}} min={{this.minPlayers}} max={{this.maxPlayers}} 
@@ -27,3 +31,30 @@
         <form.submitButton>Create Game</form.submitButton>
     </BsForm>
 </div>
+
+{{!-- <div class="create-game">
+    <div class="create-game-title">
+        <FaIcon @icon="circle-plus" @size="2x" />
+        <h2 class="title">Create a Game</h2>
+    </div>
+    <div class="create-game-form">
+        <div>
+            <label for="g">Game name</label>
+            <Input id="game-name" @type="text" placeholder="Game name">Game name</Input>
+        </div>
+        <div>
+            <FaIcon @icon="user-group" />
+            <label for="num-players">Number of players</label>
+            <input id="num-players" type="range" min="2" max="6">
+        </div>
+        <div>
+            <FaIcon @icon="clock" />
+            <label for="timer">Enable timer</label>
+            <input id="timer" type="checkbox" min="2" max="6">
+        </div>
+        <div>
+            <label for="turn-length">Turn length</label>
+            <input id="turn-length" type="range" min="15" max="60" step="5">
+        </div>
+    </div>
+</div> --}}

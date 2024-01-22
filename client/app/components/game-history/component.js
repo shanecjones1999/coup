@@ -7,4 +7,10 @@ import { set } from '@ember/object';
 import { computed } from '@ember/object';
 
 export default class GameHistory extends Component {
+    @tracked collapsed = true;
+
+    @action
+    toggleCollapsed() {
+        this.collapsed = !this.collapsed;
+    }
 }

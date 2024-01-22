@@ -1,10 +1,11 @@
 {{page-title "Games"}}
-<div>
-    <h4>Lobby:</h4>
-        {{#each this.lobby as |player|}}
-            <p>{{player.name}}</p>
-        {{/each}}
-    <div class="button-group2">
+<div class="lobby">
+    <h2>Lobby</h2>
+    {{#each this.lobby as |player|}}
+        <p class="player">{{player.name}}</p>
+    {{/each}}
+    <JoinCreateGame @games={{this.games}} />
+    {{!-- <div class="join-create-toggle">
         <BsButtonGroup
             @value={{this.selectedValue}}
             @size="lg"
@@ -17,19 +18,18 @@
         </BsButtonGroup>
     </div>
     {{#if this.showGames}}
-        <div class="">
-        <h2>Games</h2>
-        <div>
+        <div class="join-game">
+            <div class="join-game-title">
+                <FaIcon @icon="door-open" @size="2x" />
+                <h2 class="title">Join a Game</h2>
+            </div>
             {{#each this.games as |game|}}
                 {{#unless game.isStarted}}
                     <EnterGame @game={{game}} />
                 {{/unless}}
             {{/each}}
         </div>
-        </div>
     {{else}}
-        <div class="">
-            <CreateGame/>
-        </div>
-    {{/if}}
+        <CreateGame/>
+    {{/if}} --}}
 </div>

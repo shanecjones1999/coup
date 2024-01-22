@@ -10,7 +10,7 @@ export default class CreateGame extends Component {
     @service websocket;
     @service router;
 
-    maxPlayers = 5;
+    maxPlayers = 6;
     minPlayers = 2;
 
     maxTurnLength = 60;
@@ -21,7 +21,7 @@ export default class CreateGame extends Component {
 
     @tracked turnLength = 30;
 
-    @tracked numPlayers = 5;
+    @tracked numPlayers = 4;
     @tracked gameName = '';
 
     @tracked showAlert = false;
@@ -39,7 +39,7 @@ export default class CreateGame extends Component {
         const response = await fetch(`${ENV.API_HOST}/api/createGame`, {
             headers: headers,
             method: 'POST',
-            credentials: 'include', // Include cookies and authentication
+            credentials: 'include',
             body: JSON.stringify({ 
                 'name': this.gameName, 
                 'numPlayers': this.numPlayers,
@@ -54,7 +54,6 @@ export default class CreateGame extends Component {
             set(this, 'showAlert', true)
         }
         else {
-            console.log(data);
             this.router.transitionTo('game', data);
         }
         

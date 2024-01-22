@@ -1,0 +1,24 @@
+.lobby {
+    text-align: center;
+
+    .join-game {
+        margin: $base-unit;
+
+        .join-game-title {
+            display: flex;
+            justify-content: center;
+
+            .title {
+                margin-left: $base-unit;
+            }
+        }
+    }
+
+    .join-create-toggle {
+        margin: $base-unit;
+    }
+
+    .player {
+        margin: 0;
+    }
+}

@@ -5,31 +5,4 @@
         <p class="player">{{player.name}}</p>
     {{/each}}
     <JoinCreateGame @games={{this.games}} />
-    {{!-- <div class="join-create-toggle">
-        <BsButtonGroup
-            @value={{this.selectedValue}}
-            @size="lg"
-            @type="radio"
-            @onChange={{fn (mut this.selectedValue)}}
-            as |bg|
-            >
-            <bg.button @type="primary" @value={{0}}>Join Game</bg.button>
-            <bg.button @type="primary" @value={{1}}>Create Game</bg.button>
-        </BsButtonGroup>
-    </div>
-    {{#if this.showGames}}
-        <div class="join-game">
-            <div class="join-game-title">
-                <FaIcon @icon="door-open" @size="2x" />
-                <h2 class="title">Join a Game</h2>
-            </div>
-            {{#each this.games as |game|}}
-                {{#unless game.isStarted}}
-                    <EnterGame @game={{game}} />
-                {{/unless}}
-            {{/each}}
-        </div>
-    {{else}}
-        <CreateGame/>
-    {{/if}} --}}
 </div>

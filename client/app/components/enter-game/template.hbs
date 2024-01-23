@@ -1,3 +1,7 @@
 <div class="enter-game">
-    <BsButton @type="primary" {{on "click" (fn this.joinGame @game.id)}}>{{@game.name}} ({{@game.numPlayers}}/{{@game.totalPlayers}})</BsButton>
+    <BsButton @type="primary" disabled={{gte @game.numPlayers @game.totalPlayers}} {{on "click" (fn this.joinGame @game.id)}}>
+        {{@game.name}} ({{@game.numPlayers}}/{{@game.totalPlayers}})
+        <FaIcon @icon="right-to-bracket" />
+    </BsButton>
+    
 </div>

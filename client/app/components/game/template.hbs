@@ -14,7 +14,6 @@
         {{#if this.model.gameState.timerEnabled}}
             <Timer @timeLeft={{this.model.gameState.timeLeft}} />
         {{/if}}
-        <p>Name: {{this.model.gameState.gameName}}</p>
         <div class="players">
             {{#each this.otherPlayers as |player|}}
                 <Player @playerData={{player}} @canSelectPlayer={{this.canSelectPlayer}} @cards={{player.cards}} @selectPlayerId={{this.selectPlayerId}} />            
@@ -65,9 +64,11 @@
                 @selectedCardIds={{this.selectedCardIds}}
             />
         {{/if}}
-        {{#if (and this.model.gameState.started (not this.inActiveState))}}
-            <p>Waiting for {{this.activePlayerName}} to select an action.</p>
-        {{/if}}
+        <div class="pending-action">
+            {{#if (and this.model.gameState.started (not this.inActiveState))}}
+                <p>Waiting for {{this.activePlayerName}} to select an action.</p>
+            {{/if}}
+        </div>
     </div>
     <div>
         {{#if (and (eq this.model.playerId this.currentTurnPlayerId) (not this.inActiveState) (not this.over))}}

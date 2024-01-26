@@ -1,5 +1,14 @@
-<div class="actions-selector">
-    {{#each @actions as |action|}}
-        <BsButton disabled={{or (gt action.cost @coins) (and (gte @coins 10) (not-eq action.id 3))}} {{on 'click' (fn @initiateAction action)}}>{{action.name}}</BsButton>
-    {{/each}}
+<div class="actions-selector-container">
+    <h2 class="title">
+        Select an action
+    </h2>
+    <div class="actions-center">
+        <div class="actions-selector">
+        {{#each @actions as |action|}}
+            <div class="action-button">
+                <BsButton disabled={{or (gt action.cost @coins) (and (gte @coins 10) (not-eq action.id 3))}} {{on 'click' (fn @initiateAction action)}}>{{action.name}}</BsButton>
+            </div>
+        {{/each}}
+        </div>
+    </div>
 </div>

@@ -1,7 +1,12 @@
 .game-container {
     margin: $base-unit-2x;
 
+    .pending-action {
+        text-align: center;
+    }
+
     .players {
+        margin: $base-unit-2x;
         display: flex;
         flex-wrap: wrap;
     }

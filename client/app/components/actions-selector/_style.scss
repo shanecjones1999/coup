@@ -1,0 +1,28 @@
+.actions-selector-container {
+    //display: flex;
+    //justify-content: center;
+
+    .title {
+        text-align: center;
+        margin: 0;
+    }
+
+    .actions-center {
+        display: flex;
+        justify-content: center;
+
+        .actions-selector {
+            margin: auto;
+            max-width: 75%;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: $base-unit;
+    
+            .action-button {
+                margin: $base-unit * 0.25;
+            }
+        }
+    }
+    
+}

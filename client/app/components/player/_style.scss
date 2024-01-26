@@ -1,22 +1,17 @@
 @import 'app/styles/globals.scss';
 
-.player-info {
+.player-container {
     margin: auto;
-    border: 1px solid black;
-    border-radius: 0.375rem;
-    padding: 10px;
-    //cursor: default;
+    border: none;
+    border-radius: 0.5rem;
+    padding: $base-unit;
+    background-color: $light-gray;
     &:hover {
         cursor: default!important;
     }
 
     &.select {
-        //box-shadow: 0px 0px 8px 3px rgba(65, 81, 41, 0.5)!important;
-        //box-shadow: 0 0 0 0 rgba(0, 0, 0, 1);
-        //transform: scale(1);
-
         @include pulse-radius(2s, infinite, red);
-	    //animation: pulse2 2s infinite;
     }
 
     &.select:hover {
@@ -24,12 +19,7 @@
     }
 
     &.is-turn {
-        box-shadow: 0px 0px 8px 3px rgba(255, 136, 136, 0.5);
-        //background-color: rgb(255, 196, 196);
-    }
-
-    .player-cards {
-        display: flex;
+        border: 1px solid $active-turn;
     }
 }
 

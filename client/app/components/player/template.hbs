@@ -1,12 +1,15 @@
 <button type="button" 
-    class="player-info {{if @playerData.isTurn "is-turn"}} {{if this.selectable "select"}} {{if @playerData.lost "lost"}}" 
+    class="player-container {{if @playerData.isTurn "is-turn"}} {{if this.selectable "select"}} {{if @playerData.lost "lost"}}" 
     {{on 'click' this.selectPlayer}}
 >
-    <span class="player-name">{{@playerData.name}}</span>
+    <span class="player-name">
+        <FaIcon @icon="user" />
+        {{@playerData.name}}
+        </span>
     <span class="player-cards">
         {{#each @cards as |card|}}
             <Card @card={{card}} @self={{@self}}/>
         {{/each}}
     </span>
-    <span class="player-coins">{{@playerData.coins}} coins</span>
+    <span class="player-coins">{{@playerData.coins}} <FaIcon @icon="coins" /></span>
 </button>

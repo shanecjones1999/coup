@@ -2,32 +2,20 @@
 <div class="landing-page">
     <h2 class="title">Online Coup</h2>
     <div>
-        {{!-- <BsForm
-            @formLayout="vertical"
-            @model={{this.user}}
-            @onSubmit={{this.enterLobby}}
-            as |form|
-            >
-            <form.element @property="username" as |el|>
-                <el.control placeholder="Enter your username"/>
-            </form.element>
-            <form.submitButton>Enter Lobby</form.submitButton>
-        </BsForm> --}}
-
         <BsForm @model={{this.user}} @onSubmit={{this.enterLobby}} as |form|>
-                <div class="row">
-                    <div class="col">
+            <div class="row">
+                <div class="col">
                     <form.element @property="username" as |el|>
                         <el.control placeholder="Enter your username" class="border-info" />
                     </form.element>
-                    </div>
-                    <div class="col-auto">
+                </div>
+                <div class="col-auto">
                     <form.submitButton>
                         <FaIcon @icon="right-to-bracket"/> Enter Lobby
                     </form.submitButton>
-                    </div>
                 </div>
-            </BsForm>
+            </div>
+        </BsForm>
     </div>
     {{outlet}}
 </div>

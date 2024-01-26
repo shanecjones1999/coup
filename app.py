@@ -13,4 +13,7 @@ app.register_blueprint(lobby_blueprint)
 app.register_blueprint(game_blueprint)
 
 if __name__ == '__main__':
-    socketio.run(app, debug=True)
+    socketio.run(app,
+        host='0.0.0.0',
+        port=8000,
+        debug=True)

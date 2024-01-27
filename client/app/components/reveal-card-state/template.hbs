@@ -1,12 +1,12 @@
 <div class="reveal-card-state">
     {{#if this.isRevealingPlayer}}
-        <p>You have been challenged.</p>
+        <p>{{@revealCardState.decisionMessage}}</p>
         {{#each @cards as |card|}}
             {{#unless card.revealed}}
                 <BsButton {{on 'click' (fn @revealCard card.id)}}>Reveal {{card.name}}</BsButton>
             {{/unless}}
         {{/each}}
     {{else}}
-        <p>Waiting for {{@revealCardState.revealerId}} to reveal a card.</p>
+        <p>{{@revealCardState.defaultMessage}}</p>
     {{/if}}
 </div>

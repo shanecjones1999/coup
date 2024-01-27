@@ -309,14 +309,16 @@ class Game:
         else:
             raise CoupException("Invalid action taken:", action_id)
 
-    def handle_challenge(self, player_challenging_id):
+    def handle_challenge(self, challenger_id):
         self.verify_one_active_state()
-        player_being_challenged_id = self.challenge_state.source_id
+        revealer_id = self.challenge_state.source_id
         self.deactivate_states()
-        self.activate_reveal_card_state(player_being_challenged_id, player_challenging_id)
-        player_challenging_name = self.players.get_player_name(player_challenging_id)
-        player_being_challenged_name = self.players.get_player_name(player_being_challenged_id)
-        msg = f"{player_challenging_name} challenges {player_being_challenged_name}."
+        revealer = self.get_player(self.challenge_state.source_id)
+        challenger = self.get_player(challenger_id)
+        self.activate_reveal_card_state(revealer, challenger)
+        challenger_name = self.players.get_player_name(challenger_id)
+        revealer_name = self.players.get_player_name(revealer_id)
+        msg = f"{challenger_name} challenges {revealer_name}."
 
     def handle_block(self, block_card_id, blocked_action_id, blocker_id, target_id):
         self.verify_one_active_state()
@@ -601,10 +603,10 @@ class Game:
         self.reset_timer()
         self.lose_influence_state.activate(player, from_reveal_state)
 
-    def activate_reveal_card_state(self, revealer_id, challenger_id):
+    def activate_reveal_card_state(self, revealer: Player, challenger: Player):
         self.deactivate_states()
         self.reset_timer()
-        self.reveal_card_state.activate(revealer_id, challenger_id)
+        self.reveal_card_state.activate(revealer, challenger)
     
     def activate_exchange_state(self, player):
         self.deactivate_states()

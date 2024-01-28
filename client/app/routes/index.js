@@ -3,21 +3,25 @@ import { inject as service } from '@ember/service';
 import ENV from 'client/config/environment';
 
 export default class IndexRoute extends Route {
-  @service session;
-  @service router;
-  @service store;
+    @service session;
+    @service router;
+    @service store;
 
-  async beforeModel() {
-    // try {
-    //     const test = await this.store.findAll('player');
-    // } catch(e) {
-    //     console.log(e);
-    // }
+    async beforeModel() {
+        // try {
+        //     const players = await this.store.findAll('player');
+        //     players.forEach(player => {
+        //         console.log('Player Name:', player.name);
+        //     });
 
-    console.log('ENV.API_HOST value:', ENV.API_HOST);
+        // } catch(e) {
+        //     console.log(e);
+        // }
 
-    if (this.session.isAuthenticated) {
-        this.router.transitionTo('lobby');
-    }
+        console.log('ENV.API_HOST value:', ENV.API_HOST);
+
+        if (this.session.isAuthenticated) {
+            this.router.transitionTo('lobby');
+        }
     }
 }

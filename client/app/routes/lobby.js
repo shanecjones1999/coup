@@ -23,10 +23,13 @@ export default class GamesRoute extends ProtectedRoute {
 
         if (!response.ok) {
             await this.session.invalidate();
-            return
+            return;
         }
 
         const data = await response.json();
-        return { games: data.games, lobby: data.lobby };
+        return { 
+            games: data.games, 
+            lobby: data.lobby 
+        };
     }
 }

@@ -9,12 +9,12 @@ class RevealCardState(BaseState):
         self.default_message = ''
         self.decision_message = ''
 
-    def activate(self, revealer: Player, challenger: Player):
+    def activate(self, revealer: Player, challenger: Player, card_name: str):
         self.active = True
         self.revealer_id = revealer.id
         self.challenger_id = challenger.id
         self.default_message = f'Waiting for {revealer.name} to select an influence to reveal.'
-        self.decision_message = f'Your claim of having X has been challenged. Select an influence to reveal.'
+        self.decision_message = f'Your claim of having {card_name} has been challenged. Select an influence to reveal.'
 
     def to_dict(self):
         return {

@@ -606,7 +606,8 @@ class Game:
     def activate_reveal_card_state(self, revealer: Player, challenger: Player):
         self.deactivate_states()
         self.reset_timer()
-        self.reveal_card_state.activate(revealer, challenger)
+        card_name = self.deck.get_card_name(self.challenge_state.card_claimed.type_id)
+        self.reveal_card_state.activate(revealer, challenger, card_name)
     
     def activate_exchange_state(self, player):
         self.deactivate_states()

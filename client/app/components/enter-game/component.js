@@ -8,7 +8,7 @@ import { set } from '@ember/object';
 export default class EnterGame extends Component {
     @service router;
 
-    @action joinGame(id) {
-        this.router.transitionTo('game', id);
-    }
+    // @action joinGame(id) {
+    //     this.router.transitionTo('game', id);
+    // }
 }

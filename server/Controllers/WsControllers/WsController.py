@@ -39,12 +39,6 @@ def handle_leave_lobby(token):
     name = lobby.remove_player(token)
     emit('leave_lobby', name, room='lobby')
 
-@socketio.on('lobby_update')
-def handle_lobby_update():
-    players = lobby.get_players()
-    ret = [player.to_dict() for player in players]
-    emit('lobby_update', ret, room='lobby')
-
 # Handle emitting to games and lobby here!?
 @socketio.on('invalidate_session')
 def handle_invalidate_session(token):
@@ -85,7 +79,6 @@ def handle_start_game(id):
     for player in game.players.get_players():
         cards = [card.to_dict(False) for card in player.cards]
         emit('set_cards', cards, room=player.token)
-    emit('game_start', id, room='lobby')
 
 @socketio.on('initiate_action')
 def initiate_action(data):

@@ -39,10 +39,6 @@ def join_game():
 def invalidate_session():
     token = request.headers.get('Authorization')
     name, game, id = remove_player_from_global(token)
-    if (name):
-        lobby_players = lobby.get_players()
-        ret = [player.to_dict() for player in lobby_players]
-        socketio.emit('lobby_update', ret, room='lobby')
     if (game):
         game_state = game.get_game_state()
         socketio.emit('game_state_update', game_state, room=game.id)

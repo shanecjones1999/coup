@@ -45,3 +45,8 @@ class Deck:
         expected_card_count += 2 if exchange_state_active else 0
         if expected_card_count != len(self.cards):
             raise CoupException('Incorrect number of cards in deck')
+        
+    def get_card_name(self, type_id: int) -> str:
+        if type_id not in influences_dict:
+            raise CoupException(f'Invalid card type: {type_id}')
+        return influences_dict[type_id].name

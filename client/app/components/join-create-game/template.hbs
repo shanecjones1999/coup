@@ -7,7 +7,7 @@
             </div>
             {{#each this.games as |game|}}
                 {{#unless game.isStarted}}
-                    <EnterGame @game={{game}} />
+                    <EnterGame @game={{game}} @enterGame={{@enterGame}} />
                 {{/unless}}
             {{/each}}
         </div>

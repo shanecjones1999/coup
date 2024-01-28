@@ -8,6 +8,10 @@ export default class IndexController extends Controller {
     @service websocket;
     @service session;
 
+    init() {
+        super.init(...arguments);
+    }
+
     @tracked user = {
         username: ''
     };
@@ -20,7 +24,6 @@ export default class IndexController extends Controller {
                 this.user,
             );
             
-            this.websocket.socket.emit('lobby_update');
             this.router.transitionTo('lobby');
 
         } catch (error) {

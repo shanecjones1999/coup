@@ -4,5 +4,5 @@
     {{#each this.lobby as |player|}}
         <p class="player">{{player.name}}</p>
     {{/each}}
-    <JoinCreateGame @games={{this.games}} />
+    <JoinCreateGame @games={{this.games}} @enterGame={{this.enterGame}} />
 </div>

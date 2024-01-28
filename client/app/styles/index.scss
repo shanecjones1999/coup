@@ -1,7 +1,14 @@
 .landing-page {
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    //align-content: center;
 
-    &.title {
-        margin: 0;
+    .title {
+        margin: $base-unit-2x;
+    }
+
+    .sign-in-form {
+        margin: $base-unit-2x;
     }
 }

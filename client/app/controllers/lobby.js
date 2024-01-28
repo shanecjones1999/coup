@@ -4,25 +4,16 @@ import { action } from '@ember/object';
 import { inject as service } from '@ember/service';
 import { set } from '@ember/object';
 import { computed } from '@ember/object';
+import { run, later, cancel } from '@ember/runloop';
+import { alias } from '@ember/object/computed';
+import ENV from 'client/config/environment';
 
 export default class GamesController extends Controller {
     @service session;
     @service websocket;
     @service router;
 
-    @tracked selectedValue = 0;
-
-    @computed('selectedValue')
-    get showGames() {
-        return this.selectedValue == 0;
-    }
-
-    @tracked gameName = '';
-
-    @computed('model.lobby')
-    get lobby() {
-        return this.model.lobby;
-    }
+    @alias('model.lobby') lobby;
 
     @computed('model.games')
     get games() {
@@ -31,44 +22,46 @@ export default class GamesController extends Controller {
 
     init() {
         super.init(...arguments);
-        this.websocket.socket.on('lobby_update', this.handleLobbyUpdate.bind(this));
-        this.websocket.socket.on('game_start', this.handleGameStart.bind(this));
-        this.websocket.socket.on(
-            'handle_update_games',
-            this.handleUpdateGames.bind(this)
-        );
+        this.refreshModel();
     }
 
-    // TODO better logic here
-    handleLobbyUpdate(updatedLobby) {
-        if (this.model) {
-        set(this.model, 'lobby', updatedLobby);
-        }
+    refreshModel() {
+        const intervalId = later(this, function() {
+            this.fetchModel();
+            this.refreshModel();
+        }, 10000);
+        
+        this.intervalId = intervalId;
     }
-
-    handleLeaveLobby(name) {
-        console.log(name, 'has leaved!');
-        this.lobby = this.lobby.filter((username) => username != name);
-    }
-
-    handleUpdateGames(updatedGames) {
-        set(this.model, 'games', updatedGames);
-    }
-
-    handleGameStart(id) {
-        const game = this.games.find((g) => g.id == id);
-        if (game) {
-        set(game, 'isStarted', true);
-        }
+    
+    
+    stopModelRefresh() {
+        cancel(this.intervalId);
     }
 
     @action
-    createGame() {
-        console.log(this.lobby);
-        console.log(this.gameName);
+    async fetchModel() {
+        const token = this.session.data.authenticated.token;
+        const headers = {
+            Authorization: `${token}`,
+            'Content-Type': 'application/json',
+        };
+
+        const response = await fetch(`${ENV.API_HOST}/api/enterLobby`,
+            {
+                headers: headers,
+                method: 'GET',
+                credentials: 'include',
+            }
+        );
+
+        const data = await response.json();
+        set(this.model, 'lobby', data.lobby);
+        set(this.model, 'games', data.games);
     }
 
-    @action joinGame(id) {
+    @action enterGame(id) {
+        this.stopModelRefresh();
         this.router.transitionTo('game', id);
     }
 }

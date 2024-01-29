@@ -74,7 +74,7 @@ class BlockState(BaseState):
             player_name = players.get_player(player_id).name
             pending_player_names.append(player_name)
 
-        add_message = f'Waiting for {" ".join(pending_player_names)} to block or pass.'
+        add_message = f'Waiting for {", ".join(pending_player_names)} to block or pass.'
 
         self.decision_message = base_message
         self.default_message = base_message + ' ' + add_message

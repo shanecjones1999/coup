@@ -6,7 +6,7 @@ class Games:
     def __init__(self):
         self.games: dict[str, Game] = {}
         appleGame = Game('Apple Game', 4, True, 1, socketio)
-        bananaGame = Game('Banana Game', 5, False, 40, socketio)
+        bananaGame = Game('Banana Game', 1, False, 40, socketio)
         self.add_game(appleGame)
         self.add_game(bananaGame)
     
@@ -32,6 +32,8 @@ class Games:
                 'isStarted': game.started,
                 'numPlayers': len(game.players.get_players()),
                 'totalPlayers': game.num_players,
+                'timerEnabled': game.turn_timer_enabled,
+                'timerLength': game.turn_length,
             }
             game_list.append(data)
         return game_list

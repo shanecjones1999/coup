@@ -8,10 +8,12 @@
                 <BsButton {{on 'click' this.leaveGame}}>Back to lobby</BsButton>
             </div>
         {{/if}}
-        <BsButton type="button" {{on 'click' this.startGame}}>Start Game</BsButton>
+        {{#unless this.model.gameState.started}}
+            <BsButton type="button" {{on 'click' this.startGame}}>Start Game</BsButton>
+        {{/unless}}
     </div>
     <div>
-        {{#if this.model.gameState.timerEnabled}}
+        {{#if (and this.model.gameState.timerEnabled this.model.gameState.started (not this.over) )}}
             <Timer @timeLeft={{this.model.gameState.timeLeft}} />
         {{/if}}
         <div class="players">
@@ -65,7 +67,7 @@
             />
         {{/if}}
         <div class="pending-action">
-            {{#if (and this.model.gameState.started (not this.inActiveState))}}
+            {{#if (and this.model.gameState.started (not this.inActiveState) (not this.over))}}
                 <p>Waiting for {{this.activePlayerName}} to select an action.</p>
             {{/if}}
         </div>

@@ -1,0 +1,13 @@
+.join-game-container {
+    margin: $base-unit-2x;
+
+    .game-row {
+        display: flex;
+        height: 50px;
+
+        .game-row-item {
+            align-self: center;
+            flex: 1;
+        }
+    }
+}

@@ -1,0 +1,26 @@
+<div class="join-game-container">
+    <BsListGroup as |ListGroup|>
+        <ListGroup.item @type="secondary">
+            <div class="d-flex justify-content-around">
+                <div class="game-row-item"><FaIcon @icon="gamepad" /><BsTooltip @placement="top">Game name</BsTooltip></div>
+                <div class="game-row-item"><FaIcon @icon="user" /><BsTooltip @placement="top">Number of players</BsTooltip></div>
+                <div class="game-row-item"><FaIcon @icon="user-group" /><BsTooltip @placement="top">Total players</BsTooltip></div>
+                <div class="game-row-item"><FaIcon @icon="clock" /><BsTooltip @placement="top">Turn length</BsTooltip></div>
+            </div>
+        </ListGroup.item>
+        {{#each @games as |game|}}
+            {{#let (component ListGroup.item actionable=true) as |ListGroupItem|}}
+                <ListGroupItem disabled={{gte game.numPlayers game.totalPlayers}} {{on 'click' (fn @enterGame game.id)}}>
+                    {{!-- <div class="d-flex justify-content-around align-items-center"> --}}
+                    <div class="game-row">
+                        <div class="game-row-item">{{game.name}}</div>
+                        <div class="game-row-item">{{game.numPlayers}}</div>
+                        <div class="game-row-item">{{game.totalPlayers}}</div>
+                        <div class="game-row-item">{{if game.timerEnabled game.timerLength "-"}}</div>
+                    </div>
+                    {{!-- </div> --}}
+                </ListGroupItem>
+            {{/let}}
+        {{/each}}
+    </BsListGroup>
+</div>

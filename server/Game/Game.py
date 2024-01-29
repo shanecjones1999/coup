@@ -152,6 +152,7 @@ class Game:
             'over': self.over,
             'gameLogs': self.audit.get_audits(),
             'chatLog': self.get_messages(),
+            'turnOrder': self.turn_order_ids,
         }
     
     def handle_action(self, action_id, source_id, target_id):
@@ -203,7 +204,7 @@ class Game:
                 self.challenge_state = ChallengeState()
 
                 # if the player lost in the challenge state, we need to take the necessary action.
-                if self.players.has_player(target_id) and self.players.get_player(target_id).lost:
+                if self.has_player(target_id) and self.players.get_player(target_id).lost:
                     if action_id == 7:
                         self.handle_steal(source_id, target_id, True)
                     else:
@@ -529,7 +530,7 @@ class Game:
         next_player = None
         while looked_at < len(self.players.get_players()) and not next_player_set:
             next_player_id = self.turn_order_ids[look_index]
-            if not self.players.has_player(next_player_id):
+            if not self.has_player(next_player_id):
                 raise CoupException("Next player Id not found")
             if not self.players.get_player(next_player_id).lost:
                 next_player_set = True
@@ -631,3 +632,6 @@ class Game:
     def emit_game_state(self):
         game_state = self.get_game_state()
         self.socket.emit('game_state_update', game_state, room=self.id)
+
+    def has_player(self, player_id):
+        return self.players.has_player(player_id)

@@ -51,12 +51,30 @@ export default class Game extends Component {
         );
     }
 
-  @computed('model.gameState.playerData', 'model.playerId')
-  get otherPlayers() {
-    return this.model?.gameState?.playerData?.filter(
-      (player) => player.id != this.model.playerId
-    );
-  }
+    @computed('model.gameState.playerData', 'model.playerId')
+    get otherPlayers() {
+        const playerData = this.model?.gameState?.playerData || [];
+        const turnOrder = this.model?.gameState?.turnOrder || [];
+        const playerId = this.model.playerId;
+
+        const playerIndex = turnOrder.indexOf(playerId);
+
+        // Sort the players based on turnOrder, starting from the index of the current player's ID
+        playerData.sort((playerA, playerB) => {
+            const indexA = turnOrder.indexOf(playerA.id);
+            const indexB = turnOrder.indexOf(playerB.id);
+
+            // Adjust indices to start from the current player's position in turnOrder
+            const adjustedIndexA = (indexA - playerIndex + turnOrder.length) % turnOrder.length;
+            const adjustedIndexB = (indexB - playerIndex + turnOrder.length) % turnOrder.length;
+
+            return adjustedIndexA - adjustedIndexB;
+        });
+
+        return playerData?.filter(
+            (player) => player.id != playerId
+        );
+    }
 
     @computed('model.gameState.started')
     get started() {

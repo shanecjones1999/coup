@@ -7,8 +7,8 @@ import { set } from '@ember/object';
 import { alias } from '@ember/object/computed';
 
 export default class JoinCreateGame extends Component {
-    @alias('args.games')
-    get games() {
-        return this.args.games;
-    }
+    @alias('args.games') games;
+    // get games() {
+    //     return this.args.games;
+    // }
 }

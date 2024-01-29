@@ -1,18 +1,19 @@
 <BsTab as |tab|>
-  <tab.pane @title="Join Game">
-    <div class="join-game">
+    <tab.pane @title="Join Game">
+        <div class="join-game">
             <div class="join-game-title">
                 <FaIcon @icon="gamepad" @size="2x" />
-                <h2 class="title">Join a Game</h2>
+                <h2 class="title">Join Game</h2>
             </div>
-            {{#each this.games as |game|}}
+            {{!-- {{#each this.games as |game|}}
                 {{#unless game.isStarted}}
                     <EnterGame @game={{game}} @enterGame={{@enterGame}} />
                 {{/unless}}
-            {{/each}}
+            {{/each}} --}}
+            <JoinGame @games={{this.games}} @enterGame={{@enterGame}} />
         </div>
-  </tab.pane>
-  <tab.pane @title="Create Game">
-    <CreateGame/>
-  </tab.pane>
+    </tab.pane>
+    <tab.pane @title="Create Game">
+        <CreateGame/>
+    </tab.pane>
 </BsTab>

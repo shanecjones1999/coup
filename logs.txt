@@ -6,3 +6,5 @@
 2023-12-26 19:59:02.682544: No players turn
 2023-12-28 15:08:11.209353: Next player Id not found
 2024-01-20 15:21:48.376878: Next player Id not found
+2024-01-28 16:20:35.366798: Next player Id not found
+2024-01-28 19:19:15.564346: No other players in game to Coup

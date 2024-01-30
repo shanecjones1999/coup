@@ -30,3 +30,6 @@ class Players:
     
     def has_player(self, id):
         return id in self.players
+    
+    def player_count(self):
+        return len(self.players)

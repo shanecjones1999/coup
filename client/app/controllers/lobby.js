@@ -13,6 +13,8 @@ export default class GamesController extends Controller {
     @service websocket;
     @service router;
 
+    refreshFrequency = 5000;
+
     @alias('model.lobby') lobby;
 
     @computed('model.games')
@@ -29,7 +31,7 @@ export default class GamesController extends Controller {
         const intervalId = later(this, function() {
             this.fetchModel();
             this.refreshModel();
-        }, 10000);
+        }, this.refreshFrequency);
         
         this.intervalId = intervalId;
     }

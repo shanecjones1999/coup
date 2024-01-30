@@ -5,11 +5,11 @@
         {{#if this.over}}
             <div>
                 <p>Game is OVER!</p>
-                <BsButton {{on 'click' this.leaveGame}}>Back to lobby</BsButton>
             </div>
         {{/if}}
         {{#unless this.model.gameState.started}}
-            <BsButton type="button" {{on 'click' this.startGame}}>Start Game</BsButton>
+            <BsButton {{on 'click' this.leaveGame}}>Back to lobby</BsButton>
+            <BsButton type="button" disabled={{lt this.model.gameState.playerData.length 2}} {{on 'click' this.startGame}}>Start Game</BsButton>
         {{/unless}}
     </div>
     <div>

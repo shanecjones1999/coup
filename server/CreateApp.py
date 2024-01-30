@@ -1,9 +1,9 @@
 from flask import Flask
 from flask_socketio import SocketIO
 
-app = Flask(__name__)
+# app = Flask(__name__)
 # Use the line below in place of the line above when deploying to production.
-# app = Flask(__name__, static_folder='../client/dist', static_url_path='')
+app = Flask(__name__, static_folder='../client/dist', static_url_path='')
 app.config["SECRET_KEY"] = "topSecret"
 socketio = SocketIO(app, cors_allowed_origins="*")
 

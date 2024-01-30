@@ -15,9 +15,9 @@ app.register_blueprint(game_blueprint)
 app.register_blueprint(player_blueprint)
 
 if __name__ == '__main__':
-    socketio.run(app, debug=True)
+    #socketio.run(app, debug=True)
     # Use the line below in place of the line above when deploying to production.
-    # socketio.run(app,
-    #     host='0.0.0.0',
-    #     port=8000,
-    #     debug=True)
+    socketio.run(app,
+        host='0.0.0.0',
+        port=8000,
+        debug=True)

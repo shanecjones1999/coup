@@ -9,3 +9,16 @@
 2024-01-28 16:20:35.366798: Next player Id not found
 2024-01-28 19:19:15.564346: No other players in game to Coup
 2024-01-28 20:45:38.442784: No players turn for Yo! game
+2024-01-30 20:34:35.286575: Trying to find game with game_id that does not exist
+2024-01-30 20:34:37.013092: Trying to find game with game_id that does not exist
+2024-01-30 20:35:05.774429: Trying to find game with game_id that does not exist
+2024-01-30 20:36:03.184495: Card not lost
+2024-01-30 20:36:31.463779: No cards to lose on player.
+2024-01-30 21:23:13.083324: Trying to find game with game_id that does not exist
+2024-01-30 21:23:13.717087: Trying to find game with game_id that does not exist
+2024-01-30 21:23:14.073399: Trying to find game with game_id that does not exist
+2024-01-31 10:29:37.869463: Trying to find game with game_id that does not exist
+2024-01-31 10:30:48.877455: Trying to find game with game_id that does not exist
+2024-01-31 10:30:49.494878: Trying to find game with game_id that does not exist
+2024-01-31 10:30:51.119300: Trying to find game with game_id that does not exist
+2024-01-31 10:30:51.652287: Trying to find game with game_id that does not exist

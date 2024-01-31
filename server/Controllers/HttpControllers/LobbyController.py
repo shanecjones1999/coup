@@ -19,6 +19,10 @@ def enter_lobby():
 
 @lobby_blueprint.route('/api/createGame', methods=['POST'])
 def handle_create_game():
+    token = request.headers.get('Authorization')
+    player = players.get_player(token)
+    if not player:
+        return jsonify('Player not found'), 401
     name = request.json.get('name')
     num_players = request.json.get('numPlayers')
     turn_timer_enabled = request.json.get('enableTurnTimer')
@@ -27,4 +31,5 @@ def handle_create_game():
         return jsonify('The game name is invalid or in use.'), 423
     game = Game(name, num_players, turn_timer_enabled, turn_length, socketio)
     games.add_game(game)
+    game.add_player(player)
     return jsonify(game.id), 200

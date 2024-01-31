@@ -58,15 +58,16 @@ class Games:
         for game in self.games.values():
             if game.players.has_player(player_id):
                 game.players.remove_player(player_id)
-                if game.players.player_count() == 0:
-                    self.remove_game(game.id)
         # Remove all games with 0 players
         self.remove_empty_games()
 
     def remove_empty_games(self):
-        for game in self.games.values():
+        games_to_remove = []
+        for game_id, game in self.games.items():
             if game.players.player_count() == 0:
-                self.remove_game(game.id)
+                games_to_remove.append(game_id)
+        for game_id in games_to_remove:
+            del self.games[game_id]
 
     def get_validated_game(self, game_id, player_ids):
         game = self.get_game(game_id)

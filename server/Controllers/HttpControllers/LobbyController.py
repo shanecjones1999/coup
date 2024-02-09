@@ -30,6 +30,6 @@ def handle_create_game():
     if not games.is_valid_game_name(name):
         return jsonify('The game name is invalid or in use.'), 423
     game = Game(name, num_players, turn_timer_enabled, turn_length, socketio)
-    games.add_game(game)
     game.add_player(player)
+    games.add_game(game)
     return jsonify(game.id), 200

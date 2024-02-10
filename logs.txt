@@ -22,3 +22,6 @@
 2024-01-31 10:30:49.494878: Trying to find game with game_id that does not exist
 2024-01-31 10:30:51.119300: Trying to find game with game_id that does not exist
 2024-01-31 10:30:51.652287: Trying to find game with game_id that does not exist
+2024-02-08 21:09:34.031574: Trying to find game with game_id that does not exist
+2024-02-08 21:12:25.112930: Trying to find game with game_id that does not exist
+2024-02-08 21:13:56.643356: Trying to find game with game_id that does not exist

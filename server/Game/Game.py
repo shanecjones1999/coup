@@ -151,7 +151,7 @@ class Game:
             'exchangeState': exchange_state,
             'over': self.over,
             'gameLogs': self.audit.get_audits(),
-            'chatLog': self.get_messages(),
+            #'chatLog': self.get_messages(),
             'turnOrder': self.turn_order_ids,
         }
     
@@ -635,3 +635,11 @@ class Game:
 
     def has_player(self, player_id):
         return self.players.has_player(player_id)
+    
+    def player_count(self):
+        return self.players.player_count()
+    
+    def remove_player(self, id):
+        self.players.remove_player(id)
+        game_state = self.get_game_state()
+        self.socket.emit('game_state_update', game_state, room=self.id)

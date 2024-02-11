@@ -28,8 +28,9 @@ export default class GameController extends Controller {
     }
 
     handleMessageUpdate(message) {
-        const newChat = [...this.model.gameState.chatLog, message];
-        set(this.model.gameState, 'chatLog', newChat);
+        console.log('here')
+        const newChat = [...this.model.chatLog, message];
+        set(this.model, 'chatLog', newChat);
     }
 
     handleGameStateUpdate(gameState) {

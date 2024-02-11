@@ -73,6 +73,8 @@ def handle_join_game(data):
 @socketio.on('start_game')
 def handle_start_game(id):
     game = games.get_game(id)
+    if game.player_count() <= 1:
+        return
     game.start()
     gameState = game.get_game_state()
     emit('game_state_update', gameState, room=game.id)

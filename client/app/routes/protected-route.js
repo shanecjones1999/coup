@@ -9,6 +9,5 @@ export default class ProtectedRoute extends Route {
     if (!this.session.isAuthenticated) {
       this.router.transitionTo('index');
     }
-    //this.session.requireAuthentication(transition, 'home');
   }
 }

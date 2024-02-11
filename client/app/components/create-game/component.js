@@ -54,17 +54,8 @@ export default class CreateGame extends Component {
             set(this, 'showAlert', true)
         }
         else {
-            this.router.transitionTo('game', data);
+            this.args.enterGame(data);
         }
-        
-
-
-
-        // Send request to create the game
-        // Get the game Id back in the request
-        // Transition to the game route
-
-        // If request is bad, raise the error
     }
 
     @action
@@ -80,10 +71,5 @@ export default class CreateGame extends Component {
     @action
     onDismiss() {
         this.showAlert = false;
-    }
-
-    @action
-    onShow() {
-        console.log('show')
     }
 }

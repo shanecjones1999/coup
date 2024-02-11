@@ -137,7 +137,7 @@ export default class Game extends Component {
         return 'No active player';
     }
 
-    @alias('model.gameState.chatLog') chatLog;
+    @alias('model.chatLog') chatLog;
 
     @alias('model.gameState.gameLogs') gameHistory;
 
@@ -183,8 +183,8 @@ export default class Game extends Component {
     }
 
     handleMessageUpdate(message) {
-        const newChat = [...this.model.gameState.chatLog, message];
-        set(this.model.gameState, 'chatLog', newChat);
+        const newChat = [...this.model.chatLog, message];
+        set(this.model, 'chatLog', newChat);
     }
 
     handleLeaveGame(id) {

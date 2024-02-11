@@ -22,3 +22,6 @@
 2024-01-31 10:30:49.494878: Trying to find game with game_id that does not exist
 2024-01-31 10:30:51.119300: Trying to find game with game_id that does not exist
 2024-01-31 10:30:51.652287: Trying to find game with game_id that does not exist
+2024-02-10 18:21:09.184404: Next player Id not found
+2024-02-10 18:21:52.579078: No active player
+2024-02-10 18:37:33.898827: No players turn for Apple Game game

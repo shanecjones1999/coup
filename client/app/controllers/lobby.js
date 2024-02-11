@@ -8,24 +8,15 @@ import { run, later, cancel } from '@ember/runloop';
 import { alias } from '@ember/object/computed';
 import ENV from 'client/config/environment';
 
-export default class GamesController extends Controller {
+export default class LobbyController extends Controller {
     @service session;
-    @service websocket;
     @service router;
 
     refreshFrequency = 5000;
 
     @alias('model.lobby') lobby;
 
-    @computed('model.games')
-    get games() {
-        return this.model.games;
-    }
-
-    init() {
-        super.init(...arguments);
-        this.refreshModel();
-    }
+    @alias('model.games') games;
 
     refreshModel() {
         const intervalId = later(this, function() {
@@ -49,6 +40,8 @@ export default class GamesController extends Controller {
             'Content-Type': 'application/json',
         };
 
+        console.log("API request to /api/enterLobby")
+
         const response = await fetch(`${ENV.API_HOST}/api/enterLobby`,
             {
                 headers: headers,
@@ -65,5 +58,15 @@ export default class GamesController extends Controller {
     @action enterGame(id) {
         this.stopModelRefresh();
         this.router.transitionTo('game', id);
+    }
+
+    willTransition() {
+        console.log('@@@@@@@@@@@@@@@@@');
+        this.stopModelRefresh();
+    }
+
+    willDestroy() {
+        console.log('@@@@@@@@@@@@@@@@@');
+        this.stopModelRefresh();
     }
 }

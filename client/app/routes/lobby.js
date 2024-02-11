@@ -3,7 +3,7 @@ import fetch from 'fetch';
 import { inject as service } from '@ember/service';
 import ENV from 'client/config/environment';
 
-export default class GamesRoute extends ProtectedRoute {
+export default class LobbyRoute extends ProtectedRoute {
     @service session;
 
     async model() {
@@ -31,5 +31,12 @@ export default class GamesRoute extends ProtectedRoute {
             games: data.games, 
             lobby: data.lobby 
         };
+    }
+
+    async setupController(controller) {
+        super.setupController(...arguments);
+        
+        // Call the method to make the API request here
+        controller.refreshModel();
     }
 }

@@ -32,6 +32,7 @@ export default class GameRoute extends ProtectedRoute {
             const data = { token: token, id: id };
             this.websocket.socket.emit('join_game', data);
             return {
+                chatLog: jsonData.chatLog,
                 gameState: jsonData.gameState,
                 playerId: jsonData.playerId,
                 cards: jsonData.cards,

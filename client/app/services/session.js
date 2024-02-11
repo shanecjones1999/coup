@@ -5,10 +5,6 @@ import ENV from 'client/config/environment';
 export default class Session extends SessionService {
     @service websocket;
     @service router;
-    
-    handleAuthentication() {
-        this.router.transitionTo('lobby');
-    }
 
     // Make this async for websocket.
     async invalidate() {

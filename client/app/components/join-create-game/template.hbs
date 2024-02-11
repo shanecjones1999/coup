@@ -5,15 +5,10 @@
                 <FaIcon @icon="gamepad" @size="2x" />
                 <h2 class="title">Join Game</h2>
             </div>
-            {{!-- {{#each this.games as |game|}}
-                {{#unless game.isStarted}}
-                    <EnterGame @game={{game}} @enterGame={{@enterGame}} />
-                {{/unless}}
-            {{/each}} --}}
             <JoinGame @games={{this.games}} @enterGame={{@enterGame}} />
         </div>
     </tab.pane>
     <tab.pane @title="Create Game">
-        <CreateGame/>
+        <CreateGame @enterGame={{@enterGame}}/>
     </tab.pane>
 </BsTab>

@@ -27,6 +27,7 @@ def join_game():
     if game.exchange_state and game.exchange_state.player_id == player.id and game.exchange_state.cards:
         exchange_cards = [card.to_dict(False) for card in game.exchange_state.cards]
     data = {
+        'chatLog': game.get_messages(),
         'gameState': game_state,
         'playerId': player.id,
         'cards': cards,

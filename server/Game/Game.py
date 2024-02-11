@@ -109,9 +109,7 @@ class Game:
                     raise CoupException('No other players in game to Coup')
                 random.shuffle(coup_targets)
                 self.handle_action(3, player.id, coup_targets[0])
-
-        game_state = self.get_game_state()
-        self.socket.emit('game_state_update', game_state, room=self.id)
+        self.emit_game_state()
 
     def add_player(self, player):
         self.players.add_player(player)
@@ -641,5 +639,4 @@ class Game:
     
     def remove_player(self, id):
         self.players.remove_player(id)
-        game_state = self.get_game_state()
-        self.socket.emit('game_state_update', game_state, room=self.id)
+        self.emit_game_state()

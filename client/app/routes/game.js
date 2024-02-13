@@ -43,4 +43,13 @@ export default class GameRoute extends ProtectedRoute {
             console.log(error);
         }
     }
+
+    setupController(controller, model) {
+        super.setupController(...arguments);
+        
+        if (model.gameState.started && model.gameState.timerEnabled && !model.gameState.over) {
+            controller.timerStarted = true;
+            controller.startTimer();
+        }
+    }
 }

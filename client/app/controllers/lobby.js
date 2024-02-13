@@ -27,7 +27,6 @@ export default class LobbyController extends Controller {
         this.intervalId = intervalId;
     }
     
-    
     stopModelRefresh() {
         cancel(this.intervalId);
     }
@@ -61,12 +60,10 @@ export default class LobbyController extends Controller {
     }
 
     willTransition() {
-        console.log('@@@@@@@@@@@@@@@@@');
         this.stopModelRefresh();
     }
 
     willDestroy() {
-        console.log('@@@@@@@@@@@@@@@@@');
         this.stopModelRefresh();
     }
 }

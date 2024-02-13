@@ -7,9 +7,9 @@
             <BsButton class='{{if card.isSelected 'selected'}}' {{on 'click' (fn @selectCard card)}}>{{card.name}}</BsButton>
         {{/each}}
         {{#unless this.selectedCards}}
-        <div>
-            <BsButton disabled={{this.selectedCards}} {{on 'click' @confirmExchange}}>Confirm Exchange</BsButton>
-        </div>
+            <div class="confirm-exchange">
+                <BsButton disabled={{this.selectedCards}} {{on 'click' @confirmExchange}}>Confirm Exchange</BsButton>
+            </div>
         {{/unless}}
     {{else}}
         <p>{{@exchangeState.defaultMessage}}</p>

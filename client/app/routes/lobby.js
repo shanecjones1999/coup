@@ -36,7 +36,7 @@ export default class LobbyRoute extends ProtectedRoute {
     async setupController(controller) {
         super.setupController(...arguments);
         
-        // Call the method to make the API request here
+        // Call the method to make the API request here.
         controller.refreshModel();
     }
 }

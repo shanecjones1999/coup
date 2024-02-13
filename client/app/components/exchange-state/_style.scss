@@ -3,6 +3,11 @@
     margin: $base-unit-2x;
 
     .selected {
-        box-shadow: 0 0px 10px rgba(132, 100, 100, 50);
+        //box-shadow: 0 0px 10px rgba(132, 100, 100, 50);
+        border: 1px solid $active-turn!important;
+    }
+
+    .confirm-exchange {
+        padding: $base-unit;
     }
 }

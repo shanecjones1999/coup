@@ -2,14 +2,11 @@
     <Chat @sendMessage={{this.sendMessage}} @messages={{this.chatLog}}/>
     <GameHistory @messages={{this.gameHistory}} />
     <div>
-        {{#if this.over}}
-            <div>
-                <p>Game is OVER!</p>
-            </div>
-        {{/if}}
         {{#if (or this.over (not this.model.gameState.started))}}
-            <BsButton {{on 'click' this.leaveGame}}>Back to lobby</BsButton>
-            <BsButton type="button" disabled={{lt this.model.gameState.playerData.length 2}} {{on 'click' this.startGame}}>Start Game</BsButton>
+            <div class="center-text">
+                <BsButton {{on 'click' this.leaveGame}}>Back to lobby</BsButton>
+                <BsButton type="button" disabled={{lt this.model.gameState.playerData.length 2}} {{on 'click' this.startGame}}>Start Game</BsButton>
+            </div>
         {{/if}}
     </div>
     <div>
@@ -66,11 +63,16 @@
                 @selectedCardIds={{this.selectedCardIds}}
             />
         {{/if}}
-        <div class="pending-action">
+        <div class="center-text">
             {{#if (and this.model.gameState.started (not this.inActiveState) (not this.over))}}
                 <p>Waiting for {{this.activePlayerName}} to select an action.</p>
             {{/if}}
         </div>
+        {{#if this.over}}
+            <div class="center-text">
+                <p>The game is over!</p>
+            </div>
+        {{/if}}
     </div>
     <div>
         {{#if (and (eq this.model.playerId this.currentTurnPlayerId) (not this.inActiveState) (not this.over))}}

@@ -7,7 +7,9 @@ import { computed } from '@ember/object';
 import { alias } from '@ember/object/computed';
 
 export default class GameController extends Controller {
-     @service websocket;
+    @service websocket;
+
+    @alias('model.gameState') gameState;
 
     init() {
         super.init(...arguments);
@@ -28,17 +30,26 @@ export default class GameController extends Controller {
     }
 
     handleMessageUpdate(message) {
-        console.log('here')
         const newChat = [...this.model.chatLog, message];
         set(this.model, 'chatLog', newChat);
     }
 
+    @tracked timerStarted = false;
+
     handleGameStateUpdate(gameState) {
-        if (!this.timerStarted) {
+        if (!this.timerStarted && gameState.started && !gameState.over) {
             this.startTimer();
             this.timerStarted = true;
+        } else if (gameState.over) {
+            this.cancelTimer();
         }
+
         set(this.model, 'gameState', gameState);
+    }
+
+    cancelTimer() {
+        clearInterval(this.timer);
+        this.timerStarted = false;
     }
 
     handleSetCards(cards) {
@@ -49,13 +60,13 @@ export default class GameController extends Controller {
         set(this.model, 'exchangeCards', cards);
     }
 
-    @tracked timerStarted = false;
+    timer = undefined;
 
     startTimer() {
-        setInterval(() => {
-            if (this.model.gameState.timeLeft && this.model.gameState.timeLeft > 0) {
-                const value = this.model.gameState.timeLeft;
-                set(this, 'model.gameState.timeLeft', value-1);
+        this.timer = setInterval(() => {
+            if (this.gameState.timeLeft && this.gameState.timeLeft > 0) {
+                const value = this.gameState.timeLeft;
+                set(this.model.gameState, 'timeLeft', value - 1);
             }
         }, 1000);
     }

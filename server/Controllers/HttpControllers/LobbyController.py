@@ -10,6 +10,7 @@ def enter_lobby():
     player = players.get_player(token)
     if not player:
         return jsonify('Player not found'), 401
+    # player.reset()
     lobby.add_player(player)
     games.remove_player(player.id)
     game_list = games.get_games_json()

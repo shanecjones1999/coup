@@ -17,7 +17,7 @@ export default class CreateGame extends Component {
     minTurnLength = 15;
     turnLengthStep = 5;
 
-    @tracked enableTimer = true;
+    @tracked enableTimer = false;
 
     @tracked turnLength = 30;
 

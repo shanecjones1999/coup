@@ -40,15 +40,20 @@ class Game:
         self.timer = TurnTimer(turn_length, turn_timer_enabled, self.timer_expired)
 
     def start(self):
-        if not self.players:
-            raise CoupException('Trying to start game without any players')
+        if not self.players or self.player_count() < 2:
+            raise CoupException('Trying to start game with too few players')
         self.deck = Deck()
         self.reset_states()
         self.initialize_players()
         self.turn_order_ids = [player.id for player in self.players.get_players()]
         random.shuffle(self.turn_order_ids)
-        first_player = self.turn_order_ids[0]
-        self.players.get_player(first_player).is_turn = True
+        first_player_id = self.turn_order_ids[0]
+        first_player = self.get_player(first_player_id)
+        first_player.is_turn = True
+
+        # Set first player to only have one coin in 2 player games.
+        if len(self.turn_order_ids) == 2:
+            first_player.coins = 1
         self.block_state.player_ids = list(self.players.get_players())
         self.challenge_state.player_ids = list(self.players.get_players())
         self.started = True
@@ -269,15 +274,15 @@ class Game:
         if not block_state_already and actions_dict[self.challenge_state.action_id].block_card_ids:
             self.deactivate_states()
             self.activate_block_state(action_id, source_id, target_id)
+            return
         # otherwise resolve the action
         # What if you are challenging a block?
         else:
             action_id = self.challenge_state.action_id
             source_id = self.challenge_state.source_id
             target_id = self.challenge_state.target_id
-            # Edge case: foreign aid
-            # At this point, block state has already occurred and someone blocked as Duke
-            if action_id == 2:
+            # If the action is blockable and we have already been in block state, move turn.
+            if actions_dict[action_id].block_card_ids:
                 self.move_turn()
                 return
 

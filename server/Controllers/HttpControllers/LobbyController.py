@@ -17,6 +17,21 @@ def enter_lobby():
     data = {'games': game_list, 'lobby': current_lobby}
     return jsonify(data), 200
 
+@lobby_blueprint.route('/api/loadPlayerGame', methods=['GET'])
+def load_player_game():
+    token = request.headers.get('Authorization')
+    player = players.get_player(token)
+    if not player:
+        return jsonify('error'), 403
+    game = games.is_player_in_active_game(player.id)
+    in_game = False
+    game_id = None
+    if game:
+        in_game = True
+        game_id = game.id
+    data = {'inGame': in_game, 'gameId': game_id}
+    return jsonify(data), 200
+
 @lobby_blueprint.route('/api/createGame', methods=['POST'])
 def handle_create_game():
     token = request.headers.get('Authorization')

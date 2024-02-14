@@ -5,7 +5,7 @@ from server.CoupException import CoupException
 class Games:
     def __init__(self):
         self.games: dict[str, Game] = {}
-        appleGame = Game('Apple Game', 4, True, 1, socketio)
+        appleGame = Game('Apple Game', 4, True, 10, socketio)
         bananaGame = Game('Banana Game', 1, False, 40, socketio)
         self.add_game(appleGame)
         self.add_game(bananaGame)
@@ -67,3 +67,8 @@ class Games:
                 if player.lost:
                     raise CoupException('Lost player involved in action')
         return game
+    
+    def is_player_in_active_game(self, player_id) -> Game | None:
+        for game in self.games.values():
+            if game.has_player(player_id) and game.started and not game.over:
+                return game

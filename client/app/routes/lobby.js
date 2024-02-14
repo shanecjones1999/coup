@@ -5,6 +5,29 @@ import ENV from 'client/config/environment';
 
 export default class LobbyRoute extends ProtectedRoute {
     @service session;
+    @service router;
+
+    async beforeModel() {
+        // Check if the user is in a game
+        const token = this.session.data.authenticated.token;
+        const headers = {
+            Authorization: `${token}`,
+            'Content-Type': 'application/json',
+        };
+        
+        const response = await fetch(`${ENV.API_HOST}/api/loadPlayerGame`,
+            {
+                headers: headers,
+                method: 'GET',
+                credentials: 'include',
+            }
+        );
+
+        const data = await response.json();
+        if (data.inGame) {
+            this.router.transitionTo('game', data.gameId);
+        }
+    }
 
     async model() {
         const token = this.session.data.authenticated.token;

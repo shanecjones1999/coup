@@ -104,7 +104,7 @@ def handle_block(data):
     block_card_id = data.get('blockCardId')
     game = games.get_game(game_id)
     blocked_action_id = game.block_state.action_id
-    target_id = game.block_state.target_id
+    target_id = game.block_state.source_id
     game.handle_block(block_card_id, blocked_action_id, blocker_id, target_id)
     game_state = game.get_game_state()
     emit('game_state_update', game_state, room=game.id)

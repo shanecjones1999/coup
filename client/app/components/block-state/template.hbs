@@ -4,7 +4,9 @@
         {{#each @blockState.blockCards as |blockCard|}}
                 <BsButton {{on 'click' (fn @blockAction blockCard.typeId)}}>Block as {{blockCard.name}}</BsButton>
         {{/each}}
+        <div class="pass">
             <BsButton {{on 'click' @pass}}>Pass</BsButton>
+        </div>
     {{else}}
         <p>{{@blockState.defaultMessage}}</p>
     {{/if}}

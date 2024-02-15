@@ -1,15 +1,70 @@
-<BsNavbar @type="dark" @backgroundColor="primary" @toggleBreakpoint={{'sm'}} as |navbar|>
-  <div class="navbar-header">
-    <navbar.toggle />
-    <a class="navbar-brand" href="#">Coup</a>
-  </div>
-  <navbar.content>
-    <navbar.nav as |nav|>
-      {{#if this.session.isAuthenticated}}
-        <nav.item>
-            <button class="nav-link" type="button" {{on "click" this.invalidateSession}}>Sign Out</button>
+{{!-- <BsNavbar @type="dark" @backgroundColor="primary" @toggleBreakpoint={{'sm'}} as |navbar|>
+    <div class="navbar-header">
+        <navbar.toggle />
+        <a class="navbar-brand" href="#">Coup</a>
+    </div>
+    <navbar.content>
+        <navbar.nav as |nav|>
+            <nav.item>
+                <BsModalSimple
+                    @open={{this.modalOpen}}
+                    @title="How to play Coup"
+                    @closeTitle="Ok"
+                    @size=""
+                    @closeButton={{true}}
+                    @fade={{true}}
+                    @backdrop={{true}}
+                    @backdropClose={{true}}
+                    @onSubmit={{this.submit}}
+                    @onHide={{this.close}}
+                    @renderInPlace={{true}}
+                >
+                        <GameRules />
+                </BsModalSimple>
+                <button class="nav-link" type="button" {{on "click" this.openRulesModal}}>Rules</button>
+            </nav.item>
+        {{#if this.session.isAuthenticated}}
+            <nav.item>
+                <button class="nav-link" type="button" {{on "click" this.invalidateSession}}>Sign Out</button>
+            </nav.item>
+        {{/if}}
+        </navbar.nav>
+    </navbar.content>
+</BsNavbar> --}}
+
+<div class="nav-bar-container">
+    <BsNav
+    @type="pills"
+    @justified={{false}}
+    @stacked={{false}}
+    @fill={{false}}
+    as |nav|
+    >
+    <nav.item>
+        <nav.link-to @route="index">Home</nav.link-to>
+    </nav.item>
+    <nav.item>
+        <BsModalSimple
+            @open={{this.modalOpen}}
+            @title="How to play Coup"
+            @closeTitle="Ok"
+            @size=""
+            @closeButton={{true}}
+            @fade={{true}}
+            @backdrop={{true}}
+            @backdropClose={{true}}
+            @onSubmit={{this.submit}}
+            @onHide={{this.close}}
+            @renderInPlace={{true}}
+        >
+            <GameRules />
+            </BsModalSimple>
+            <button class="nav-link" type="button" {{on "click" this.openRulesModal}}>Rules</button>
         </nav.item>
-      {{/if}}
-    </navbar.nav>
-  </navbar.content>
-</BsNavbar>
+        {{#if this.session.isAuthenticated}}
+            <nav.item>
+                <button class="nav-link" type="button" {{on "click" this.invalidateSession}}>Sign Out</button>
+            </nav.item>
+        {{/if}}
+    </BsNav>
+</div>

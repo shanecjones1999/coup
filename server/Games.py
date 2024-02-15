@@ -68,7 +68,7 @@ class Games:
                     raise CoupException('Lost player involved in action')
         return game
     
-    def is_player_in_active_game(self, player_id) -> Game | None:
+    def is_player_in_active_game(self, player_id):
         for game in self.games.values():
             if game.has_player(player_id) and game.started and not game.over:
                 return game

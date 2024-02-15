@@ -39,8 +39,6 @@ export default class LobbyController extends Controller {
             'Content-Type': 'application/json',
         };
 
-        console.log("API request to /api/enterLobby")
-
         const response = await fetch(`${ENV.API_HOST}/api/enterLobby`,
             {
                 headers: headers,

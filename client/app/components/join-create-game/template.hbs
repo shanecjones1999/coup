@@ -1,14 +1,16 @@
-<BsTab as |tab|>
-    <tab.pane @title="Join Game">
-        <div class="join-game">
-            <div class="join-game-title">
-                <FaIcon @icon="gamepad" @size="2x" />
-                <h2 class="title">Join Game</h2>
+<div class="join-game-container">
+    <BsTab as |tab|>
+        <tab.pane @title="Join Game">
+            <div class="join-game">
+                <div class="join-game-title">
+                    <FaIcon @icon="gamepad" @size="2x" />
+                    <h2 class="title">Join Game</h2>
+                </div>
+                <JoinGame @games={{this.games}} @enterGame={{@enterGame}} />
             </div>
-            <JoinGame @games={{this.games}} @enterGame={{@enterGame}} />
-        </div>
-    </tab.pane>
-    <tab.pane @title="Create Game">
-        <CreateGame @enterGame={{@enterGame}}/>
-    </tab.pane>
-</BsTab>
+        </tab.pane>
+        <tab.pane @title="Create Game">
+            <CreateGame @enterGame={{@enterGame}}/>
+        </tab.pane>
+    </BsTab>
+</div>

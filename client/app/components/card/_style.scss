@@ -35,6 +35,10 @@
         background-color: $unknown-subtle;
     }
 
+    &.any {
+        background-color: $white;
+    }
+
     &.revealed {
         background-color: rgb(218, 218, 218);
     }

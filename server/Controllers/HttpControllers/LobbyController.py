@@ -45,7 +45,7 @@ def handle_create_game():
     turn_length = request.json.get('turnLength')
     if not games.is_valid_game_name(name):
         return jsonify('The game name is invalid or in use.'), 423
-    game = Game(name, num_players, turn_timer_enabled, turn_length, socketio)
+    game = Game(name, int(num_players), turn_timer_enabled, int(turn_length), socketio)
     games.add_game(game)
     game.add_player(player)
     return jsonify(game.id), 200

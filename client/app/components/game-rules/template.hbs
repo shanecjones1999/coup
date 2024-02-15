@@ -1,5 +1,47 @@
 <div class="game-rules-container">
-    <table>
+    
+
+    
+    {{#each this.actions as |action|}}
+        <div class="card-action">
+            <BsListGroup as |ListGroup|>
+                <ListGroup.item @type="secondary">
+                    <Card @card={{action.name}} @self={{false}}/>
+                </ListGroup.item>
+                <ListGroup.item>
+                    <strong>Action:</strong> {{action.action}}
+                </ListGroup.item>
+                <ListGroup.item>
+                    <strong>Effect:</strong> {{action.effect}}
+                </ListGroup.item>
+                <ListGroup.item>
+                    <strong>Counteraction:</strong> {{action.counteraction}}
+                </ListGroup.item>
+            </BsListGroup>
+        </div>
+    {{/each}}
+    {{!-- <BsListGroup as |ListGroup|>
+        <ListGroup.item @type="secondary">
+            <div class="d-flex justify-content-around">
+                <div class="game-row-item">Character</div>
+                <div class="game-row-item">Action</div>
+                <div class="game-row-item">Effect</div>
+                <div class="game-row-item">Counteraction</div>
+            </div>
+        </ListGroup.item>
+        
+        {{#each this.characterActions as |action|}}
+            <ListGroup.item>
+                <div class="d-flex justify-content-around">
+                    <div class="game-row-item">{{action.characterName}}</div>
+                    <div class="game-row-item">{{action.actionName}}</div>
+                    <div class="game-row-item">{{action.effect}}</div>
+                    <div class="game-row-item">{{action.counteraction}}</div>
+                </div>
+            </ListGroup.item>
+        {{/each}}
+    </BsListGroup> --}}
+    {{!-- <table>
         <thead>
             <tr>
                 <th>Character Name</th>
@@ -10,55 +52,55 @@
         </thead>
         <tbody>
             <tr>
+                <td>&times;</td>
+                <td>Income</td>
+                <td>+1 coin</td>
+                <td>&times;</td>
+            </tr>
+            <tr>
+                <td>&times;</td>
+                <td>Foreign Aid</td>
+                <td>+2 coins</td>
+                <td>&times;</td>
+            </tr>
+            <tr>
+                <td>&times;</td>
+                <td>Coup</td>
+                <td>-7 coins. Choose player to lose influence.</td>
+                <td>&times;</td>
+            </tr>
+            <tr>
                 <td>Duke</td>
                 <td>Tax</td>
-                <td>Take three coins from the treasury.</td>
-                <td>Other players can challenge your claim to have a Duke.</td>
+                <td>+3 coins</td>
+                <td>&times;</td>
             </tr>
             <tr>
                 <td>Assassin</td>
                 <td>Assassinate</td>
-                <td>Pay three coins to launch an assassination attempt against another player's Influence card.</td>
-                <td>Cannot be blocked. Other players can challenge your claim to have an Assassin.</td>
+                <td>-3 coins.</td>
+                <td>&times;</td>
             </tr>
             <tr>
                 <td>Captain</td>
                 <td>Steal</td>
-                <td>Steal two coins from another player.</td>
-                <td>Other players can block the action if they have an Ambassador or Captain.</td>
+                <td>Take two coins from another player.</td>
+                <td>Block stealing.</td>
             </tr>
             <tr>
                 <td>Ambassador</td>
                 <td>Exchange</td>
                 <td>Exchange your Influence cards with two cards from the Court deck.</td>
-                <td>Other players can challenge your claim to have an Ambassador.</td>
+                <td>Block stealing.</td>
             </tr>
             <tr>
                 <td>Contessa</td>
                 <td>Block</td>
-                <td>Block assassination attempts made against you.</td>
-                <td>&times; (Cannot be used as a counteraction)</td>
-            </tr>
-            <tr>
                 <td>&times;</td>
-                <td>Income</td>
-                <td>Take one coin from the treasury.</td>
-                <td>&times; (Cannot be blocked)</td>
-            </tr>
-            <tr>
-                <td>&times;</td>
-                <td>Foreign Aid</td>
-                <td>Take two coins from the treasury. Other players can block this action.</td>
-                <td>Blocks available: Duke</td>
-            </tr>
-            <tr>
-                <td>&times;</td>
-                <td>Coup</td>
-                <td>Pay seven coins to launch a coup against another player, forcing them to lose one Influence card.</td>
-                <td>&times; (Cannot be blocked)</td>
+                <td>Block assassination.</td>
             </tr>
         </tbody>
-    </table>
+    </table> --}}
     {{!-- <ol>
         <li>Start with Influence: Each player starts the game with two Influence cards, which represent characters in the game's fictional world. These cards are kept secret from other players.</li>
 

@@ -6,6 +6,8 @@
     border-radius: 0.5rem;
     padding: $base-unit;
     background-color: $light-gray;
+    box-shadow: 0px 0px 5px 0px rgba(128, 128, 128, 0.5);
+
     &:hover {
         cursor: default!important;
     }

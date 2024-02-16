@@ -12,6 +12,9 @@ export default class Chat extends Component {
 
     @action
     submit() {
+        if (this.message.length <= 0) {
+            return;
+        }
         this.args.sendMessage(this.message);
         set(this, 'message', '');
     }

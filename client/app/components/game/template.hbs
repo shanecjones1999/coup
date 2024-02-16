@@ -1,25 +1,24 @@
 <div class="game-container">
-    <Chat @sendMessage={{this.sendMessage}} @messages={{this.chatLog}}/>
+    <Chat @sendMessage={{this.sendMessage}} @messages={{this.chatLog}} @name={{this.player.name}}/>
     <GameHistory @messages={{this.gameHistory}} />
-    <div>
-        {{#if (or this.over (not this.model.gameState.started))}}
-            <div class="center-text">
-                <BsButton {{on 'click' this.leaveGame}}>Back to lobby</BsButton>
-                <BsButton type="button" disabled={{lt this.model.gameState.playerData.length 2}} {{on 'click' this.startGame}}>Start Game</BsButton>
-            </div>
-        {{/if}}
-    </div>
-    <div>
-        {{#if (and this.model.gameState.timerEnabled this.model.gameState.started (not this.over) )}}
-            <Timer @timeLeft={{this.model.gameState.timeLeft}} />
-        {{/if}}
-        <div class="players">
-            {{#each this.otherPlayers as |player|}}
-                <Player @playerData={{player}} @canSelectPlayer={{this.canSelectPlayer}} @cards={{player.cards}} @selectPlayerId={{this.selectPlayerId}} />            
-            {{/each}}
+
+    {{#if (or this.over (not this.model.gameState.started))}}
+        <div class="center-text">
+            <BsButton {{on 'click' this.leaveGame}}>Back to lobby</BsButton>
+            <BsButton type="button" disabled={{lt this.model.gameState.playerData.length 2}} {{on 'click' this.startGame}}>Start Game</BsButton>
         </div>
+    {{/if}}
+
+    {{#if (and this.model.gameState.timerEnabled this.model.gameState.started (not this.over) )}}
+        <Timer @timeLeft={{this.model.gameState.timeLeft}} />
+    {{/if}}
+    <div class="players">
+        {{#each this.otherPlayers as |player|}}
+            <Player @playerData={{player}} @canSelectPlayer={{this.canSelectPlayer}} @cards={{player.cards}} @selectPlayerId={{this.selectPlayerId}} />            
+        {{/each}}
     </div>
-    <div>
+
+    <div class="center-text">
         {{#if this.promptBlock}}
             <BlockState
                 @blockState={{this.blockState}} 
@@ -63,23 +62,18 @@
                 @selectedCardIds={{this.selectedCardIds}}
             />
         {{/if}}
-        <div class="center-text">
-            {{#if (and this.model.gameState.started (not this.inActiveState) (not this.over))}}
-                <p>Waiting for {{this.activePlayerName}} to select an action.</p>
-            {{/if}}
-        </div>
+
+        {{#if (and this.model.gameState.started (not this.inActiveState) (not this.over))}}
+            <p>Waiting for {{this.activePlayerName}} to select an action.</p>
+        {{/if}}
+
         {{#if this.over}}
-            <div class="center-text">
-                <p>The game is over!</p>
-            </div>
+            <p>The game is over!</p>
         {{/if}}
     </div>
-    <div>
-        {{#if (and (eq this.model.playerId this.currentTurnPlayerId) (not this.inActiveState) (not this.over))}}
-            <ActionsSelector @actions={{this.actions}} @initiateAction={{this.initiateAction}} @coins={{this.player.coins}}/>
-        {{/if}}
-    </div>
-    <div>
+    {{#if (and (eq this.model.playerId this.currentTurnPlayerId) (not this.inActiveState) (not this.over))}}
+        <ActionsSelector @actions={{this.actions}} @initiateAction={{this.initiateAction}} @coins={{this.player.coins}}/>
+    {{/if}}
         <div class="client-data">
             <Player 
                 @playerData={{this.player}} 
@@ -89,5 +83,4 @@
                 @highlight={{false}}
             />
         </div>
-    </div>
 </div>

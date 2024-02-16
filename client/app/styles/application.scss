@@ -6,15 +6,16 @@
         align-items: center;
         max-width: 600px;
         margin: auto;
-        height: 100vh;
+        //height: 100vh;
         border-left: 1px solid $light-gray;
         border-right: 1px solid $light-gray;
+        box-shadow: 0px 0px 5px 0px rgba(128, 128, 128, 0.5);
         //box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
         color: $font-dark;
 
         .content-container {
-            margin-top: $base-unit-4x;
-            margin-bottom: $base-unit-4x;
+            //margin-top: $base-unit-4x;
+
         }
     }
 }

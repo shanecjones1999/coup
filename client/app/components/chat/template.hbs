@@ -1,6 +1,6 @@
 <div class="chat">
     <BsCollapse @collapsed={{this.collapsed}}>
-        <Log @messages={{@messages}} @isChat={{true}}/>
+        <Log @messages={{@messages}} @isChat={{true}} @name={{@name}}/>
         <div class="send-chat">
             <BsForm @model={{this}} @onSubmit={{this.submit}} as |form|>
                 <div class="row">

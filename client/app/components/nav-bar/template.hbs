@@ -35,14 +35,11 @@
 <div class="nav-bar-container">
     <BsNav
     @type="pills"
-    @justified={{false}}
+    @justified={{true}}
     @stacked={{false}}
     @fill={{false}}
     as |nav|
     >
-    <nav.item>
-        <nav.link-to @route="index">Home</nav.link-to>
-    </nav.item>
     <nav.item>
         <BsModalSimple
             @open={{this.modalOpen}}

@@ -1,7 +1,35 @@
 <span class="card-wrapper {{this.cardClass}} {{if (and @card.revealed @self) 'revealed'}}">
+    {{!-- <BsTooltip @placement="top">
+        {{#if (eq this.cardClass "ambassador")}}
+            <div class="card-desc">
+                <div>Action: Exchange</div>
+                <div>Counteraction: Block Steal</div>
+            </div>
+        {{else if (eq this.cardClass "assassin")}}
+            <div class="card-desc">
+                <div>Action: Assassinate</div>
+                <div>Counteraction: Block Steal</div>
+            </div>
+        {{else if (eq this.cardClass "captain")}}
+            <div class="card-desc">
+                <div>Action: Steal 2 <FaIcon @icon="coins" /></div>
+                <div>Counteraction: Block Steal</div>
+            </div>
+        {{else if (eq this.cardClass "contessa")}}
+            <div class="card-desc">
+                <div>Action: None</div>
+                <div>Counteraction: Block Assassination</div>
+            </div>
+        {{else if (eq this.cardClass "duke")}}
+            <div class="card-desc">
+                <div>Action: Exchange 2 <FaIcon @icon="card" /></div>
+                <div>Counteraction: Block Foreign Aid</div>
+            </div>
+        {{/if}}
+    </BsTooltip> --}}
     <span class="card-name">{{@card.name}}
-    {{#if (and @card.revealed @self)}}
-        <span class="revealed-text">(Revealed)</span>
-    {{/if}}
+        {{#if (and @card.revealed @self)}}
+            <span class="revealed-text">(Revealed)</span>
+        {{/if}}
     </span>
 </span>

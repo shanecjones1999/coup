@@ -1,9 +1,13 @@
 <div class="block-state">
     {{#if this.isTarget}}
         <p>{{@blockState.decisionMessage}}</p>
-        {{#each @blockState.blockCards as |blockCard|}}
-                <BsButton {{on 'click' (fn @blockAction blockCard.typeId)}}>Block as {{blockCard.name}}</BsButton>
-        {{/each}}
+        <div class="block-card-container">
+            {{#each @blockState.blockCards as |blockCard|}}
+                <div class="block-card">
+                    <BsButton {{on 'click' (fn @blockAction blockCard.typeId)}}>Block as {{blockCard.name}}</BsButton>
+                </div>
+            {{/each}}
+        </div>
         <div class="pass">
             <BsButton {{on 'click' @pass}}>Pass</BsButton>
         </div>

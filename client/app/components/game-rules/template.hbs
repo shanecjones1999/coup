@@ -1,129 +1,20 @@
 <div class="game-rules-container">
-    
+    <h3>Overview</h3>
+    <p>Coup is a game of bluffing and deduction set in a dystopian universe. Players represent powerful members of society who are secretly vying for influence over the government.</p>
 
-    
-    {{#each this.actions as |action|}}
-        <div class="card-action">
-            <BsListGroup as |ListGroup|>
-                <ListGroup.item @type="secondary">
-                    <Card @card={{action.name}} @self={{false}}/>
-                </ListGroup.item>
-                <ListGroup.item>
-                    <strong>Action:</strong> {{action.action}}
-                </ListGroup.item>
-                <ListGroup.item>
-                    <strong>Effect:</strong> {{action.effect}}
-                </ListGroup.item>
-                <ListGroup.item>
-                    <strong>Counteraction:</strong> {{action.counteraction}}
-                </ListGroup.item>
-            </BsListGroup>
-        </div>
-    {{/each}}
-    {{!-- <BsListGroup as |ListGroup|>
-        <ListGroup.item @type="secondary">
-            <div class="d-flex justify-content-around">
-                <div class="game-row-item">Character</div>
-                <div class="game-row-item">Action</div>
-                <div class="game-row-item">Effect</div>
-                <div class="game-row-item">Counteraction</div>
-            </div>
-        </ListGroup.item>
-        
-        {{#each this.characterActions as |action|}}
-            <ListGroup.item>
-                <div class="d-flex justify-content-around">
-                    <div class="game-row-item">{{action.characterName}}</div>
-                    <div class="game-row-item">{{action.actionName}}</div>
-                    <div class="game-row-item">{{action.effect}}</div>
-                    <div class="game-row-item">{{action.counteraction}}</div>
-                </div>
-            </ListGroup.item>
-        {{/each}}
-    </BsListGroup> --}}
-    {{!-- <table>
-        <thead>
-            <tr>
-                <th>Character Name</th>
-                <th>Action Name</th>
-                <th>Effect</th>
-                <th>Counteraction</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>&times;</td>
-                <td>Income</td>
-                <td>+1 coin</td>
-                <td>&times;</td>
-            </tr>
-            <tr>
-                <td>&times;</td>
-                <td>Foreign Aid</td>
-                <td>+2 coins</td>
-                <td>&times;</td>
-            </tr>
-            <tr>
-                <td>&times;</td>
-                <td>Coup</td>
-                <td>-7 coins. Choose player to lose influence.</td>
-                <td>&times;</td>
-            </tr>
-            <tr>
-                <td>Duke</td>
-                <td>Tax</td>
-                <td>+3 coins</td>
-                <td>&times;</td>
-            </tr>
-            <tr>
-                <td>Assassin</td>
-                <td>Assassinate</td>
-                <td>-3 coins.</td>
-                <td>&times;</td>
-            </tr>
-            <tr>
-                <td>Captain</td>
-                <td>Steal</td>
-                <td>Take two coins from another player.</td>
-                <td>Block stealing.</td>
-            </tr>
-            <tr>
-                <td>Ambassador</td>
-                <td>Exchange</td>
-                <td>Exchange your Influence cards with two cards from the Court deck.</td>
-                <td>Block stealing.</td>
-            </tr>
-            <tr>
-                <td>Contessa</td>
-                <td>Block</td>
-                <td>&times;</td>
-                <td>Block assassination.</td>
-            </tr>
-        </tbody>
-    </table> --}}
-    {{!-- <ol>
-        <li>Start with Influence: Each player starts the game with two Influence cards, which represent characters in the game's fictional world. These cards are kept secret from other players.</li>
+    <h3>Gameplay</h3>
+    <p>The game is played in turns, with each player taking one action per turn. The available actions are:</p>
+    <ol>
+        <li>Income: Take one coin from the Treasury.</li>
+        <li>Foreign Aid: Take two coins from the Treasury. (Can be blocked by a player claiming to have a Duke)</li>
+        <li>Tax: Take three coins from the Treasury. (Can be blocked by a player claiming to have a Duke)</li>
+        <li>Exchange: Exchange your Influence cards with two cards from the Court deck.</li>
+        <li>Assassinate: Pay three coins to launch an assassination attempt against another player's Influence card. (Can be blocked by a player claiming to have a Contessa)</li>
+        <li>Steal: Steal two coins from another player. (Can be blocked by a player claiming to have a Captain or Ambassador)</li>
+        <li>Coup: Pay seven coins to launch a coup against another player, forcing them to lose one Influence card.</li>
+    </ol>
 
-        <li>Take Actions: On your turn, you can take one action. Actions include:
-            <ul>
-                <li>Income: Take one coin from the treasury.</li>
-                <li>Foreign Aid: Take two coins from the treasury, but other players can block this action.</li>
-                <li>Coup: Pay seven coins to launch a coup against another player, forcing them to lose one Influence card.</li>
-                <li>Character Actions: Use the special abilities of your Influence cards. You can claim to have any character's ability, whether you actually have that card or not.</li>
-                    <ul>
-                        <li>Duke: The Duke allows you to take three coins from the treasury by using the "Tax" action. Other players can challenge you if they believe you don't have a Duke, but if you do, they lose one Influence card.</li>
-                        <li>Assassin: The Assassin enables you to pay three coins to launch an assassination attempt against another player's Influence card. If successful, the targeted player loses one Influence card. This action is called "Assassinate." The Assassin's ability cannot be blocked.</li>
-                        <li>Captain: The Captain allows you to steal two coins from another player by using the "Steal" action. This action can be blocked by players who have the Ambassador or Captain, forcing you to either cancel the action or challenge their claim.</li>
-                        <li>Ambassador: The Ambassador lets you exchange Influence cards with two cards from the Court deck. This action is called "Exchange." It allows you to bluff about your Influence cards, making it harder for other players to determine which characters you actually possess.</li>
-                        <li>Contessa: The Contessa is a defensive character that allows you to block assassination attempts made against you. You can claim to have a Contessa to prevent other players from successfully assassinating one of your Influence cards. However, you cannot use the Contessa's ability offensively.</li>
-                    </ul>
-                <li>Challenge and Counteract: When a player claims to have a certain character's ability, other players can challenge them. If the challenged player does not have the claimed character, they lose one Influence card. If they do have it, the challenger loses one Influence card.</li>
-            </ul>
-        </li>
+    <h3>Winning the Game</h3>
+    <p>The last player with Influence cards remaining wins the game.</p>
 
-        <li>Lose Influence: If you lose both Influence cards, you're out of the game. However, you can still influence the game by bluffing and making alliances with other players.</li>
-
-        <li>Last Player Standing: The game continues until only one player remains with Influence cards. That player wins the game!</li>
-    </ol> --}}
-    
 </div>

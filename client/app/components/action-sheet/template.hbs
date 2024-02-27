@@ -1,0 +1,20 @@
+<div class="action-sheet-container">
+    {{#each this.actions as |action|}}
+        <div class="card-action">
+            <BsListGroup as |ListGroup|>
+                <ListGroup.item @type="secondary">
+                    <Card @card={{action.name}} @self={{false}}/>
+                </ListGroup.item>
+                <ListGroup.item>
+                    <strong>Action:</strong> {{action.action}}
+                </ListGroup.item>
+                <ListGroup.item>
+                    <strong>Effect:</strong> {{action.effect}}
+                </ListGroup.item>
+                <ListGroup.item>
+                    <strong>Counteraction:</strong> {{action.counteraction}}
+                </ListGroup.item>
+            </BsListGroup>
+        </div>
+    {{/each}}
+</div>

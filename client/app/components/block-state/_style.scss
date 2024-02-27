@@ -7,7 +7,17 @@
         margin: 0;
     }
 
+    .block-card-container {
+        display: flex;
+        margin: auto;
+        justify-content: center;
+
+        .block-card {
+            margin: $base-unit * 0.25;
+        }
+    }
+
     .pass {
-        margin: $base-unit;
+        margin: $base-unit * 0.25;
     }
 }

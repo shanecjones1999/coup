@@ -9,6 +9,23 @@
 // }
 
 .nav-bar-container {
-    background-color: $light-gray;
-    //border-bottom: 1px solid $light-gray;
+    //background-color: $base-blue;
+    //background-color: $base-blue;
+    border-bottom: 1px solid $light-gray;
+    padding: $base-unit-2x;
+    display: flex;
+    justify-content: space-between;
+    //justify-content: right;
+
+    .nav-bar-button {
+        margin-left: $base-unit;
+        margin-right: $base-unit;
+    }
+
+    #rules-container {
+        display: flex;
+    }
+
+    #sign-out-container {
+    }
 }

@@ -5,17 +5,24 @@ import { tracked } from '@glimmer/tracking';
 
 export default class NavBar extends Component {
     @service session;
-    @service websocket;
+    @service router;
 
-    @tracked modalOpen = false;
+    @tracked actionSheetModalOpen = false;
+
+    @action
+    openActionSheetModal() {
+        this.actionSheetModalOpen = true;
+    }
+
+    @tracked rulesModalOpen = false;
+
+    @action
+    openRulesModal() {
+        this.rulesModalOpen = true;
+    }
 
     @action
     async invalidateSession() {
         await this.session.invalidate();
-    }
-
-    @action
-    openRulesModal() {
-        this.modalOpen = true;
     }
 }

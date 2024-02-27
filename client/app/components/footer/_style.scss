@@ -2,8 +2,9 @@
     text-align: center;
     padding: $base-unit-2x;
     background-color: $light-gray;
-
+    margin-top: -100px;
     position: absolute;
-    bottom: -250;
+    bottom: 0;
+    clear: both;
     width: 100%;
 }
